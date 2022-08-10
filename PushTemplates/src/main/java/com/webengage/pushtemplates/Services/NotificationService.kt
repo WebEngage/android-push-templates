@@ -1,5 +1,6 @@
 package com.webengage.pushtemplates.Services
 
+import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
@@ -61,8 +62,11 @@ class NotificationService : Service() {
             val notification = getNotification(timerData, context!!)
             Logger.d("Timer", "Initialization Done")
             startForeground(
-                pushData!!.pushNotification.experimentId.hashCode(),
-                notification.build()
+                pushData!!.pushNotification.variationId.hashCode(),
+                notification.build().apply {
+                    this.flags = this.flags or Notification.FLAG_ONLY_ALERT_ONCE
+                    this.flags = this.flags or Notification.FLAG_AUTO_CANCEL
+                }
             )
         }
         return START_STICKY
@@ -143,7 +147,7 @@ class NotificationService : Service() {
         thread.interrupt()
         stopForeground(true)
         with(NotificationManagerCompat.from(context!!)) {
-            this.cancel(pushData!!.pushNotification.experimentId.hashCode())
+            this.cancel(pushData!!.pushNotification.variationId.hashCode())
         }
         Logger.d("Timer", "Service Destroyed")
         super.onDestroy()
@@ -172,87 +176,6 @@ class NotificationService : Service() {
                 timeDiff
             )
         )
-    }
-
-    private fun setCTAList(remoteViews: RemoteViews, pushData: TimerStyle) {
-        //created for future use
-        var dismissSet = false
-        var intent = Intent(context, PushIntentListener::class.java)
-        intent.action = Constants.DELETE_ACTION
-        intent.addCategory(context!!.packageName)
-        intent.putExtra(Constants.PAYLOAD, pushData.pushNotification.pushPayloadJSON.toString())
-        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.getBroadcast(
-                context,
-                pushData.pushNotification.experimentId.hashCode(),
-                intent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        } else {
-            PendingIntent.getBroadcast(
-                context,
-                pushData.pushNotification.experimentId.hashCode(),
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        }
-        remoteViews.setViewVisibility(R.id.actions_container, View.VISIBLE)
-
-        if (pushData.pushNotification.callToActions != null && pushData.pushNotification.callToActions.size > 1) {
-            if (pushData.pushNotification.callToActions[1] != null) {
-                remoteViews.setViewVisibility(R.id.action1_native, View.VISIBLE)
-                val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
-                    context,
-                    pushData.pushNotification,
-                    pushData.pushNotification.callToActions[1],
-                    true
-                )
-                remoteViews.setTextViewText(
-                    R.id.action1_native,
-                    pushData.pushNotification.callToActions[1].text
-                )
-
-                remoteViews.setOnClickPendingIntent(R.id.action1_native, clickIntent)
-            } else {
-                remoteViews.setViewVisibility(R.id.action1_native, View.VISIBLE)
-                remoteViews.setTextViewText(R.id.action1_native, "Dismiss")
-                dismissSet = true
-                remoteViews.setOnClickPendingIntent(R.id.action1_native, pendingIntent)
-            }
-            if (pushData.pushNotification.callToActions.size > 2) {
-                remoteViews.setViewVisibility(R.id.action2_native, View.VISIBLE)
-                remoteViews.setViewVisibility(R.id.action3_native, View.VISIBLE)
-                remoteViews.setTextViewText(
-                    R.id.action2_native,
-                    pushData.pushNotification.callToActions[2].text
-                )
-                remoteViews.setTextViewText(R.id.action3_native, "Dismiss")
-
-                val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
-                    context,
-                    pushData.pushNotification,
-                    pushData.pushNotification.callToActions[2],
-                    true
-                )
-                dismissSet = true
-
-                remoteViews.setOnClickPendingIntent(R.id.action2_native, clickIntent)
-                remoteViews.setOnClickPendingIntent(R.id.action3_native, pendingIntent)
-            } else {
-                if (!dismissSet) {
-
-                    remoteViews.setViewVisibility(R.id.action2_native, View.VISIBLE)
-                    remoteViews.setTextViewText(R.id.action2_native, "Dismiss")
-
-                    dismissSet = true
-                    remoteViews.setOnClickPendingIntent(R.id.action2_native, pendingIntent)
-                }
-            }
-        } else {
-            remoteViews.setViewVisibility(R.id.action1_native,View.VISIBLE)
-            remoteViews.setTextViewText(R.id.action1_native, "Dismiss")
-            remoteViews.setOnClickPendingIntent(R.id.action1_native, pendingIntent)
-        }
     }
 
     private fun constructExpandedTimerPushBase(
@@ -336,7 +259,10 @@ class NotificationService : Service() {
         with(NotificationManagerCompat.from(context)) {
             // notificationId is a unique int for each notification that you must define
             if (System.currentTimeMillis() < pushData!!.timerTime && threadRunner.get())
-                notify(pushData!!.pushNotification.variationId.hashCode(), mBuilder!!.build())
+                notify(pushData!!.pushNotification.variationId.hashCode(), mBuilder!!.build().apply {
+                    this.flags = this.flags or Notification.FLAG_ONLY_ALERT_ONCE
+                    this.flags = this.flags or Notification.FLAG_AUTO_CANCEL
+                })
         }
     }
 

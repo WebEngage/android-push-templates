@@ -17,33 +17,29 @@ class PushIntentListener : BroadcastReceiver() {
         if (intent!!.action.equals(Constants.DELETE_ACTION)) {
             Log.d("Timer", "Delete Intent received")
             if (intent.extras != null && intent.extras!!.containsKey(Constants.PAYLOAD)) {
-                val pushData =
-                    TimerStyle(PushNotificationData(intent.extras!!.getString(Constants.PAYLOAD)
+                val pushData = PushNotificationData(intent.extras!!.getString(Constants.PAYLOAD)
                         ?.let { JSONObject(it) }, context!!
-                    ), context
                     )
 
                 val dismissIntent = PendingIntentFactory.constructPushDeletePendingIntent(
                     context,
-                    pushData.pushNotification
+                    pushData
                 )
                 dismissIntent.send()
 
-
-                if (pushData.pushNotification.customData.containsKey(Constants.TYPE) && pushData.pushNotification.customData.getString(
+                if (pushData.customData.containsKey(Constants.TYPE) && pushData.customData.getString(
                         Constants.TYPE
                     ).equals(Constants.PROGRESS_BAR)
                 ) {
                     val notificationServiceIntent =
                         Intent(context, NotificationService::class.java)
                     context.stopService(notificationServiceIntent)
-                } else if (pushData.pushNotification.customData.containsKey(Constants.TYPE) && pushData.pushNotification.customData.getString(
+                } else if (pushData.customData.containsKey(Constants.TYPE) && pushData.customData.getString(
                         Constants.TYPE
                     ).equals(Constants.COUNTDOWN)
                 ) {
-
                     with(NotificationManagerCompat.from(context!!)) {
-                        this.cancel(pushData.pushNotification.experimentId.hashCode())
+                        this.cancel(pushData.variationId.hashCode())
                     }
                 }
             }

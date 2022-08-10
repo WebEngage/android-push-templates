@@ -1,5 +1,6 @@
 package com.webengage.pushtemplates.CallBacks
 
+import android.app.Notification
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
@@ -10,15 +11,12 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.webengage.pushtemplates.Utils.NotificationConfigurator
 import com.webengage.pushtemplates.DataTypes.TimerStyle
 import com.webengage.pushtemplates.R
-import com.webengage.sdk.android.PendingIntentFactory
-import com.webengage.sdk.android.actions.render.CallToAction
+import com.webengage.pushtemplates.Utils.NotificationConfigurator
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import com.webengage.sdk.android.callbacks.CustomPushRender
 import com.webengage.sdk.android.callbacks.CustomPushRerender
-import com.webengage.sdk.android.utils.htmlspanner.WEHtmlParserInterface
 
 class CountDownRenderer : CustomPushRender, CustomPushRerender {
 
@@ -165,6 +163,7 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
                 context
             )
         }
+
         mBuilder.setChannelId(channel.id)
         mBuilder.setTimeoutAfter(pushData.timerTime - System.currentTimeMillis())
         Handler(Looper.getMainLooper()).postDelayed(
@@ -174,8 +173,12 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
             },
             pushData.timerTime - System.currentTimeMillis()
         )
+
         with(NotificationManagerCompat.from(context)) {
-            notify(pushData.pushNotification.variationId.hashCode(), mBuilder.build())
+            notify(pushData.pushNotification.variationId.hashCode(), mBuilder.build().apply {
+                this.flags = this.flags or Notification.FLAG_AUTO_CANCEL
+                this.flags = this.flags or Notification.FLAG_ONLY_ALERT_ONCE
+            })
         }
     }
 }

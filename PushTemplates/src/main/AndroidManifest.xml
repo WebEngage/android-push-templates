@@ -2,7 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.webengage.pushtemplates">
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
+    <queries>
+        <intent>
+            <action android:name="com.webengage.push.delete"/>
+            <category android:name="${applicationId}"/>
+        </intent>
+    </queries>
     <application>
         <service android:name=".Services.NotificationService"
             android:exported="true">
