@@ -254,6 +254,7 @@ class NotificationConfigurator {
 
 
     fun setCTAList(context: Context, remoteViews: RemoteViews, pushData: TimerStyle) {
+        remoteViews.setViewVisibility(R.id.we_notification_bottom_margin, View.GONE)
         if(pushData.pushNotification.backgroundColor != Color.parseColor("#00000000"))
             setNativeCTAs(context, remoteViews, pushData)
         else

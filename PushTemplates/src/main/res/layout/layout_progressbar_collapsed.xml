@@ -58,6 +58,10 @@
 
         </LinearLayout>
         </LinearLayout>
+        <FrameLayout
+            android:id="@+id/we_notification_bottom_margin"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/we_push_content_margin"/>
         <include layout="@layout/push_action_list"
             android:visibility="gone"/>
         </LinearLayout>
