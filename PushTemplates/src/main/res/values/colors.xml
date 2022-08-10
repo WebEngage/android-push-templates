@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="we_black">#000000</color>
+    <color name="we_black_89">#89000000</color>
+    <color name="we_white">#FFFFFF</color>
+    <color name="we_gray">#808080</color>
+    <color name="we_hard_black">#000000</color>
+    <color name="we_soft_black">#3d404e</color>
+    <color name="we_transparent">#00000000</color>
+    <color name="we_progress">#4CAF50</color>
+    <color name="we_progress_tint">#808080</color>
+</resources>

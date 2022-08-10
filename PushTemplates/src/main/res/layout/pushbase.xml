@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/push_base_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/custom_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/custom_small_head_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/we_push_content_margin"
+            android:paddingTop="@dimen/we_push_content_margin"
+            android:paddingRight="@dimen/we_push_content_margin"
+            android:paddingBottom="1dp">
+
+            <ImageView
+                android:id="@+id/small_icon"
+                android:layout_width="@dimen/we_small_icon_size"
+                android:layout_height="@dimen/we_small_icon_size"
+                android:layout_marginEnd="@dimen/we_push_intercontent_margin"
+                android:layout_marginRight="@dimen/we_push_intercontent_margin"
+                android:tint="#808080" />
+
+            <TextView
+                android:id="@+id/app_name_native"
+                style="@style/NotificationInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="80dp"
+                android:text="Production" />
+
+            <TextView
+                android:id="@+id/custom_summary_native"
+                style="@style/NotificationInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:drawableLeft="@drawable/ic_notification_title_divider"
+                android:drawablePadding="6dp"
+                android:maxWidth="140dp"
+                android:text="Summary" />
+
+            <TextView
+                android:id="@+id/custom_notification_time_native"
+                style="@style/NotificationInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:drawableLeft="@drawable/ic_notification_title_divider"
+                android:drawablePadding="6dp"
+                android:maxLength="12"
+                android:text="hh:mm" />
+
+            <TextView
+                android:id="@+id/app_name"
+                style="@style/NotificationInfoAdaptive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="80dp"
+                android:text="Production" />
+
+            <TextView
+                android:id="@+id/custom_summary"
+                style="@style/NotificationInfoAdaptive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:drawableLeft="@drawable/ic_notification_title_divider"
+                android:drawablePadding="6dp"
+                android:maxWidth="140dp"
+                android:text="summary" />
+
+            <TextView
+                android:id="@+id/custom_notification_time"
+                style="@style/NotificationInfoAdaptive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:drawableLeft="@drawable/ic_notification_title_divider"
+                android:drawablePadding="6dp"
+                android:maxLength="12"
+                android:text="hh:mm" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

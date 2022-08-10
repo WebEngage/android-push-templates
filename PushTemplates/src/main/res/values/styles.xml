@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.Transparent" parent="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="NotificationInfo">
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/we_hard_black</item>
+    </style>
+
+    <style name="Notification">
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">sans-serif</item>
+        <item name="android:textSize">@dimen/we_message_text_size</item>
+        <item name="android:textColor">@color/we_soft_black</item>
+    </style>
+
+    <style name="NotificationTitle">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/we_hard_black</item>
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/we_title_text_size</item>
+        <item name="android:fontWeight" tools:targetApi="o">600</item>
+    </style>
+
+    <style name="NotificationLine2" parent="NotificationInfo"/>
+
+    <style name="NotificationInfoAdaptive" parent="NotificationInfo">
+        <item name="android:textColor">@color/we_black</item>
+    </style>
+
+    <style name="NotificationAdaptive" parent="Notification">
+        <item name="android:textColor">@color/we_black</item>
+    </style>
+
+    <style name="NotificationTitleAdaptive" parent="NotificationTitle">
+        <item name="android:textColor">@color/we_black</item>
+    </style>
+
+    <style name="NotificationChronometer" parent="NotificationTitle">
+    </style>
+    <style name="NotificationChronometerAdaptive" parent="NotificationChronometer">
+        <item name="android:textColor">@color/we_black</item>
+    </style>
+    <style name="NotificationLine2Adaptive" parent="NotificationInfo"/>
+
+</resources>

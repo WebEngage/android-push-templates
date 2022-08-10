@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="we_large_icon_size">48dp</dimen>
+    <dimen name="we_title_text_size">16sp</dimen>
+    <dimen name="we_push_content_margin">16dp</dimen>
+    <dimen name="we_push_content_margin_colorbg">4dp</dimen>
+    <dimen name="we_push_intercontent_margin">0dp</dimen>
+    <dimen name="we_push_title_bottom_margin">4dp</dimen>
+    <dimen name="we_time_text_size">12sp</dimen>
+
+</resources>
