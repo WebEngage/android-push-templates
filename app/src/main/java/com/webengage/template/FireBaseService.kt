@@ -1,4 +1,4 @@
-package com.webengage.pushtemplates
+package com.webengage.template
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage

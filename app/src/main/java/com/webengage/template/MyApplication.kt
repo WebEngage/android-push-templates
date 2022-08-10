@@ -1,4 +1,4 @@
-package com.webengage.pushtemplates
+package com.webengage.template
 
 import android.app.Application
 import android.app.NotificationChannelGroup

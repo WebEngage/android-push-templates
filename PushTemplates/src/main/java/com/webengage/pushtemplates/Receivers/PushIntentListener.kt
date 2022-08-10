@@ -15,7 +15,6 @@ import org.json.JSONObject
 class PushIntentListener : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent!!.action.equals(Constants.DELETE_ACTION)) {
-            Log.d("Timer", "Delete Intent received")
             if (intent.extras != null && intent.extras!!.containsKey(Constants.PAYLOAD)) {
                 val pushData = PushNotificationData(intent.extras!!.getString(Constants.PAYLOAD)
                         ?.let { JSONObject(it) }, context!!

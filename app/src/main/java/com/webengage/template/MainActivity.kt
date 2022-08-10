@@ -1,4 +1,4 @@
-package com.webengage.pushtemplates
+package com.webengage.template
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

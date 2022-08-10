@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
@@ -156,7 +155,6 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
     }
 
     private fun show(context: Context) {
-        Log.d("Timer", "Showing Notification")
         var channel = notificationChannel
         if (channel == null) {
             channel = NotificationConfigurator().getDefaultNotificationChannel(
