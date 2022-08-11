@@ -40,7 +40,7 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
     ): Boolean {
 
         this.context = mContext!!
-        this.pushData = TimerStyle(pushNotificationData, context)
+        this.pushData = TimerStyle(context, pushNotificationData!!)
         this.whenTime = System.currentTimeMillis()
         if (pushData.timerTime < System.currentTimeMillis())
             return false

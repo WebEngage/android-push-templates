@@ -48,7 +48,7 @@ class NotificationService : Service() {
         if (intent!!.action.equals(Constants.PROGRESSBAR_ACTION)) {
             val pushDataPayload = intent.extras!!.getString(Constants.PAYLOAD)
                 ?.let { PushNotificationData(JSONObject(it), applicationContext) }
-            val timerData = TimerStyle(pushDataPayload, applicationContext)
+            val timerData = TimerStyle(applicationContext, pushDataPayload!!)
             this.context = applicationContext
             this.pushData = timerData
             this.mBuilder = NotificationCompat.Builder(context!!, "Sales")

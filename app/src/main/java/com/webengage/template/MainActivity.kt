@@ -9,16 +9,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        initViews()
         initWebengage()
     }
 
     private fun initWebengage() {
-        WebEngage.get().user().login("PushTemplate")
+        WebEngage.get().user().login("TemplateTest")
     }
 
-    private fun initViews() {
-        val editText_type = findViewById<EditText>(R.id.editText_type)
-        editText_type.setText("bar")
-    }
 }

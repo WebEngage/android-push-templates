@@ -29,7 +29,7 @@ class ProgressBarRenderer : CustomPushRender, CustomPushRerender {
             "Render Called for ${pushNotificationData!!.customData.getString("notification")}"
         )
         this.context = mContext!!
-        this.pushData = TimerStyle(pushNotificationData, mContext)
+        this.pushData = TimerStyle(mContext, pushNotificationData)
         this.mBuilder =
             NotificationCompat.Builder(mContext, pushNotificationData.channelId)
         this.whenTime = System.currentTimeMillis()
