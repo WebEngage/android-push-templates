@@ -4,14 +4,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.media.RingtoneManager
 import android.os.Build
 import android.text.TextUtils
 import android.text.format.DateFormat
-import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
-import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.webengage.pushtemplates.models.TimerStyleData
@@ -19,7 +16,6 @@ import com.webengage.pushtemplates.R
 import com.webengage.pushtemplates.receivers.PushIntentListener
 import com.webengage.sdk.android.PendingIntentFactory
 import com.webengage.sdk.android.WebEngage
-import com.webengage.sdk.android.actions.render.CallToAction
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import com.webengage.sdk.android.utils.htmlspanner.WEHtmlParserInterface
 
@@ -31,7 +27,6 @@ class NotificationConfigurator {
         val notificationManagerCompat = NotificationManagerCompat.from(context)
         var channelId =
             WebEngage.get().webEngageConfig.defaultPushChannelConfiguration.notificationChannelId
-        Log.d("PushTemplates", "default channel -> $channelId")
         if (notificationManagerCompat.getNotificationChannel(pushData.channelId) != null)
             channelId = pushData.channelId
 
@@ -46,6 +41,37 @@ class NotificationConfigurator {
             true
         )
         remoteView.setOnClickPendingIntent(R.id.we_notification_content, clickIntent)
+    }
+
+    fun getClickAndDismissPendingIntent(
+        context: Context,
+        pushData: PushNotificationData,
+        ctaID: String
+    ) :PendingIntent{
+        val intent = Intent(context, PushIntentListener::class.java)
+        intent.action = Constants.CLICK_ACTION
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            intent.identifier = (pushData.variationId + "_" + ctaID)
+        }
+        intent.addCategory(context.packageName)
+        intent.putExtra(Constants.PAYLOAD, pushData.pushPayloadJSON.toString())
+        intent.putExtra(Constants.CTA_ID, ctaID)
+        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.getBroadcast(
+                context,
+                (pushData.variationId + "_" + ctaID).hashCode(),
+                intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        } else {
+            PendingIntent.getBroadcast(
+                context,
+                (pushData.variationId + "_" + ctaID).hashCode(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
+        return pendingIntent
     }
 
     fun setDismissIntent(
@@ -79,57 +105,51 @@ class NotificationConfigurator {
         remoteViews: RemoteViews,
         pushData: TimerStyleData
     ) {
-        val pendingIntent =
+        val dismissIntent =
             getNotificationDismissPendingIntent(context, pushData.pushNotification, true)
         remoteViews.setViewVisibility(R.id.actions_container, View.VISIBLE)
 
-        if (pushData.pushNotification.callToActions != null && pushData.pushNotification.callToActions.size == 2) {
+        if (pushData.pushNotification.callToActions != null && pushData.pushNotification.callToActions.size > 1) {
             if (pushData.pushNotification.callToActions[1] != null) {
+                val cta = pushData.pushNotification.callToActions[1]
+                val clickIntent = getClickAndDismissPendingIntent(context,pushData.pushNotification, cta.id)
+
                 remoteViews.setViewVisibility(R.id.action1_adaptive, View.VISIBLE)
-                val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
-                    context,
-                    pushData.pushNotification,
-                    pushData.pushNotification.callToActions[1],
-                    true
-                )
                 remoteViews.setTextViewText(
                     R.id.action1_adaptive,
-                    pushData.pushNotification.callToActions[1].text
+                    cta.text
                 )
 
                 remoteViews.setOnClickPendingIntent(R.id.action1_adaptive, clickIntent)
             } else {
                 remoteViews.setViewVisibility(R.id.action1_adaptive, View.VISIBLE)
                 remoteViews.setTextViewText(R.id.action1_adaptive, Constants.DISMISS_CTA)
-                remoteViews.setOnClickPendingIntent(R.id.action1_adaptive, pendingIntent)
+                remoteViews.setOnClickPendingIntent(R.id.action1_adaptive, dismissIntent)
             }
-            if (pushData.pushNotification.callToActions.size == 3) {
+            if (pushData.pushNotification.callToActions.size > 2) {
                 remoteViews.setViewVisibility(R.id.action2_adaptive, View.VISIBLE)
                 remoteViews.setViewVisibility(R.id.action3_adaptive, View.VISIBLE)
+                val cta = pushData.pushNotification.callToActions[2]
+                val clickIntent = getClickAndDismissPendingIntent(context,pushData.pushNotification, cta.id)
+
                 remoteViews.setTextViewText(
                     R.id.action2_adaptive,
-                    pushData.pushNotification.callToActions[2].text
+                    cta.text
                 )
                 remoteViews.setTextViewText(R.id.action3_adaptive, Constants.DISMISS_CTA)
 
-                val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
-                    context,
-                    pushData.pushNotification,
-                    pushData.pushNotification.callToActions[2],
-                    true
-                )
                 remoteViews.setOnClickPendingIntent(R.id.action2_adaptive, clickIntent)
-                remoteViews.setOnClickPendingIntent(R.id.action3_adaptive, pendingIntent)
+                remoteViews.setOnClickPendingIntent(R.id.action3_adaptive, dismissIntent)
             } else {
                 remoteViews.setViewVisibility(R.id.action2_adaptive, View.VISIBLE)
                 remoteViews.setTextViewText(R.id.action2_adaptive, Constants.DISMISS_CTA)
-                remoteViews.setOnClickPendingIntent(R.id.action2_adaptive, pendingIntent)
+                remoteViews.setOnClickPendingIntent(R.id.action2_adaptive, dismissIntent)
 
             }
         } else {
             remoteViews.setViewVisibility(R.id.action1_adaptive, View.VISIBLE)
             remoteViews.setTextViewText(R.id.action1_adaptive, Constants.DISMISS_CTA)
-            remoteViews.setOnClickPendingIntent(R.id.action1_adaptive, pendingIntent)
+            remoteViews.setOnClickPendingIntent(R.id.action1_adaptive, dismissIntent)
         }
     }
 
@@ -142,58 +162,53 @@ class NotificationConfigurator {
         remoteViews: RemoteViews,
         pushData: TimerStyleData
     ) {
-        val pendingIntent =
+        val dismissIntent =
             getNotificationDismissPendingIntent(context, pushData.pushNotification, true)
 
         remoteViews.setViewVisibility(R.id.actions_container, View.VISIBLE)
 
-        if (pushData.pushNotification.callToActions != null && pushData.pushNotification.callToActions.size == 2) {
+        if (pushData.pushNotification.callToActions != null && pushData.pushNotification.callToActions.size > 1) {
             if (pushData.pushNotification.callToActions[1] != null) {
                 remoteViews.setViewVisibility(R.id.action1_native, View.VISIBLE)
-                val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
-                    context,
-                    pushData.pushNotification,
-                    pushData.pushNotification.callToActions[1],
-                    true
-                )
+                val cta = pushData.pushNotification.callToActions[1]
+                val clickIntent = getClickAndDismissPendingIntent(context,pushData.pushNotification, cta.id)
+
                 remoteViews.setTextViewText(
                     R.id.action1_native,
-                    pushData.pushNotification.callToActions[1].text
+                    cta.text
                 )
 
                 remoteViews.setOnClickPendingIntent(R.id.action1_native, clickIntent)
             } else {
                 remoteViews.setViewVisibility(R.id.action1_native, View.VISIBLE)
                 remoteViews.setTextViewText(R.id.action1_native, Constants.DISMISS_CTA)
-                remoteViews.setOnClickPendingIntent(R.id.action1_native, pendingIntent)
+                remoteViews.setOnClickPendingIntent(R.id.action1_native, dismissIntent)
             }
-            if (pushData.pushNotification.callToActions.size == 3) {
+            if (pushData.pushNotification.callToActions.size > 2) {
                 remoteViews.setViewVisibility(R.id.action2_native, View.VISIBLE)
                 remoteViews.setViewVisibility(R.id.action3_native, View.VISIBLE)
+
+                val cta = pushData.pushNotification.callToActions[1]
+                val clickIntent = getClickAndDismissPendingIntent(context,pushData.pushNotification, cta.id)
+
                 remoteViews.setTextViewText(
                     R.id.action2_native,
-                    pushData.pushNotification.callToActions[2].text
+                    cta.text
                 )
                 remoteViews.setTextViewText(R.id.action3_native, Constants.DISMISS_CTA)
 
-                val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
-                    context,
-                    pushData.pushNotification,
-                    pushData.pushNotification.callToActions[2],
-                    true
-                )
 
                 remoteViews.setOnClickPendingIntent(R.id.action2_native, clickIntent)
-                remoteViews.setOnClickPendingIntent(R.id.action3_native, pendingIntent)
+                remoteViews.setOnClickPendingIntent(R.id.action3_native, dismissIntent)
             } else {
                 remoteViews.setViewVisibility(R.id.action2_native, View.VISIBLE)
                 remoteViews.setTextViewText(R.id.action2_native, Constants.DISMISS_CTA)
-                remoteViews.setOnClickPendingIntent(R.id.action2_native, pendingIntent)
+                remoteViews.setOnClickPendingIntent(R.id.action2_native, dismissIntent)
             }
         } else {
             remoteViews.setViewVisibility(R.id.action1_native, View.VISIBLE)
             remoteViews.setTextViewText(R.id.action1_native, Constants.DISMISS_CTA)
-            remoteViews.setOnClickPendingIntent(R.id.action1_native, pendingIntent)
+            remoteViews.setOnClickPendingIntent(R.id.action1_native, dismissIntent)
         }
     }
 

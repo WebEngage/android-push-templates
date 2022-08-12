@@ -152,6 +152,13 @@ class NotificationService : Service() {
             (System.currentTimeMillis() - whenTime).toInt(),
             false
         )
+        this.mBuilder!!.setContentIntent(
+            NotificationConfigurator().getClickAndDismissPendingIntent(
+                context!!,
+                pushNotificationData!!.pushNotification,
+                pushNotificationData.pushNotification.primeCallToAction.id
+            )
+        )
         NotificationConfigurator().setNotificationConfiguration(
             mBuilder!!,
             pushData!!,
@@ -160,7 +167,7 @@ class NotificationService : Service() {
         this.mBuilder!!
             .setCustomContentView(
                 constructCollapsedTimerPushBase(
-                    context!!,
+                    context,
                     pushNotificationData,
                     timeDiff
                 )
@@ -203,12 +210,12 @@ class NotificationService : Service() {
             timerNotificationData.timerFormat,
             true
         )
-        val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
+        val clickIntent = NotificationConfigurator().getClickAndDismissPendingIntent(
             context,
-            pushData!!.pushNotification,
-            pushData!!.pushNotification.primeCallToAction,
-            false
+            timerNotificationData.pushNotification,
+            timerNotificationData.pushNotification.primeCallToAction.id
         )
+
         remoteView.setOnClickPendingIntent(R.id.we_notification_content, clickIntent)
         NotificationConfigurator().setCTAList(context, remoteView, pushData!!)
         return remoteView
@@ -223,17 +230,16 @@ class NotificationService : Service() {
         timeDiff: Long
     ): RemoteViews {
         val remoteView = RemoteViews(context.packageName, collapsedTimerLayoutId)
-        val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
+        val clickIntent = NotificationConfigurator().getClickAndDismissPendingIntent(
             context,
-            pushData!!.pushNotification,
-            pushData!!.pushNotification.primeCallToAction,
-            false
+            timerNotificationData!!.pushNotification,
+            timerNotificationData.pushNotification.primeCallToAction.id
         )
         remoteView.setOnClickPendingIntent(R.id.we_notification_content, clickIntent)
 
         NotificationConfigurator().configureRemoteView(context, remoteView, pushData!!, whenTime)
         NotificationConfigurator().setNotificationDescription(
-            timerNotificationData!!,
+            timerNotificationData,
             remoteView
         )
         NotificationConfigurator().setNotificationTitle(timerNotificationData, remoteView)

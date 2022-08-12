@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.webengage.pushtemplates">
+
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <queries>
         <intent>
-            <action android:name="com.webengage.push.delete"/>
-            <category android:name="${applicationId}"/>
+            <action android:name="com.webengage.push.delete" />
+            <category android:name="${applicationId}" />
+        </intent>
+        <intent>
+            <action android:name="com.webengage.push.click" />
+            <category android:name="${applicationId}" />
         </intent>
     </queries>
     <application>
-        <service android:name=".services.NotificationService"
+        <service
+            android:name=".services.NotificationService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.webengage.push.PROGRESS_BAR" />
             </intent-filter>
         </service>
-        <receiver android:name=".receivers.PushIntentListener"
+        <receiver
+            android:name=".receivers.PushIntentListener"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.webengage.push.delete" />
+                <category android:name="${applicationId}" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.webengage.push.click" />
                 <category android:name="${applicationId}" />
             </intent-filter>
         </receiver>

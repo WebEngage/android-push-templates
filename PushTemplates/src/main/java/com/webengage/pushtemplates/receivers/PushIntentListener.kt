@@ -3,6 +3,7 @@ package com.webengage.pushtemplates.receivers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import com.webengage.pushtemplates.services.NotificationService
 import com.webengage.pushtemplates.utils.Constants
@@ -15,7 +16,40 @@ class PushIntentListener : BroadcastReceiver() {
         if (intent!!.action.equals(Constants.DELETE_ACTION)) {
             dismissNotification(context!!, intent)
         }
+        if(intent!!.action.equals(Constants.CLICK_ACTION)){
+            sendClickEvent(context!!, intent)
+        }
     }
+
+    private fun sendClickEvent(context: Context, intent: Intent){
+        if (intent.extras != null && intent.extras!!.containsKey(Constants.PAYLOAD)) {
+            val pushData = PushNotificationData(
+                intent.extras!!.getString(Constants.PAYLOAD)
+                    ?.let { JSONObject(it) }, context
+            )
+            if (intent.extras!!.containsKey(Constants.CTA_ID)){
+                val ctaID = intent.extras!!.getString(Constants.CTA_ID)
+                val cta = pushData.getCallToActionById(ctaID)
+                Log.d("PushTemplate","Sending Click Action for ${cta.text}")
+                val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
+                    context,
+                    pushData,
+                    cta,
+                    false
+                )
+                clickIntent.send()
+            }
+            if (pushData.customData.containsKey(Constants.TEMPLATE_TYPE) && pushData.customData.getString(
+                    Constants.TEMPLATE_TYPE
+                ).equals(Constants.PROGRESS_BAR)
+            ) {
+                val notificationServiceIntent =
+                    Intent(context, NotificationService::class.java)
+                context.stopService(notificationServiceIntent)
+            }
+        }
+    }
+
 
     /**
      * Dismiss the notification with the provided notification ID
