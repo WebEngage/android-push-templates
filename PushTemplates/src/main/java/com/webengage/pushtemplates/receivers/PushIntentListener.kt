@@ -1,20 +1,14 @@
 package com.webengage.pushtemplates.receivers
 
-import android.annotation.SuppressLint
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import com.webengage.pushtemplates.services.NotificationService
 import com.webengage.pushtemplates.utils.Constants
-import com.webengage.pushtemplates.utils.NotificationConfigurator
 import com.webengage.sdk.android.PendingIntentFactory
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import org.json.JSONObject
-import java.util.*
 
 class PushIntentListener : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -23,12 +17,21 @@ class PushIntentListener : BroadcastReceiver() {
         }
     }
 
+    /**
+     * Dismiss the notification with the provided notification ID
+     */
     private fun dismissNotificationWithId(context: Context, id: Int) {
             with(NotificationManagerCompat.from(context)) {
                 this.cancel(id)
             }
         }
 
+    /**
+     * Used to listen to the DISMISS CTA button clicks
+     * If LOG_DISMISS is true then the notification close event will be logged.
+     * If TEMPLATE_TYPE is ProgressBar, then the NotificationService will be stopped.
+     * If TEMPLATE_TYPE is ProgressBar, then the Notification will be cancelled.
+     */
     private fun dismissNotification(context: Context, intent: Intent){
         if (intent.extras != null && intent.extras!!.containsKey(Constants.PAYLOAD)) {
             val pushData = PushNotificationData(intent.extras!!.getString(Constants.PAYLOAD)
@@ -42,15 +45,15 @@ class PushIntentListener : BroadcastReceiver() {
                 )
                 dismissIntent.send()
             }
-            if (pushData.customData.containsKey(Constants.TYPE) && pushData.customData.getString(
-                    Constants.TYPE
+            if (pushData.customData.containsKey(Constants.TEMPLATE_TYPE) && pushData.customData.getString(
+                    Constants.TEMPLATE_TYPE
                 ).equals(Constants.PROGRESS_BAR)
             ) {
                 val notificationServiceIntent =
                     Intent(context, NotificationService::class.java)
                 context.stopService(notificationServiceIntent)
-            } else if (pushData.customData.containsKey(Constants.TYPE) && pushData.customData.getString(
-                    Constants.TYPE
+            } else if (pushData.customData.containsKey(Constants.TEMPLATE_TYPE) && pushData.customData.getString(
+                    Constants.TEMPLATE_TYPE
                 ).equals(Constants.COUNTDOWN)
             ) {
                 dismissNotificationWithId(context,pushData.variationId.hashCode())

@@ -7,7 +7,7 @@ import android.graphics.Color
 import android.os.Build
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
-import com.webengage.pushtemplates.utils.CustomCallback
+import com.webengage.pushtemplates.CustomCallback
 import com.webengage.sdk.android.PushChannelConfiguration
 import com.webengage.sdk.android.WebEngage
 import com.webengage.sdk.android.WebEngageActivityLifeCycleCallbacks

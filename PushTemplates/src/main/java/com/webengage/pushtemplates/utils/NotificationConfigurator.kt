@@ -19,6 +19,7 @@ import com.webengage.pushtemplates.R
 import com.webengage.pushtemplates.receivers.PushIntentListener
 import com.webengage.sdk.android.PendingIntentFactory
 import com.webengage.sdk.android.WebEngage
+import com.webengage.sdk.android.actions.render.CallToAction
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import com.webengage.sdk.android.utils.htmlspanner.WEHtmlParserInterface
 
@@ -28,32 +29,13 @@ class NotificationConfigurator {
         context: Context, pushData: PushNotificationData
     ): String {
         val notificationManagerCompat = NotificationManagerCompat.from(context)
-        var channelId = WebEngage.get().webEngageConfig.defaultPushChannelConfiguration.notificationChannelId
+        var channelId =
+            WebEngage.get().webEngageConfig.defaultPushChannelConfiguration.notificationChannelId
         Log.d("PushTemplates", "default channel -> $channelId")
-        if(notificationManagerCompat.getNotificationChannel(pushData.channelId) != null)
+        if (notificationManagerCompat.getNotificationChannel(pushData.channelId) != null)
             channelId = pushData.channelId
 
         return channelId
-    }
-
-    fun getDefaultNotificationChannel(
-        context: Context,
-    ): NotificationChannelCompat {
-        val channel =
-            NotificationChannelCompat.Builder("Sales", NotificationCompat.PRIORITY_DEFAULT)
-                .setShowBadge(true)
-                .setDescription("Sales Notifications")
-                .setName("Sales")
-                .setLightsEnabled(true)
-                .setSound(
-                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
-                    null
-                )
-                .setImportance(NotificationManagerCompat.IMPORTANCE_DEFAULT)
-                .setVibrationEnabled(true)
-                .build()
-        NotificationManagerCompat.from(context).createNotificationChannel(channel)
-        return channel
     }
 
     fun setClickIntent(context: Context, remoteView: RemoteViews, pushData: TimerStyleData) {
@@ -61,9 +43,9 @@ class NotificationConfigurator {
             context,
             pushData.pushNotification,
             pushData.pushNotification.primeCallToAction,
-            false
+            true
         )
-        remoteView.setOnClickPendingIntent(R.id.we_notification_container, clickIntent)
+        remoteView.setOnClickPendingIntent(R.id.we_notification_content, clickIntent)
     }
 
     fun setDismissIntent(
@@ -92,8 +74,13 @@ class NotificationConfigurator {
         mBuilder.setContentIntent(clickIntent)
     }
 
-    fun setAdaptiveCTAs(context: Context, remoteViews: RemoteViews, pushData: TimerStyleData) {
-        val pendingIntent = getNotificationDismissPendingIntent(context, pushData.pushNotification, true)
+    private fun setAdaptiveCTAs(
+        context: Context,
+        remoteViews: RemoteViews,
+        pushData: TimerStyleData
+    ) {
+        val pendingIntent =
+            getNotificationDismissPendingIntent(context, pushData.pushNotification, true)
         remoteViews.setViewVisibility(R.id.actions_container, View.VISIBLE)
 
         if (pushData.pushNotification.callToActions != null && pushData.pushNotification.callToActions.size == 2) {
@@ -150,13 +137,17 @@ class NotificationConfigurator {
     /**
      * Dismiss button will be set explicitly at the end position.
      * **/
-    fun setNativeCTAs(context: Context, remoteViews: RemoteViews, pushData: TimerStyleData) {
-        var dismissSet = false
-        val pendingIntent = getNotificationDismissPendingIntent(context, pushData.pushNotification, true)
+    private fun setNativeCTAs(
+        context: Context,
+        remoteViews: RemoteViews,
+        pushData: TimerStyleData
+    ) {
+        val pendingIntent =
+            getNotificationDismissPendingIntent(context, pushData.pushNotification, true)
 
         remoteViews.setViewVisibility(R.id.actions_container, View.VISIBLE)
 
-        if (pushData.pushNotification.callToActions != null && pushData.pushNotification.callToActions.size > 1) {
+        if (pushData.pushNotification.callToActions != null && pushData.pushNotification.callToActions.size == 2) {
             if (pushData.pushNotification.callToActions[1] != null) {
                 remoteViews.setViewVisibility(R.id.action1_native, View.VISIBLE)
                 val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
@@ -174,10 +165,9 @@ class NotificationConfigurator {
             } else {
                 remoteViews.setViewVisibility(R.id.action1_native, View.VISIBLE)
                 remoteViews.setTextViewText(R.id.action1_native, Constants.DISMISS_CTA)
-                dismissSet = true
                 remoteViews.setOnClickPendingIntent(R.id.action1_native, pendingIntent)
             }
-            if (pushData.pushNotification.callToActions.size > 2) {
+            if (pushData.pushNotification.callToActions.size == 3) {
                 remoteViews.setViewVisibility(R.id.action2_native, View.VISIBLE)
                 remoteViews.setViewVisibility(R.id.action3_native, View.VISIBLE)
                 remoteViews.setTextViewText(
@@ -192,19 +182,13 @@ class NotificationConfigurator {
                     pushData.pushNotification.callToActions[2],
                     true
                 )
-                dismissSet = true
 
                 remoteViews.setOnClickPendingIntent(R.id.action2_native, clickIntent)
                 remoteViews.setOnClickPendingIntent(R.id.action3_native, pendingIntent)
             } else {
-                if (!dismissSet) {
-
-                    remoteViews.setViewVisibility(R.id.action2_native, View.VISIBLE)
-                    remoteViews.setTextViewText(R.id.action2_native, Constants.DISMISS_CTA)
-
-                    dismissSet = true
-                    remoteViews.setOnClickPendingIntent(R.id.action2_native, pendingIntent)
-                }
+                remoteViews.setViewVisibility(R.id.action2_native, View.VISIBLE)
+                remoteViews.setTextViewText(R.id.action2_native, Constants.DISMISS_CTA)
+                remoteViews.setOnClickPendingIntent(R.id.action2_native, pendingIntent)
             }
         } else {
             remoteViews.setViewVisibility(R.id.action1_native, View.VISIBLE)
@@ -212,7 +196,6 @@ class NotificationConfigurator {
             remoteViews.setOnClickPendingIntent(R.id.action1_native, pendingIntent)
         }
     }
-
 
     fun setCTAList(context: Context, remoteViews: RemoteViews, pushData: TimerStyleData) {
         remoteViews.setViewVisibility(R.id.we_notification_bottom_margin, View.GONE)
@@ -282,7 +265,7 @@ class NotificationConfigurator {
         }
     }
 
-    fun setNotificationTitle(context: Context, pushData: TimerStyleData, remoteViews: RemoteViews) {
+    fun setNotificationTitle(pushData: TimerStyleData, remoteViews: RemoteViews) {
         remoteViews.setTextViewText(
             R.id.we_notification_title,
             WEHtmlParserInterface().fromHtml(pushData.pushNotification.title)
@@ -302,7 +285,6 @@ class NotificationConfigurator {
     }
 
     fun setNotificationDescription(
-        context: Context,
         pushData: TimerStyleData,
         remoteViews: RemoteViews
     ) {
@@ -325,7 +307,6 @@ class NotificationConfigurator {
     }
 
     fun setNotificationConfiguration(
-        context: Context,
         mBuilder: NotificationCompat.Builder,
         pushData: TimerStyleData,
         whenTime: Long
@@ -341,26 +322,30 @@ class NotificationConfigurator {
         mBuilder.setWhen(whenTime)
     }
 
-     fun getNotificationDismissPendingIntent(context: Context, pushData: PushNotificationData, logDismiss : Boolean): PendingIntent {
+    private fun getNotificationDismissPendingIntent(
+        context: Context,
+        pushData: PushNotificationData,
+        logDismiss: Boolean
+    ): PendingIntent {
         val intent = Intent(context, PushIntentListener::class.java)
         intent.action = Constants.DELETE_ACTION
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            intent.identifier = (pushData.variationId+"_"+logDismiss)
+            intent.identifier = (pushData.variationId + "_" + logDismiss)
         }
         intent.addCategory(context.packageName)
         intent.putExtra(Constants.PAYLOAD, pushData.pushPayloadJSON.toString())
-        intent.putExtra(Constants.LOG_DISMISS,logDismiss)
+        intent.putExtra(Constants.LOG_DISMISS, logDismiss)
         val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PendingIntent.getBroadcast(
                 context,
-                (pushData.variationId+"_"+logDismiss).hashCode(),
+                (pushData.variationId + "_" + logDismiss).hashCode(),
                 intent,
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
         } else {
             PendingIntent.getBroadcast(
                 context,
-                (pushData.variationId+"_"+logDismiss).hashCode(),
+                (pushData.variationId + "_" + logDismiss).hashCode(),
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT
             )

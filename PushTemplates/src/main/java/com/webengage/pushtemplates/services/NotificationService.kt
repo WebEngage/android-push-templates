@@ -21,10 +21,11 @@ class NotificationService : Service() {
     private var context: Context? = null
     private var mBuilder: NotificationCompat.Builder? = null
     private var pushData: TimerStyleData? = null
-    private var whenTime: Long = 0;
+    private var whenTime: Long = 0
     private var collapsedTimerLayoutId = R.layout.layout_progressbar_collapsed
     private var expandedTimerLayoutId = R.layout.layout_progressbar_collapsed
     private var countDownTimer: CountDownTimer? = null
+    private val updateFrequency: Long = 1000
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -33,13 +34,16 @@ class NotificationService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("PushTemplates", "Service onStartCommand")
         if (intent!!.action.equals(Constants.PROGRESSBAR_ACTION)) {
-            val pushDataPayload = intent.extras!!.getString(Constants.PAYLOAD)
+            val pushNotificationData = intent.extras!!.getString(Constants.PAYLOAD)
                 ?.let { PushNotificationData(JSONObject(it), applicationContext) }
-            val timerData = TimerStyleData(applicationContext, pushDataPayload!!)
+            val timerData = TimerStyleData(applicationContext, pushNotificationData!!)
             this.context = applicationContext
             this.pushData = timerData
-            val channelId =  NotificationConfigurator().getDefaultNotificationChannelID(context!!,pushDataPayload)
-            this.mBuilder = NotificationCompat.Builder(context!!,channelId)
+            val channelId = NotificationConfigurator().getDefaultNotificationChannelID(
+                context!!,
+                pushNotificationData
+            )
+            this.mBuilder = NotificationCompat.Builder(context!!, channelId)
             this.whenTime = (intent.extras!!.getLong(Constants.WHEN_TIME))
             stopForeground(true)
 
@@ -51,14 +55,18 @@ class NotificationService : Service() {
                     this.flags = this.flags or Notification.FLAG_AUTO_CANCEL
                 }
             )
-        }
-        else if(intent.action.equals(Constants.DELETE_ACTION)){
+        } else if (intent.action.equals(Constants.DELETE_ACTION)) {
             stopSelf()
         }
         return START_STICKY
-
     }
 
+
+    /**
+     * Start a CountDownTimer to update the notification periodically at a delay of updateFrequency.
+     * The Timer will run till the System time becomes greater than the provided future time OR
+     * if the service has been stopped.
+     */
     private fun startCounter(
         context: Context,
         mBuilder: NotificationCompat.Builder,
@@ -66,12 +74,16 @@ class NotificationService : Service() {
         timeDiff: Long
     ) {
         mBuilder.setTimeoutAfter(pushData.timerTime - System.currentTimeMillis())
+        val dismissIntent = PendingIntentFactory.constructPushDeletePendingIntent(
+            context,
+            pushData.pushNotification
+        )
 
         countDownTimer =
-            object : CountDownTimer((pushData.timerTime - System.currentTimeMillis()), 1000) {
+            object :
+                CountDownTimer((pushData.timerTime - System.currentTimeMillis()), updateFrequency) {
                 override fun onTick(millisUntilFinished: Long) {
-                    if(System.currentTimeMillis() < pushData.timerTime) {
-                        Log.d("PushTemplate", "updating: ")
+                    if (System.currentTimeMillis() < pushData.timerTime) {
                         mBuilder.setProgress(
                             (pushData.timerTime - whenTime).toInt(),
                             (System.currentTimeMillis() - whenTime).toInt(),
@@ -79,14 +91,14 @@ class NotificationService : Service() {
                         )
                         constructNotification(context, pushData, timeDiff)
                         show(context)
-                    }
-                    else{
-                        Log.d("NotificationService", "timer cancelled: ")
-                       stopSelf()
+                    } else {
+                        dismissIntent.send()
+                        stopSelf()
                     }
                 }
+
                 override fun onFinish() {
-                    Log.d("NotificationService", "timer finished: ")
+                    dismissIntent.send()
                     stopSelf()
                 }
 
@@ -94,6 +106,9 @@ class NotificationService : Service() {
         countDownTimer?.start()
     }
 
+    /**
+     * Create or update the notification builder
+     */
     private fun getNotification(
         timerData: TimerStyleData,
         mContext: Context
@@ -113,9 +128,10 @@ class NotificationService : Service() {
         super.onCreate()
     }
 
+    /**
+     * Stop the foreground service and remove notification before destroying the service
+     */
     override fun onDestroy() {
-        val dismissIntent = PendingIntentFactory.constructPushDeletePendingIntent(context,pushData!!.pushNotification)
-        dismissIntent.send()
         stopForeground(true)
         with(NotificationManagerCompat.from(context!!)) {
             this.cancel(pushData!!.pushNotification.variationId.hashCode())
@@ -137,7 +153,6 @@ class NotificationService : Service() {
             false
         )
         NotificationConfigurator().setNotificationConfiguration(
-            context!!,
             mBuilder!!,
             pushData!!,
             whenTime
@@ -159,6 +174,10 @@ class NotificationService : Service() {
         )
     }
 
+
+    /**
+     * Construct remote view for expanded notification
+     */
     private fun constructExpandedTimerPushBase(
         context: Context,
         timerNotificationData: TimerStyleData?,
@@ -167,11 +186,10 @@ class NotificationService : Service() {
         val remoteView = RemoteViews(context.packageName, expandedTimerLayoutId)
         NotificationConfigurator().configureRemoteView(context, remoteView, pushData!!, whenTime)
         NotificationConfigurator().setNotificationDescription(
-            context,
             timerNotificationData!!,
             remoteView
         )
-        NotificationConfigurator().setNotificationTitle(context, timerNotificationData, remoteView)
+        NotificationConfigurator().setNotificationTitle(timerNotificationData, remoteView)
 
         remoteView.setProgressBar(
             R.id.we_notification_progressBar,
@@ -182,20 +200,23 @@ class NotificationService : Service() {
         remoteView.setChronometer(
             R.id.we_notification_timer,
             timeDiff,
-            timerNotificationData!!.timerFormat,
+            timerNotificationData.timerFormat,
             true
         )
         val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
             context,
             pushData!!.pushNotification,
             pushData!!.pushNotification.primeCallToAction,
-            true
+            false
         )
-        remoteView.setOnClickPendingIntent(R.id.we_notification_container, clickIntent)
+        remoteView.setOnClickPendingIntent(R.id.we_notification_content, clickIntent)
         NotificationConfigurator().setCTAList(context, remoteView, pushData!!)
         return remoteView
     }
 
+    /**
+     * Construct remote view for collapsed notification
+     */
     private fun constructCollapsedTimerPushBase(
         context: Context,
         timerNotificationData: TimerStyleData?,
@@ -206,17 +227,16 @@ class NotificationService : Service() {
             context,
             pushData!!.pushNotification,
             pushData!!.pushNotification.primeCallToAction,
-            true
+            false
         )
-        remoteView.setOnClickPendingIntent(R.id.we_notification_container, clickIntent)
+        remoteView.setOnClickPendingIntent(R.id.we_notification_content, clickIntent)
 
         NotificationConfigurator().configureRemoteView(context, remoteView, pushData!!, whenTime)
         NotificationConfigurator().setNotificationDescription(
-            context,
             timerNotificationData!!,
             remoteView
         )
-        NotificationConfigurator().setNotificationTitle(context, timerNotificationData, remoteView)
+        NotificationConfigurator().setNotificationTitle(timerNotificationData, remoteView)
 
         remoteView.setProgressBar(
             R.id.we_notification_progressBar,
@@ -227,17 +247,18 @@ class NotificationService : Service() {
         remoteView.setChronometer(
             R.id.we_notification_timer,
             timeDiff,
-            timerNotificationData!!.timerFormat,
+            timerNotificationData.timerFormat,
             true
         )
 
         return remoteView
     }
 
+
+    /**
+     * Show notification only if the current time is less than the count down time
+     */
     private fun show(context: Context) {
-        val channel = NotificationConfigurator().getDefaultNotificationChannel(
-            context
-        )
         with(NotificationManagerCompat.from(context)) {
             if (System.currentTimeMillis() < pushData!!.timerTime)
                 notify(

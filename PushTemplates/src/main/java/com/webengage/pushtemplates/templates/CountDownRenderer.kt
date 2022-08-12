@@ -1,4 +1,4 @@
-package com.webengage.pushtemplates.callbacks
+package com.webengage.pushtemplates.templates
 
 import android.app.Notification
 import android.content.Context
@@ -10,10 +10,8 @@ import com.webengage.pushtemplates.models.TimerStyleData
 import com.webengage.pushtemplates.R
 import com.webengage.pushtemplates.utils.NotificationConfigurator
 import com.webengage.sdk.android.actions.render.PushNotificationData
-import com.webengage.sdk.android.callbacks.CustomPushRender
-import com.webengage.sdk.android.callbacks.CustomPushRerender
 
-class CountDownRenderer : CustomPushRender, CustomPushRerender {
+class CountDownRenderer {
 
     private lateinit var context: Context
     private lateinit var mBuilder: NotificationCompat.Builder
@@ -22,7 +20,7 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
     private var expandedTimerLayoutId = R.layout.layout_timer_collapsed
     private var whenTime: Long = 0
 
-    override fun onRender(
+    fun onRender(
         mContext: Context?,
         pushNotificationData: PushNotificationData?
     ): Boolean {
@@ -30,38 +28,31 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
         this.context = mContext!!
         this.pushData = TimerStyleData(context, pushNotificationData!!)
         this.whenTime = System.currentTimeMillis()
+        this.mBuilder =
+            NotificationCompat.Builder(
+                context,
+                NotificationConfigurator().getDefaultNotificationChannelID(
+                    context,
+                    pushNotificationData
+                )
+            )
+
+        //If the provided future time is less that the system time, then do not render
         if (pushData.timerTime < System.currentTimeMillis())
             return false
-        initRender()
+        constructNotification(context, pushData)
+        show(context)
         return true
 
     }
 
-    override fun onRerender(
-        context: Context?,
-        pushNotificationData: PushNotificationData?,
-        extras: Bundle?
-    ): Boolean {
-        //TODO("Implement when the notification is supposed to me rendered with new content")
-        return false
-    }
-
-    fun initRender() {
-        constructNotification(context, pushData)
-        show(context)
-    }
-
-
     private fun constructNotification(context: Context?, pushNotificationData: TimerStyleData?) {
-        this.mBuilder =
-            NotificationCompat.Builder(context!!, NotificationConfigurator().getDefaultNotificationChannelID(context,pushNotificationData!!.pushNotification))
         NotificationConfigurator().setNotificationConfiguration(
-            context,
             mBuilder,
             pushNotificationData!!,
             whenTime
         )
-        NotificationConfigurator().setDismissIntent(context, mBuilder, pushNotificationData)
+        NotificationConfigurator().setDismissIntent(context!!, mBuilder, pushNotificationData)
         NotificationConfigurator().setClickIntent(context, mBuilder, pushNotificationData)
 
         this.mBuilder.setCustomContentView(
@@ -78,6 +69,10 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
         )
     }
 
+
+    /**
+     * Create and attach the expanded layout for the notification
+     */
     private fun constructExpandedTimerPushBase(
         context: Context,
         timerNotificationData: TimerStyleData?
@@ -92,11 +87,10 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
             whenTime
         )
         NotificationConfigurator().setNotificationDescription(
-            context,
             timerNotificationData,
             remoteView
         )
-        NotificationConfigurator().setNotificationTitle(context, timerNotificationData, remoteView)
+        NotificationConfigurator().setNotificationTitle(timerNotificationData, remoteView)
         NotificationConfigurator().setCTAList(context, remoteView, pushData)
         NotificationConfigurator().setClickIntent(context, remoteView, pushData)
         val timeDiff =
@@ -110,6 +104,9 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
         return remoteView
     }
 
+    /**
+     * Create and attach the collapsed layout for the notification
+     */
     private fun constructCollapsedTimerPushBase(
         context: Context,
         timerNotificationData: TimerStyleData?
@@ -123,11 +120,10 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
             whenTime
         )
         NotificationConfigurator().setNotificationDescription(
-            context,
             timerNotificationData,
             remoteView
         )
-        NotificationConfigurator().setNotificationTitle(context, timerNotificationData, remoteView)
+        NotificationConfigurator().setNotificationTitle(timerNotificationData, remoteView)
         NotificationConfigurator().setClickIntent(context, remoteView, timerNotificationData)
 
         val timeDiff =
@@ -142,6 +138,9 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
         return remoteView
     }
 
+    /**
+     * Show notification if the current system time is less than teh provided future time
+     */
     private fun show(context: Context) {
         mBuilder.setTimeoutAfter(pushData.timerTime - System.currentTimeMillis())
         with(NotificationManagerCompat.from(context)) {
