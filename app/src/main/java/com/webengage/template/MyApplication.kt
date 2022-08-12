@@ -5,8 +5,9 @@ import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.graphics.Color
 import android.os.Build
+import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
-import com.webengage.pushtemplates.Utils.CustomCallback
+import com.webengage.pushtemplates.utils.CustomCallback
 import com.webengage.sdk.android.PushChannelConfiguration
 import com.webengage.sdk.android.WebEngage
 import com.webengage.sdk.android.WebEngageActivityLifeCycleCallbacks
@@ -68,5 +69,20 @@ class MyApplication : Application() {
             }
         }
 
+    }
+
+    override fun onTrimMemory(level: Int) {
+        Log.d("PushTemplates", "App onTrimMemory $level")
+        super.onTrimMemory(level)
+    }
+
+    override fun onLowMemory() {
+        Log.d("PushTemplates", "App onLowMemory")
+        super.onLowMemory()
+    }
+
+    override fun onTerminate() {
+        Log.d("PushTemplates", "App onTerminate")
+        super.onTerminate()
     }
 }

@@ -1,13 +1,13 @@
-package com.webengage.pushtemplates.CallBacks
+package com.webengage.pushtemplates.callbacks
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.webengage.pushtemplates.Utils.Constants
-import com.webengage.pushtemplates.Services.NotificationService
-import com.webengage.pushtemplates.DataTypes.TimerStyle
+import com.webengage.pushtemplates.utils.Constants
+import com.webengage.pushtemplates.services.NotificationService
+import com.webengage.pushtemplates.models.TimerStyle
 import com.webengage.sdk.android.WebEngage.startService
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import com.webengage.sdk.android.callbacks.CustomPushRender

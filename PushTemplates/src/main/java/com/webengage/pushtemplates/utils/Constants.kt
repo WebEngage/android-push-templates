@@ -1,4 +1,4 @@
-package com.webengage.pushtemplates.Utils
+package com.webengage.pushtemplates.utils
 
 object Constants {
     //Old Constants to be used for rerendered notifications
@@ -25,4 +25,10 @@ object Constants {
     //Internal Constants
     val PAYLOAD = "payload"
     val DISMISS_CTA = "Dismiss"
+    val WHEN_TIME = "whenTime"
+    val LOG_DISMISS = "logDismiss"
+
+    val SECOND = 1000
+    val MINUTE = 60* SECOND
+    val HOUR = 60* MINUTE
 }

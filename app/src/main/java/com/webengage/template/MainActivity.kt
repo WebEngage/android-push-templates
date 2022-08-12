@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initWebengage() {
-        WebEngage.get().user().login("TemplateTest")
+        WebEngage.get().user().login("Test1")
     }
 
 }

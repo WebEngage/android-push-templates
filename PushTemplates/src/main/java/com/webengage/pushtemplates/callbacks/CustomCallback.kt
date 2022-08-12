@@ -1,9 +1,9 @@
-package com.webengage.pushtemplates.Utils
+package com.webengage.pushtemplates.utils
 
 import android.content.Context
 import android.os.Bundle
-import com.webengage.pushtemplates.CallBacks.CountDownRenderer
-import com.webengage.pushtemplates.CallBacks.ProgressBarRenderer
+import com.webengage.pushtemplates.callbacks.CountDownRenderer
+import com.webengage.pushtemplates.callbacks.ProgressBarRenderer
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import com.webengage.sdk.android.callbacks.CustomPushRender
 import com.webengage.sdk.android.callbacks.CustomPushRerender

@@ -1,18 +1,16 @@
-package com.webengage.pushtemplates.CallBacks
+package com.webengage.pushtemplates.callbacks
 
 import android.app.Notification
 import android.content.Context
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
+import android.os.*
+import android.util.Log
 import android.widget.RemoteViews
-import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.webengage.pushtemplates.DataTypes.TimerStyle
+import com.webengage.pushtemplates.models.TimerStyle
 import com.webengage.pushtemplates.R
-import com.webengage.pushtemplates.Utils.NotificationConfigurator
+import com.webengage.pushtemplates.utils.NotificationConfigurator
+import com.webengage.pushtemplates.utils.Scheduler
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import com.webengage.sdk.android.callbacks.CustomPushRender
 import com.webengage.sdk.android.callbacks.CustomPushRerender
@@ -22,15 +20,8 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
     private lateinit var context: Context
     private lateinit var mBuilder: NotificationCompat.Builder
     private lateinit var pushData: TimerStyle
-    private var notificationChannel: NotificationChannelCompat? = null
-    private val SECOND = 1000;
-    private val DEFAULT_SECONDS = 2;
-
-    private var collapsedLayoutId = -1
-    private var expandedLayoutId = -1
     private var collapsedTimerLayoutId = R.layout.layout_timer_collapsed
     private var expandedTimerLayoutId = R.layout.layout_timer_collapsed
-    private val DEFAULT_TIME = DEFAULT_SECONDS * SECOND;
     private var whenTime: Long = 0
 
 
@@ -65,11 +56,11 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
 
     private fun constructNotification(context: Context?, pushNotificationData: TimerStyle?) {
         this.mBuilder =
-            NotificationCompat.Builder(context!!, pushNotificationData!!.pushNotification.channelId)
+            NotificationCompat.Builder(context!!, "Sales")
         NotificationConfigurator().setNotificationConfiguration(
             context,
             mBuilder,
-            pushNotificationData,
+            pushNotificationData!!,
             whenTime
         )
         NotificationConfigurator().setDismissIntent(context, mBuilder, pushNotificationData)
@@ -155,23 +146,26 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
     }
 
     private fun show(context: Context) {
-        var channel = notificationChannel
-        if (channel == null) {
-            channel = NotificationConfigurator().getDefaultNotificationChannel(
-                context
-            )
-        }
-
-        mBuilder.setChannelId(channel.id)
-        mBuilder.setTimeoutAfter(pushData.timerTime - System.currentTimeMillis())
-        Handler(Looper.getMainLooper()).postDelayed(
-            {
-                NotificationManagerCompat.from(context)
-                    .cancel(pushData.pushNotification.experimentId.hashCode())
-            },
-            pushData.timerTime - System.currentTimeMillis()
+        val channel = NotificationConfigurator().getDefaultNotificationChannel(
+            context
         )
 
+        val pendingIntent = NotificationConfigurator().getNotificationDismissPendingIntent(
+            context,
+            pushData.pushNotification,
+            false
+        )
+
+        Scheduler().scheduleAlarm(
+            context,
+            pushData.timerTime,
+            pendingIntent
+        )
+        mBuilder.setChannelId(channel.id)
+        Log.d(
+            "PushTemplates",
+            "Showing Timer for ${pushData.timerTime - System.currentTimeMillis()}"
+        )
         with(NotificationManagerCompat.from(context)) {
             notify(pushData.pushNotification.variationId.hashCode(), mBuilder.build().apply {
                 this.flags = this.flags or Notification.FLAG_AUTO_CANCEL

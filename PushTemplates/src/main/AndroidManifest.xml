@@ -9,13 +9,13 @@
         </intent>
     </queries>
     <application>
-        <service android:name=".Services.NotificationService"
+        <service android:name=".services.NotificationService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.webengage.push.PROGRESS_BAR" />
             </intent-filter>
         </service>
-        <receiver android:name=".Receivers.PushIntentListener"
+        <receiver android:name=".receivers.PushIntentListener"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.webengage.push.delete" />

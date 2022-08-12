@@ -1,20 +1,18 @@
-package com.webengage.pushtemplates.DataTypes
+package com.webengage.pushtemplates.models
 
 import android.content.Context
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import android.os.Bundle
-import com.webengage.pushtemplates.Utils.Constants
-import java.util.*
+import com.webengage.pushtemplates.utils.Constants
 
 class TimerStyle( context: Context?, pushNotificationData : PushNotificationData) {
     var timerData: Bundle
     var timerFormat : String = "%s"
-    var timerTime : Long = System.currentTimeMillis() + 2*60*1000
+    var timerTime : Long = System.currentTimeMillis() + 1*Constants.MINUTE
     var timerType : String = "DISMISS"
     var pushNotification : PushNotificationData = pushNotificationData
     private fun setTimerDataBundle(customData: Bundle): Bundle {
         val timerBundle = Bundle()
-
         if (customData.containsKey(Constants.TIMER_TITLE) && customData[Constants.TIMER_TITLE] != null) {
             timerBundle.putString(
                 Constants.TIMER_TITLE,
