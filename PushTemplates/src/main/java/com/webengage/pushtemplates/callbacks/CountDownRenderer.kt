@@ -3,7 +3,6 @@ package com.webengage.pushtemplates.callbacks
 import android.app.Notification
 import android.content.Context
 import android.os.*
-import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -55,7 +54,7 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
 
     private fun constructNotification(context: Context?, pushNotificationData: TimerStyleData?) {
         this.mBuilder =
-            NotificationCompat.Builder(context!!, "Sales")
+            NotificationCompat.Builder(context!!, NotificationConfigurator().getDefaultNotificationChannelID(context,pushNotificationData!!.pushNotification))
         NotificationConfigurator().setNotificationConfiguration(
             context,
             mBuilder,
@@ -144,15 +143,7 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
     }
 
     private fun show(context: Context) {
-        val channel = NotificationConfigurator().getDefaultNotificationChannel(
-            context
-        )
         mBuilder.setTimeoutAfter(pushData.timerTime - System.currentTimeMillis())
-        mBuilder.setChannelId(channel.id)
-        Log.d(
-            "PushTemplates",
-            "Showing Timer for ${pushData.timerTime - System.currentTimeMillis()}"
-        )
         with(NotificationManagerCompat.from(context)) {
             notify(pushData.pushNotification.variationId.hashCode(), mBuilder.build().apply {
                 this.flags = this.flags or Notification.FLAG_AUTO_CANCEL

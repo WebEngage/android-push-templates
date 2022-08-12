@@ -24,13 +24,16 @@ import com.webengage.sdk.android.utils.htmlspanner.WEHtmlParserInterface
 
 class NotificationConfigurator {
 
-    //created for future use
-    private val OVERRIDE_CTA = true
-
     fun getDefaultNotificationChannelID(
-        context: Context,
+        context: Context, pushData: PushNotificationData
     ): String {
-        return WebEngage.get().webEngageConfig.defaultPushChannelConfiguration.notificationChannelId
+        val notificationManagerCompat = NotificationManagerCompat.from(context)
+        var channelId = WebEngage.get().webEngageConfig.defaultPushChannelConfiguration.notificationChannelId
+        Log.d("PushTemplates", "default channel -> $channelId")
+        if(notificationManagerCompat.getNotificationChannel(pushData.channelId) != null)
+            channelId = pushData.channelId
+
+        return channelId
     }
 
     fun getDefaultNotificationChannel(

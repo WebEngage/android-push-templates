@@ -38,7 +38,8 @@ class NotificationService : Service() {
             val timerData = TimerStyleData(applicationContext, pushDataPayload!!)
             this.context = applicationContext
             this.pushData = timerData
-            this.mBuilder = NotificationCompat.Builder(context!!, "Sales")
+            val channelId =  NotificationConfigurator().getDefaultNotificationChannelID(context!!,pushDataPayload)
+            this.mBuilder = NotificationCompat.Builder(context!!,channelId)
             this.whenTime = (intent.extras!!.getLong(Constants.WHEN_TIME))
             stopForeground(true)
 
@@ -81,7 +82,6 @@ class NotificationService : Service() {
                     }
                     else{
                         Log.d("NotificationService", "timer cancelled: ")
-                        countDownTimer!!.cancel()
                        stopSelf()
                     }
                 }
@@ -98,10 +98,6 @@ class NotificationService : Service() {
         timerData: TimerStyleData,
         mContext: Context
     ): NotificationCompat.Builder {
-        val channel = NotificationConfigurator().getDefaultNotificationChannel(
-            mContext
-        )
-        this.mBuilder = NotificationCompat.Builder(mContext, channel.id)
 
         val timeDiff =
             timerData.timerTime - System.currentTimeMillis() + SystemClock.elapsedRealtime()
@@ -125,6 +121,7 @@ class NotificationService : Service() {
             this.cancel(pushData!!.pushNotification.variationId.hashCode())
         }
         Log.d("PushTemplates", "Service Destroyed")
+        countDownTimer!!.cancel()
         super.onDestroy()
     }
 
@@ -241,7 +238,6 @@ class NotificationService : Service() {
         val channel = NotificationConfigurator().getDefaultNotificationChannel(
             context
         )
-        mBuilder!!.setChannelId(channel.id)
         with(NotificationManagerCompat.from(context)) {
             if (System.currentTimeMillis() < pushData!!.timerTime)
                 notify(

@@ -18,16 +18,13 @@ import java.util.*
 
 class PushIntentListener : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.d("PushTemplates","Action Received")
         if (intent!!.action.equals(Constants.DELETE_ACTION)) {
-            Log.d("PushTemplates","Delete Action Received")
             dismissNotification(context!!, intent)
         }
     }
 
     private fun dismissNotificationWithId(context: Context, id: Int) {
             with(NotificationManagerCompat.from(context)) {
-                Log.d("PushTemplates","Dismissing Notification")
                 this.cancel(id)
             }
         }
@@ -43,7 +40,6 @@ class PushIntentListener : BroadcastReceiver() {
                     context,
                     pushData
                 )
-                Log.d("PushTemplates","Manually Dismissed. Tracking Dismiss Event. ${intent.extras!!.getBoolean(Constants.LOG_DISMISS)}")
                 dismissIntent.send()
             }
             if (pushData.customData.containsKey(Constants.TYPE) && pushData.customData.getString(
@@ -57,7 +53,6 @@ class PushIntentListener : BroadcastReceiver() {
                     Constants.TYPE
                 ).equals(Constants.COUNTDOWN)
             ) {
-                Log.d("PushTemplates","Dismissing Timer")
                 dismissNotificationWithId(context,pushData.variationId.hashCode())
             }
         }
