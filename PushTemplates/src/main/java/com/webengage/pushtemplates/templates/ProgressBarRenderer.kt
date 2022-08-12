@@ -14,7 +14,7 @@ class ProgressBarRenderer {
     private lateinit var context: Context
     private lateinit var mBuilder: NotificationCompat.Builder
     private lateinit var pushData: TimerStyleData
-    private var whenTime : Long = 0
+    private var whenTime: Long = 0
 
     fun onRender(mContext: Context?, pushNotificationData: PushNotificationData?): Boolean {
         this.context = mContext!!
@@ -24,7 +24,7 @@ class ProgressBarRenderer {
         this.whenTime = System.currentTimeMillis()
 
         //If the provided future time is less that the system time, then do not render notification
-        if(pushData.timerTime < System.currentTimeMillis())
+        if (pushData.futureTime < System.currentTimeMillis())
             return false
         attachToService(mContext, pushData)
         return true
@@ -32,14 +32,14 @@ class ProgressBarRenderer {
     }
 
     /**
-       Create a foreground service to periodically update the notification progress bar at set intervals.
+    Create a foreground service to periodically update the notification progress bar at set intervals.
      */
     private fun attachToService(context: Context, pushData: TimerStyleData?) {
         val intent = Intent(context, NotificationService::class.java)
         intent.action = Constants.PROGRESSBAR_ACTION
-        intent.putExtra(Constants.PAYLOAD,pushData!!.pushNotification.pushPayloadJSON.toString())
-        intent.putExtra(Constants.WHEN_TIME,whenTime)
-        startService(intent,context)
+        intent.putExtra(Constants.PAYLOAD, pushData!!.pushNotification.pushPayloadJSON.toString())
+        intent.putExtra(Constants.WHEN_TIME, whenTime)
+        startService(intent, context)
     }
 
 }

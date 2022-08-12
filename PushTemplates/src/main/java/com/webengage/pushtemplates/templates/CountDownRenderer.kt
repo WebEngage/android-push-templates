@@ -38,7 +38,7 @@ class CountDownRenderer {
             )
 
         //If the provided future time is less that the system time, then do not render
-        if (pushData.timerTime < System.currentTimeMillis())
+        if (pushData.futureTime < System.currentTimeMillis())
             return false
         constructNotification(context, pushData)
         show(context)
@@ -52,8 +52,16 @@ class CountDownRenderer {
             pushNotificationData!!,
             whenTime
         )
-        NotificationConfigurator().setDismissIntent(context!!, mBuilder, pushNotificationData)
-        NotificationConfigurator().setClickIntent(context, mBuilder, pushNotificationData)
+        NotificationConfigurator().setDismissIntent(
+            context!!,
+            mBuilder,
+            pushNotificationData.pushNotification
+        )
+        NotificationConfigurator().setClickIntent(
+            context,
+            mBuilder,
+            pushNotificationData.pushNotification
+        )
 
         this.mBuilder.setCustomContentView(
             constructCollapsedTimerPushBase(
@@ -83,18 +91,36 @@ class CountDownRenderer {
         NotificationConfigurator().configureRemoteView(
             context,
             remoteView,
-            timerNotificationData!!,
+            timerNotificationData!!.pushNotification,
             whenTime
         )
         NotificationConfigurator().setNotificationDescription(
             timerNotificationData,
             remoteView
         )
-        NotificationConfigurator().setNotificationTitle(timerNotificationData, remoteView)
-        NotificationConfigurator().setCTAList(context, remoteView, pushData)
-        NotificationConfigurator().setClickIntent(context, remoteView, pushData)
+        NotificationConfigurator().setNotificationTitle(
+            timerNotificationData.pushNotification,
+            remoteView
+        )
+        NotificationConfigurator().setCTAList(
+            context,
+            remoteView,
+            timerNotificationData.pushNotification
+        )
+        NotificationConfigurator().setClickIntent(
+            context,
+            remoteView,
+            timerNotificationData.pushNotification
+        )
+        NotificationConfigurator().setChronometerViewColor(
+            context,
+            remoteView,
+            timerNotificationData.pushNotification,
+            timerNotificationData.timerColor
+        )
+
         val timeDiff =
-            timerNotificationData.timerTime - System.currentTimeMillis() + SystemClock.elapsedRealtime()
+            timerNotificationData.futureTime - System.currentTimeMillis() + SystemClock.elapsedRealtime()
         remoteView.setChronometer(
             R.id.we_notification_timer,
             timeDiff,
@@ -116,18 +142,31 @@ class CountDownRenderer {
         NotificationConfigurator().configureRemoteView(
             context,
             remoteView,
-            timerNotificationData!!,
+            timerNotificationData!!.pushNotification,
             whenTime
         )
         NotificationConfigurator().setNotificationDescription(
             timerNotificationData,
             remoteView
         )
-        NotificationConfigurator().setNotificationTitle(timerNotificationData, remoteView)
-        NotificationConfigurator().setClickIntent(context, remoteView, timerNotificationData)
+        NotificationConfigurator().setNotificationTitle(
+            timerNotificationData.pushNotification,
+            remoteView
+        )
+        NotificationConfigurator().setClickIntent(
+            context,
+            remoteView,
+            timerNotificationData.pushNotification
+        )
+        NotificationConfigurator().setChronometerViewColor(
+            context,
+            remoteView,
+            timerNotificationData.pushNotification,
+            timerNotificationData.timerColor
+        )
 
         val timeDiff =
-            timerNotificationData.timerTime - System.currentTimeMillis() + SystemClock.elapsedRealtime()
+            timerNotificationData.futureTime - System.currentTimeMillis() + SystemClock.elapsedRealtime()
         remoteView.setChronometer(
             R.id.we_notification_timer,
             timeDiff,
@@ -142,7 +181,7 @@ class CountDownRenderer {
      * Show notification if the current system time is less than teh provided future time
      */
     private fun show(context: Context) {
-        mBuilder.setTimeoutAfter(pushData.timerTime - System.currentTimeMillis())
+        mBuilder.setTimeoutAfter(pushData.futureTime - System.currentTimeMillis())
         with(NotificationManagerCompat.from(context)) {
             notify(pushData.pushNotification.variationId.hashCode(), mBuilder.build().apply {
                 this.flags = this.flags or Notification.FLAG_AUTO_CANCEL

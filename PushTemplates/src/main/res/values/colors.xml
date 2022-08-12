@@ -9,4 +9,5 @@
     <color name="we_transparent">#00000000</color>
     <color name="we_progress">#4CAF50</color>
     <color name="we_progress_tint">#808080</color>
+    <color name="we_chronometer_color">@color/we_gray</color>
 </resources>

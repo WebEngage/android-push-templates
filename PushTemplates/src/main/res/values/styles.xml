@@ -47,9 +47,10 @@
     </style>
 
     <style name="NotificationChronometer" parent="NotificationTitle">
+        <item name="android:textColor">@color/we_soft_black</item>
     </style>
     <style name="NotificationChronometerAdaptive" parent="NotificationChronometer">
-        <item name="android:textColor">@color/we_black</item>
+        <item name="android:textColor">@color/we_soft_black</item>
     </style>
     <style name="NotificationLine2Adaptive" parent="NotificationInfo"/>
 

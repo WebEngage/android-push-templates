@@ -5,8 +5,9 @@ object Constants {
     const val TIMER_FORMAT = "format"
 
     //KEYS for Push Template Customizations
-    const val TIMER_DATE = "future_time"
+    const val FUTURE_TIME = "future_time"
     const val TEMPLATE_TYPE = "template_type"
+    const val TIMER_COLOR = "timer_color"
 
     //Types of Custom Push Templates
     const val PROGRESS_BAR = "bar"

@@ -42,7 +42,7 @@
                 android:maxLines="1"
                 android:countDown="true"
                 android:textSize="@dimen/we_chronometer_text_size"
-                style="@style/NotificationTitleAdaptive"
+                style="@style/NotificationChronometerAdaptive"
                 android:id="@+id/we_notification_timer"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

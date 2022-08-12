@@ -45,6 +45,7 @@ class NotificationService : Service() {
             )
             this.mBuilder = NotificationCompat.Builder(context!!, channelId)
             this.whenTime = (intent.extras!!.getLong(Constants.WHEN_TIME))
+
             stopForeground(true)
 
             val notification = getNotification(timerData, context!!)
@@ -73,7 +74,7 @@ class NotificationService : Service() {
         pushData: TimerStyleData,
         timeDiff: Long
     ) {
-        mBuilder.setTimeoutAfter(pushData.timerTime - System.currentTimeMillis())
+        mBuilder.setTimeoutAfter(pushData.futureTime - System.currentTimeMillis())
         val dismissIntent = PendingIntentFactory.constructPushDeletePendingIntent(
             context,
             pushData.pushNotification
@@ -81,11 +82,14 @@ class NotificationService : Service() {
 
         countDownTimer =
             object :
-                CountDownTimer((pushData.timerTime - System.currentTimeMillis()), updateFrequency) {
+                CountDownTimer(
+                    (pushData.futureTime - System.currentTimeMillis()),
+                    updateFrequency
+                ) {
                 override fun onTick(millisUntilFinished: Long) {
-                    if (System.currentTimeMillis() < pushData.timerTime) {
+                    if (System.currentTimeMillis() < pushData.futureTime) {
                         mBuilder.setProgress(
-                            (pushData.timerTime - whenTime).toInt(),
+                            (pushData.futureTime - whenTime).toInt(),
                             (System.currentTimeMillis() - whenTime).toInt(),
                             false
                         )
@@ -115,7 +119,7 @@ class NotificationService : Service() {
     ): NotificationCompat.Builder {
 
         val timeDiff =
-            timerData.timerTime - System.currentTimeMillis() + SystemClock.elapsedRealtime()
+            timerData.futureTime - System.currentTimeMillis() + SystemClock.elapsedRealtime()
 
         constructNotification(mContext, timerData, timeDiff)
         startCounter(mContext, mBuilder!!, timerData, timeDiff)
@@ -148,7 +152,7 @@ class NotificationService : Service() {
         timeDiff: Long
     ) {
         this.mBuilder!!.setProgress(
-            (pushData!!.timerTime - whenTime).toInt(),
+            (pushData!!.futureTime - whenTime).toInt(),
             (System.currentTimeMillis() - whenTime).toInt(),
             false
         )
@@ -191,16 +195,30 @@ class NotificationService : Service() {
         timeDiff: Long
     ): RemoteViews {
         val remoteView = RemoteViews(context.packageName, expandedTimerLayoutId)
-        NotificationConfigurator().configureRemoteView(context, remoteView, pushData!!, whenTime)
+        NotificationConfigurator().configureRemoteView(
+            context,
+            remoteView,
+            timerNotificationData!!.pushNotification,
+            whenTime
+        )
         NotificationConfigurator().setNotificationDescription(
-            timerNotificationData!!,
+            timerNotificationData,
             remoteView
         )
-        NotificationConfigurator().setNotificationTitle(timerNotificationData, remoteView)
+        NotificationConfigurator().setNotificationTitle(
+            timerNotificationData.pushNotification,
+            remoteView
+        )
+        NotificationConfigurator().setChronometerViewColor(
+            context,
+            remoteView,
+            timerNotificationData.pushNotification,
+            timerNotificationData.timerColor
+        )
 
         remoteView.setProgressBar(
             R.id.we_notification_progressBar,
-            (pushData!!.timerTime - whenTime).toInt(),
+            (timerNotificationData.futureTime - whenTime).toInt(),
             (System.currentTimeMillis() - whenTime).toInt(),
             false
         )
@@ -217,7 +235,11 @@ class NotificationService : Service() {
         )
 
         remoteView.setOnClickPendingIntent(R.id.we_notification_content, clickIntent)
-        NotificationConfigurator().setCTAList(context, remoteView, pushData!!)
+        NotificationConfigurator().setCTAList(
+            context,
+            remoteView,
+            timerNotificationData.pushNotification
+        )
         return remoteView
     }
 
@@ -237,16 +259,30 @@ class NotificationService : Service() {
         )
         remoteView.setOnClickPendingIntent(R.id.we_notification_content, clickIntent)
 
-        NotificationConfigurator().configureRemoteView(context, remoteView, pushData!!, whenTime)
+        NotificationConfigurator().configureRemoteView(
+            context,
+            remoteView,
+            timerNotificationData.pushNotification,
+            whenTime
+        )
         NotificationConfigurator().setNotificationDescription(
             timerNotificationData,
             remoteView
         )
-        NotificationConfigurator().setNotificationTitle(timerNotificationData, remoteView)
+        NotificationConfigurator().setNotificationTitle(
+            timerNotificationData.pushNotification,
+            remoteView
+        )
+        NotificationConfigurator().setChronometerViewColor(
+            context,
+            remoteView,
+            timerNotificationData.pushNotification,
+            timerNotificationData.timerColor
+        )
 
         remoteView.setProgressBar(
             R.id.we_notification_progressBar,
-            (pushData!!.timerTime - whenTime).toInt(),
+            (timerNotificationData.futureTime - whenTime).toInt(),
             (System.currentTimeMillis() - whenTime).toInt(),
             false
         )
@@ -266,7 +302,7 @@ class NotificationService : Service() {
      */
     private fun show(context: Context) {
         with(NotificationManagerCompat.from(context)) {
-            if (System.currentTimeMillis() < pushData!!.timerTime)
+            if (System.currentTimeMillis() < pushData!!.futureTime)
                 notify(
                     pushData!!.pushNotification.variationId.hashCode(),
                     mBuilder!!.build().apply {

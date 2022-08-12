@@ -43,14 +43,13 @@
                 android:id="@+id/we_notification_progressBar"></ProgressBar>
 
             <Chronometer
-                android:textColor="@color/we_soft_black"
                 android:gravity="center"
                 android:format="%s"
                 android:minEms="10"
                 android:maxLines="1"
                 android:layout_weight="2"
                 android:countDown="true"
-                style="@style/NotificationTitleAdaptive"
+                style="@style/NotificationChronometerAdaptive"
                 android:id="@+id/we_notification_timer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
