@@ -23,7 +23,7 @@ class ProgressBarRenderer {
             NotificationCompat.Builder(mContext, pushNotificationData.channelId)
         this.whenTime = System.currentTimeMillis()
 
-        //If the provided future time is less that the system time, then do not render
+        //If the provided future time is less that the system time, then do not render notification
         if(pushData.timerTime < System.currentTimeMillis())
             return false
         attachToService(mContext, pushData)

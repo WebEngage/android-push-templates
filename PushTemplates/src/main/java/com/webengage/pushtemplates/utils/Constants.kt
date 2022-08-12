@@ -22,7 +22,6 @@ object Constants {
     const val DISMISS_CTA = "Dismiss"
     const val WHEN_TIME = "whenTime"
     const val LOG_DISMISS = "logDismiss"
-    const val AUTO_DISMISS = "autoDismiss"
     const val CTA_ID = "ctaID"
     const val SECOND = 1000
     const val MINUTE = 60* SECOND
