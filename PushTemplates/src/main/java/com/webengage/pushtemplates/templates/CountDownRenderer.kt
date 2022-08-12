@@ -49,7 +49,7 @@ class CountDownRenderer {
     private fun constructNotification(context: Context?, pushNotificationData: TimerStyleData?) {
         NotificationConfigurator().setNotificationConfiguration(
             mBuilder,
-            pushNotificationData!!,
+            pushNotificationData!!.pushNotification,
             whenTime
         )
         NotificationConfigurator().setDismissIntent(
@@ -95,10 +95,12 @@ class CountDownRenderer {
             whenTime
         )
         NotificationConfigurator().setNotificationDescription(
-            timerNotificationData,
+            context,
+            timerNotificationData.pushNotification,
             remoteView
         )
         NotificationConfigurator().setNotificationTitle(
+            context,
             timerNotificationData.pushNotification,
             remoteView
         )
@@ -146,10 +148,12 @@ class CountDownRenderer {
             whenTime
         )
         NotificationConfigurator().setNotificationDescription(
-            timerNotificationData,
+            context,
+            timerNotificationData.pushNotification,
             remoteView
         )
         NotificationConfigurator().setNotificationTitle(
+            context,
             timerNotificationData.pushNotification,
             remoteView
         )

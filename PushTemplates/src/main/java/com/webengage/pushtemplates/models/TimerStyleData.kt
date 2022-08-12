@@ -16,6 +16,7 @@ class TimerStyleData(context: Context?, pushNotificationData: PushNotificationDa
     /** Count Down Timer format provided in custom data */
     var timerFormat = "%s"
 
+    /** color for the CountDown Timer provided in custom data */
     var timerColor : Int? = null
 
     init {

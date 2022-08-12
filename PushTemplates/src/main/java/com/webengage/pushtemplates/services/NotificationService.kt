@@ -165,7 +165,7 @@ class NotificationService : Service() {
         )
         NotificationConfigurator().setNotificationConfiguration(
             mBuilder!!,
-            pushData!!,
+            pushData!!.pushNotification,
             whenTime
         )
         this.mBuilder!!
@@ -202,10 +202,12 @@ class NotificationService : Service() {
             whenTime
         )
         NotificationConfigurator().setNotificationDescription(
-            timerNotificationData,
+            context,
+            timerNotificationData.pushNotification,
             remoteView
         )
         NotificationConfigurator().setNotificationTitle(
+            context,
             timerNotificationData.pushNotification,
             remoteView
         )
@@ -266,10 +268,12 @@ class NotificationService : Service() {
             whenTime
         )
         NotificationConfigurator().setNotificationDescription(
-            timerNotificationData,
+            context,
+            timerNotificationData.pushNotification,
             remoteView
         )
         NotificationConfigurator().setNotificationTitle(
+            context,
             timerNotificationData.pushNotification,
             remoteView
         )

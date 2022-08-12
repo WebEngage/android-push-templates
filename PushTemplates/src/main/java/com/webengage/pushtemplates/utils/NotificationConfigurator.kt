@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.webengage.pushtemplates.models.TimerStyleData
 import com.webengage.pushtemplates.R
 import com.webengage.pushtemplates.receivers.PushIntentListener
 import com.webengage.sdk.android.PendingIntentFactory
@@ -249,7 +248,7 @@ class NotificationConfigurator {
      */
     fun setCTAList(context: Context, remoteViews: RemoteViews, pushData: PushNotificationData) {
         remoteViews.setViewVisibility(R.id.we_notification_bottom_margin, View.GONE)
-        if (pushData.backgroundColor != Color.parseColor("#00000000"))
+        if (pushData.backgroundColor != context.getColor(R.color.we_transparent))
             setNativeCTAs(context, remoteViews, pushData)
         else
             setAdaptiveCTAs(context, remoteViews, pushData)
@@ -302,7 +301,7 @@ class NotificationConfigurator {
                 time
             )
 
-            if (pushData.backgroundColor != Color.parseColor("#00000000")) {
+            if (pushData.backgroundColor != context.getColor(R.color.we_transparent)) {
                 //No Background Color Set
 
                 remoteView.setViewVisibility(R.id.app_name, View.GONE)
@@ -322,7 +321,11 @@ class NotificationConfigurator {
      * Sets the notification title for the push notification remote view.
      * R.id.we_notification_title should be present in the remote view.
      */
-    fun setNotificationTitle(pushData: PushNotificationData, remoteViews: RemoteViews) {
+    fun setNotificationTitle(
+        context: Context,
+        pushData: PushNotificationData,
+        remoteViews: RemoteViews
+    ) {
         remoteViews.setTextViewText(
             R.id.we_notification_title,
             WEHtmlParserInterface().fromHtml(pushData.title)
@@ -332,7 +335,7 @@ class NotificationConfigurator {
             WEHtmlParserInterface().fromHtml(pushData.title)
         )
 
-        if (pushData.backgroundColor == Color.parseColor("#00000000")) {
+        if (pushData.backgroundColor == context.getColor(R.color.we_transparent)) {
             remoteViews.setViewVisibility(R.id.we_notification_title, View.VISIBLE)
             remoteViews.setViewVisibility(R.id.we_notification_title_native, View.GONE)
         } else {
@@ -346,19 +349,20 @@ class NotificationConfigurator {
      * R.id.we_notification_description should be present in the remote view.
      */
     fun setNotificationDescription(
-        pushData: TimerStyleData,
+        context: Context,
+        pushData: PushNotificationData,
         remoteViews: RemoteViews
     ) {
         remoteViews.setTextViewText(
             R.id.we_notification_description,
-            WEHtmlParserInterface().fromHtml(pushData.pushNotification.contentText)
+            WEHtmlParserInterface().fromHtml(pushData.contentText)
         )
         remoteViews.setTextViewText(
             R.id.we_notification_description_native,
-            WEHtmlParserInterface().fromHtml(pushData.pushNotification.contentText)
+            WEHtmlParserInterface().fromHtml(pushData.contentText)
         )
 
-        if (pushData.pushNotification.backgroundColor == Color.parseColor("#00000000")) {
+        if (pushData.backgroundColor == context.getColor(R.color.we_transparent)) {
             remoteViews.setViewVisibility(R.id.we_notification_description, View.VISIBLE)
             remoteViews.setViewVisibility(R.id.we_notification_description_native, View.GONE)
         } else {
@@ -372,17 +376,17 @@ class NotificationConfigurator {
      */
     fun setNotificationConfiguration(
         mBuilder: NotificationCompat.Builder,
-        pushData: TimerStyleData,
+        pushData: PushNotificationData,
         whenTime: Long
     ) {
         mBuilder.setAutoCancel(true)
-        mBuilder.setOngoing(pushData.pushNotification.isSticky)
-        mBuilder.setSmallIcon(pushData.pushNotification.smallIcon)
-        mBuilder.priority = pushData.pushNotification.priority
-        mBuilder.setContentTitle(WEHtmlParserInterface().fromHtml(pushData.pushNotification.title))
-        mBuilder.setContentText(WEHtmlParserInterface().fromHtml(pushData.pushNotification.contentText))
-        if (!TextUtils.isEmpty(pushData.pushNotification.contentSummary))
-            mBuilder.setSubText(WEHtmlParserInterface().fromHtml(pushData.pushNotification.contentSummary))
+        mBuilder.setOngoing(pushData.isSticky)
+        mBuilder.setSmallIcon(pushData.smallIcon)
+        mBuilder.priority = pushData.priority
+        mBuilder.setContentTitle(WEHtmlParserInterface().fromHtml(pushData.title))
+        mBuilder.setContentText(WEHtmlParserInterface().fromHtml(pushData.contentText))
+        if (!TextUtils.isEmpty(pushData.contentSummary))
+            mBuilder.setSubText(WEHtmlParserInterface().fromHtml(pushData.contentSummary))
         mBuilder.setWhen(whenTime)
     }
 
@@ -434,7 +438,7 @@ class NotificationConfigurator {
         var color = textColor
         if (color == null) {
             color = context.getColor(R.color.we_black)
-            if (pushData.backgroundColor != Color.parseColor("#00000000")) {
+            if (pushData.backgroundColor != context.getColor(R.color.we_transparent)) {
                 //set the static text color
                 color = context.getColor(R.color.we_hard_black)
             }

@@ -1,8 +1,7 @@
 package com.webengage.template
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import com.webengage.sdk.android.WebEngage
 
 class MainActivity : AppCompatActivity() {
