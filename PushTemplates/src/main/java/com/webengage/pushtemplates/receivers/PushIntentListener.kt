@@ -38,7 +38,6 @@ class PushIntentListener : BroadcastReceiver() {
                 ?.let { JSONObject(it) }, context
             )
 
-
             if(intent.extras!!.containsKey(Constants.LOG_DISMISS) && intent.extras!!.getBoolean(Constants.LOG_DISMISS)){
                 val dismissIntent = PendingIntentFactory.constructPushDeletePendingIntent(
                     context,
@@ -47,7 +46,6 @@ class PushIntentListener : BroadcastReceiver() {
                 Log.d("PushTemplates","Manually Dismissed. Tracking Dismiss Event. ${intent.extras!!.getBoolean(Constants.LOG_DISMISS)}")
                 dismissIntent.send()
             }
-
             if (pushData.customData.containsKey(Constants.TYPE) && pushData.customData.getString(
                     Constants.TYPE
                 ).equals(Constants.PROGRESS_BAR)

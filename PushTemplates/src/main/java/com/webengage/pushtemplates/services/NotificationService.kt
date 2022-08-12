@@ -11,27 +11,20 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.webengage.pushtemplates.utils.Constants
 import com.webengage.pushtemplates.utils.NotificationConfigurator
-import com.webengage.pushtemplates.models.TimerStyle
+import com.webengage.pushtemplates.models.TimerStyleData
 import com.webengage.pushtemplates.R
-import com.webengage.pushtemplates.utils.Scheduler
 import com.webengage.sdk.android.PendingIntentFactory
 import com.webengage.sdk.android.actions.render.PushNotificationData
-import kotlinx.coroutines.*
 import org.json.JSONObject
-import java.util.concurrent.atomic.AtomicBoolean
 
 class NotificationService : Service() {
-    private var threadRunner: AtomicBoolean = AtomicBoolean(true)
     private var context: Context? = null
     private var mBuilder: NotificationCompat.Builder? = null
-    private var pushData: TimerStyle? = null
-    private val SECOND = 1000;
-    private val DEFAULT_SECONDS = 2;
+    private var pushData: TimerStyleData? = null
     private var whenTime: Long = 0;
-    private var collapsedLayoutId = -1
-    private var expandedLayoutId = -1
     private var collapsedTimerLayoutId = R.layout.layout_progressbar_collapsed
     private var expandedTimerLayoutId = R.layout.layout_progressbar_collapsed
+    private var countDownTimer: CountDownTimer? = null
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -42,12 +35,11 @@ class NotificationService : Service() {
         if (intent!!.action.equals(Constants.PROGRESSBAR_ACTION)) {
             val pushDataPayload = intent.extras!!.getString(Constants.PAYLOAD)
                 ?.let { PushNotificationData(JSONObject(it), applicationContext) }
-            val timerData = TimerStyle(applicationContext, pushDataPayload!!)
+            val timerData = TimerStyleData(applicationContext, pushDataPayload!!)
             this.context = applicationContext
             this.pushData = timerData
             this.mBuilder = NotificationCompat.Builder(context!!, "Sales")
-            this.whenTime = (intent.extras!!.getLong("when"))
-            Scheduler().cancelAlarm(context!!,NotificationConfigurator().getNotificationDismissPendingIntent(context!!,pushDataPayload,false))
+            this.whenTime = (intent.extras!!.getLong(Constants.WHEN_TIME))
             stopForeground(true)
 
             val notification = getNotification(timerData, context!!)
@@ -66,50 +58,48 @@ class NotificationService : Service() {
 
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun startCounter(
         context: Context,
         mBuilder: NotificationCompat.Builder,
-        pushData: TimerStyle,
+        pushData: TimerStyleData,
         timeDiff: Long
     ) {
+        mBuilder.setTimeoutAfter(pushData.timerTime - System.currentTimeMillis())
 
-        GlobalScope.launch(Dispatchers.Main) {
-
-            for (i in (pushData.timerTime - System.currentTimeMillis()) downTo 0 step 2000) {
-                if(System.currentTimeMillis() <= pushData.timerTime && threadRunner.get()) {
-                    Log.d("PushTemplates","Updating")
-                    mBuilder.setProgress(
-                        (pushData.timerTime - whenTime).toInt(),
-                        (System.currentTimeMillis() - whenTime).toInt(),
-                        false
-                    )
-                    constructNotification(context, pushData, timeDiff)
-                    show(context)
-                    delay(2000)
+        countDownTimer =
+            object : CountDownTimer((pushData.timerTime - System.currentTimeMillis()), 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    if(System.currentTimeMillis() < pushData.timerTime) {
+                        Log.d("PushTemplate", "updating: ")
+                        mBuilder.setProgress(
+                            (pushData.timerTime - whenTime).toInt(),
+                            (System.currentTimeMillis() - whenTime).toInt(),
+                            false
+                        )
+                        constructNotification(context, pushData, timeDiff)
+                        show(context)
+                    }
+                    else{
+                        Log.d("NotificationService", "timer cancelled: ")
+                        countDownTimer!!.cancel()
+                       stopSelf()
+                    }
                 }
+                override fun onFinish() {
+                    Log.d("NotificationService", "timer finished: ")
+                    stopSelf()
+                }
+
             }
-        }
-
-        val pendingIntent =  NotificationConfigurator().getNotificationDismissPendingIntent(context,pushData.pushNotification, false)
-        Scheduler().scheduleAlarm(context,pushData.timerTime,pendingIntent)
-
-//        GlobalScope.launch(Dispatchers.Main) {
-//            delay(pushData.timerTime - System.currentTimeMillis())
-//            Log.d("PushTemplates","Stopping service coroutine")
-//            stopSelf()
-//        }
+        countDownTimer?.start()
     }
 
     private fun getNotification(
-        timerData: TimerStyle,
+        timerData: TimerStyleData,
         mContext: Context
     ): NotificationCompat.Builder {
         val channel = NotificationConfigurator().getDefaultNotificationChannel(
-            mContext,
-            "Sales",
-            "Sales",
-            "Notifications for upcoming Sales"
+            mContext
         )
         this.mBuilder = NotificationCompat.Builder(mContext, channel.id)
 
@@ -128,9 +118,9 @@ class NotificationService : Service() {
     }
 
     override fun onDestroy() {
-        threadRunner.set(false)
+        val dismissIntent = PendingIntentFactory.constructPushDeletePendingIntent(context,pushData!!.pushNotification)
+        dismissIntent.send()
         stopForeground(true)
-        Scheduler().cancelAlarm(context!!,NotificationConfigurator().getNotificationDismissPendingIntent(context!!,pushData!!.pushNotification,false))
         with(NotificationManagerCompat.from(context!!)) {
             this.cancel(pushData!!.pushNotification.variationId.hashCode())
         }
@@ -141,7 +131,7 @@ class NotificationService : Service() {
 
     fun constructNotification(
         context: Context?,
-        pushNotificationData: TimerStyle?,
+        pushNotificationData: TimerStyleData?,
         timeDiff: Long
     ) {
         this.mBuilder!!.setProgress(
@@ -174,7 +164,7 @@ class NotificationService : Service() {
 
     private fun constructExpandedTimerPushBase(
         context: Context,
-        timerNotificationData: TimerStyle?,
+        timerNotificationData: TimerStyleData?,
         timeDiff: Long
     ): RemoteViews {
         val remoteView = RemoteViews(context.packageName, expandedTimerLayoutId)
@@ -211,7 +201,7 @@ class NotificationService : Service() {
 
     private fun constructCollapsedTimerPushBase(
         context: Context,
-        timerNotificationData: TimerStyle?,
+        timerNotificationData: TimerStyleData?,
         timeDiff: Long
     ): RemoteViews {
         val remoteView = RemoteViews(context.packageName, collapsedTimerLayoutId)
@@ -249,16 +239,11 @@ class NotificationService : Service() {
 
     private fun show(context: Context) {
         val channel = NotificationConfigurator().getDefaultNotificationChannel(
-            context,
-            "Sales",
-            "Sales",
-            "Notifications for upcoming Sales"
+            context
         )
-
-        mBuilder!!.setChannelId(channel.id.toString())
+        mBuilder!!.setChannelId(channel.id)
         with(NotificationManagerCompat.from(context)) {
-            // notificationId is a unique int for each notification that you must define
-            if (System.currentTimeMillis() < pushData!!.timerTime && threadRunner.get())
+            if (System.currentTimeMillis() < pushData!!.timerTime)
                 notify(
                     pushData!!.pushNotification.variationId.hashCode(),
                     mBuilder!!.build().apply {

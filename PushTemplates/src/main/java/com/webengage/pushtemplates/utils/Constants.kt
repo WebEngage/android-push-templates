@@ -2,33 +2,33 @@ package com.webengage.pushtemplates.utils
 
 object Constants {
     //Old Constants to be used for rerendered notifications
-    val TIMER_DESCRIPTION = "timer_message"
-    val TIMER_TITLE = "timer_title"
-    val TIMER_SUMMARY = "timer_summary"
-    val TIMER_RERENDER_ACTION = "TIMER_RERENDER"
-    val TIMER_TYPE = "timer_type"
-    val WHEN = "when"
-    val TIMER_FORMAT = "format"
+    const val TIMER_DESCRIPTION = "timer_message"
+    const val TIMER_TITLE = "timer_title"
+    const val TIMER_SUMMARY = "timer_summary"
+    const val TIMER_RERENDER_ACTION = "TIMER_RERENDER"
+    const val TIMER_TYPE = "timer_type"
+    const val WHEN = "when"
+    const val TIMER_FORMAT = "format"
 
     //KEYS for Push Template Customizations
-    val TIMER_DATE = "timer_date"
-    val TYPE = "type"
+    const val TIMER_DATE = "future_time"
+    const val TYPE = "template_type"
 
     //Types of Custom Push Templates
-    val PROGRESS_BAR = "bar"
-    val COUNTDOWN = "timer"
+    const val PROGRESS_BAR = "bar"
+    const val COUNTDOWN = "timer"
 
     //Intent Actions
-    val DELETE_ACTION = "com.webengage.push.delete"
-    val PROGRESSBAR_ACTION = "com.webengage.push.PROGRESS_BAR"
+    const val DELETE_ACTION = "com.webengage.push.delete"
+    const val PROGRESSBAR_ACTION = "com.webengage.push.PROGRESS_BAR"
 
     //Internal Constants
-    val PAYLOAD = "payload"
-    val DISMISS_CTA = "Dismiss"
-    val WHEN_TIME = "whenTime"
-    val LOG_DISMISS = "logDismiss"
+    const val PAYLOAD = "payload"
+    const val DISMISS_CTA = "Dismiss"
+    const val WHEN_TIME = "whenTime"
+    const val LOG_DISMISS = "logDismiss"
 
-    val SECOND = 1000
-    val MINUTE = 60* SECOND
-    val HOUR = 60* MINUTE
+    const val SECOND = 1000
+    const val MINUTE = 60* SECOND
+    const val HOUR = 60* MINUTE
 }

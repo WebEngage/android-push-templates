@@ -7,7 +7,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.webengage.pushtemplates.utils.Constants
 import com.webengage.pushtemplates.services.NotificationService
-import com.webengage.pushtemplates.models.TimerStyle
+import com.webengage.pushtemplates.models.TimerStyleData
 import com.webengage.sdk.android.WebEngage.startService
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import com.webengage.sdk.android.callbacks.CustomPushRender
@@ -17,19 +17,13 @@ class ProgressBarRenderer : CustomPushRender, CustomPushRerender {
 
     private lateinit var context: Context
     private lateinit var mBuilder: NotificationCompat.Builder
-    private lateinit var pushData: TimerStyle
+    private lateinit var pushData: TimerStyleData
     private var whenTime : Long = 0
-    init {
-        Log.d("Timer", "init called")
-    }
 
     override fun onRender(mContext: Context?, pushNotificationData: PushNotificationData?): Boolean {
-        Log.d(
-            "Timer",
-            "Render Called for ${pushNotificationData!!.customData.getString("notification")}"
-        )
+
         this.context = mContext!!
-        this.pushData = TimerStyle(mContext, pushNotificationData)
+        this.pushData = TimerStyleData(mContext, pushNotificationData!!)
         this.mBuilder =
             NotificationCompat.Builder(mContext, pushNotificationData.channelId)
         this.whenTime = System.currentTimeMillis()
@@ -54,11 +48,11 @@ class ProgressBarRenderer : CustomPushRender, CustomPushRerender {
     }
 
 
-    private fun attachToService(context: Context, pushData: TimerStyle?) {
+    private fun attachToService(context: Context, pushData: TimerStyleData?) {
         var intent = Intent(context, NotificationService::class.java)
         intent.action = Constants.PROGRESSBAR_ACTION
         intent.putExtra(Constants.PAYLOAD,pushData!!.pushNotification.pushPayloadJSON.toString())
-        intent.putExtra("when",whenTime)
+        intent.putExtra(Constants.WHEN_TIME,whenTime)
         startService(intent,context)
     }
 

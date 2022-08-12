@@ -14,7 +14,7 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.webengage.pushtemplates.models.TimerStyle
+import com.webengage.pushtemplates.models.TimerStyleData
 import com.webengage.pushtemplates.R
 import com.webengage.pushtemplates.receivers.PushIntentListener
 import com.webengage.sdk.android.PendingIntentFactory
@@ -53,31 +53,7 @@ class NotificationConfigurator {
         return channel
     }
 
-
-    fun getDefaultNotificationChannel(
-        context: Context,
-        name: String?,
-        group: String?,
-        description: String?
-    ): NotificationChannelCompat {
-        val channel =
-            NotificationChannelCompat.Builder("Sales", NotificationCompat.PRIORITY_DEFAULT)
-                .setShowBadge(true)
-                .setDescription(description ?: "Sales Notifications")
-                .setName(name ?: "Sales")
-                .setLightsEnabled(true)
-                .setSound(
-                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
-                    null
-                )
-                .setImportance(NotificationManagerCompat.IMPORTANCE_DEFAULT)
-                .setVibrationEnabled(true)
-                .build()
-        NotificationManagerCompat.from(context).createNotificationChannel(channel)
-        return channel
-    }
-
-    fun setClickIntent(context: Context, remoteView: RemoteViews, pushData: TimerStyle) {
+    fun setClickIntent(context: Context, remoteView: RemoteViews, pushData: TimerStyleData) {
         val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
             context,
             pushData.pushNotification,
@@ -90,7 +66,7 @@ class NotificationConfigurator {
     fun setDismissIntent(
         context: Context,
         mBuilder: NotificationCompat.Builder,
-        pushData: TimerStyle
+        pushData: TimerStyleData
     ) {
         val deleteIntent = PendingIntentFactory.constructPushDeletePendingIntent(
             context,
@@ -102,7 +78,7 @@ class NotificationConfigurator {
     fun setClickIntent(
         context: Context,
         mBuilder: NotificationCompat.Builder,
-        pushData: TimerStyle
+        pushData: TimerStyleData
     ) {
         val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
             context,
@@ -113,7 +89,7 @@ class NotificationConfigurator {
         mBuilder.setContentIntent(clickIntent)
     }
 
-    fun setAdaptiveCTAs(context: Context, remoteViews: RemoteViews, pushData: TimerStyle) {
+    fun setAdaptiveCTAs(context: Context, remoteViews: RemoteViews, pushData: TimerStyleData) {
         val pendingIntent = getNotificationDismissPendingIntent(context, pushData.pushNotification, true)
         remoteViews.setViewVisibility(R.id.actions_container, View.VISIBLE)
 
@@ -171,7 +147,7 @@ class NotificationConfigurator {
     /**
      * Dismiss button will be set explicitly at the end position.
      * **/
-    fun setNativeCTAs(context: Context, remoteViews: RemoteViews, pushData: TimerStyle) {
+    fun setNativeCTAs(context: Context, remoteViews: RemoteViews, pushData: TimerStyleData) {
         var dismissSet = false
         val pendingIntent = getNotificationDismissPendingIntent(context, pushData.pushNotification, true)
 
@@ -194,7 +170,7 @@ class NotificationConfigurator {
                 remoteViews.setOnClickPendingIntent(R.id.action1_native, clickIntent)
             } else {
                 remoteViews.setViewVisibility(R.id.action1_native, View.VISIBLE)
-                remoteViews.setTextViewText(R.id.action1_native, "Dismiss")
+                remoteViews.setTextViewText(R.id.action1_native, Constants.DISMISS_CTA)
                 dismissSet = true
                 remoteViews.setOnClickPendingIntent(R.id.action1_native, pendingIntent)
             }
@@ -205,7 +181,7 @@ class NotificationConfigurator {
                     R.id.action2_native,
                     pushData.pushNotification.callToActions[2].text
                 )
-                remoteViews.setTextViewText(R.id.action3_native, "Dismiss")
+                remoteViews.setTextViewText(R.id.action3_native, Constants.DISMISS_CTA)
 
                 val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
                     context,
@@ -221,7 +197,7 @@ class NotificationConfigurator {
                 if (!dismissSet) {
 
                     remoteViews.setViewVisibility(R.id.action2_native, View.VISIBLE)
-                    remoteViews.setTextViewText(R.id.action2_native, "Dismiss")
+                    remoteViews.setTextViewText(R.id.action2_native, Constants.DISMISS_CTA)
 
                     dismissSet = true
                     remoteViews.setOnClickPendingIntent(R.id.action2_native, pendingIntent)
@@ -229,13 +205,13 @@ class NotificationConfigurator {
             }
         } else {
             remoteViews.setViewVisibility(R.id.action1_native, View.VISIBLE)
-            remoteViews.setTextViewText(R.id.action1_native, "Dismiss")
+            remoteViews.setTextViewText(R.id.action1_native, Constants.DISMISS_CTA)
             remoteViews.setOnClickPendingIntent(R.id.action1_native, pendingIntent)
         }
     }
 
 
-    fun setCTAList(context: Context, remoteViews: RemoteViews, pushData: TimerStyle) {
+    fun setCTAList(context: Context, remoteViews: RemoteViews, pushData: TimerStyleData) {
         remoteViews.setViewVisibility(R.id.we_notification_bottom_margin, View.GONE)
         if (pushData.pushNotification.backgroundColor != Color.parseColor("#00000000"))
             setNativeCTAs(context, remoteViews, pushData)
@@ -246,7 +222,7 @@ class NotificationConfigurator {
     fun configureRemoteView(
         context: Context,
         remoteView: RemoteViews,
-        pushData: TimerStyle,
+        pushData: TimerStyleData,
         whenTime: Long
     ) {
         remoteView.setInt(
@@ -303,7 +279,7 @@ class NotificationConfigurator {
         }
     }
 
-    fun setNotificationTitle(context: Context, pushData: TimerStyle, remoteViews: RemoteViews) {
+    fun setNotificationTitle(context: Context, pushData: TimerStyleData, remoteViews: RemoteViews) {
         remoteViews.setTextViewText(
             R.id.we_notification_title,
             WEHtmlParserInterface().fromHtml(pushData.pushNotification.title)
@@ -324,7 +300,7 @@ class NotificationConfigurator {
 
     fun setNotificationDescription(
         context: Context,
-        pushData: TimerStyle,
+        pushData: TimerStyleData,
         remoteViews: RemoteViews
     ) {
         remoteViews.setTextViewText(
@@ -348,21 +324,21 @@ class NotificationConfigurator {
     fun setNotificationConfiguration(
         context: Context,
         mBuilder: NotificationCompat.Builder,
-        pushData: TimerStyle,
+        pushData: TimerStyleData,
         whenTime: Long
     ) {
         mBuilder.setAutoCancel(true)
         mBuilder.setOngoing(pushData.pushNotification.isSticky)
         mBuilder.setSmallIcon(pushData.pushNotification.smallIcon)
         mBuilder.priority = NotificationCompat.PRIORITY_DEFAULT
-        mBuilder.setContentTitle("WEHtmlParserInterface().fromHtml(pushData.pushNotification.title)")
-        mBuilder.setContentText("WEHtmlParserInterface().fromHtml(pushData.pushNotification.contentText)")
+        mBuilder.setContentTitle(WEHtmlParserInterface().fromHtml(pushData.pushNotification.title))
+        mBuilder.setContentText(WEHtmlParserInterface().fromHtml(pushData.pushNotification.contentText))
         if (!TextUtils.isEmpty(pushData.pushNotification.contentSummary))
-            mBuilder.setSubText("WEHtmlParserInterface().fromHtml(pushData.pushNotification.contentSummary)")
+            mBuilder.setSubText(WEHtmlParserInterface().fromHtml(pushData.pushNotification.contentSummary))
         mBuilder.setWhen(whenTime)
     }
 
-    fun getNotificationDismissPendingIntent(context: Context, pushData: PushNotificationData, logDismiss : Boolean): PendingIntent {
+     fun getNotificationDismissPendingIntent(context: Context, pushData: PushNotificationData, logDismiss : Boolean): PendingIntent {
         val intent = Intent(context, PushIntentListener::class.java)
         intent.action = Constants.DELETE_ACTION
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -370,7 +346,6 @@ class NotificationConfigurator {
         }
         intent.addCategory(context.packageName)
         intent.putExtra(Constants.PAYLOAD, pushData.pushPayloadJSON.toString())
-        Log.d("PushTemplates","Log Dismiss $logDismiss")
         intent.putExtra(Constants.LOG_DISMISS,logDismiss)
         val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PendingIntent.getBroadcast(
@@ -387,7 +362,6 @@ class NotificationConfigurator {
                 PendingIntent.FLAG_UPDATE_CURRENT
             )
         }
-
 
         return pendingIntent
     }

@@ -7,10 +7,9 @@ import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.webengage.pushtemplates.models.TimerStyle
+import com.webengage.pushtemplates.models.TimerStyleData
 import com.webengage.pushtemplates.R
 import com.webengage.pushtemplates.utils.NotificationConfigurator
-import com.webengage.pushtemplates.utils.Scheduler
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import com.webengage.sdk.android.callbacks.CustomPushRender
 import com.webengage.sdk.android.callbacks.CustomPushRerender
@@ -19,11 +18,10 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
 
     private lateinit var context: Context
     private lateinit var mBuilder: NotificationCompat.Builder
-    private lateinit var pushData: TimerStyle
+    private lateinit var pushData: TimerStyleData
     private var collapsedTimerLayoutId = R.layout.layout_timer_collapsed
     private var expandedTimerLayoutId = R.layout.layout_timer_collapsed
     private var whenTime: Long = 0
-
 
     override fun onRender(
         mContext: Context?,
@@ -31,7 +29,7 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
     ): Boolean {
 
         this.context = mContext!!
-        this.pushData = TimerStyle(context, pushNotificationData!!)
+        this.pushData = TimerStyleData(context, pushNotificationData!!)
         this.whenTime = System.currentTimeMillis()
         if (pushData.timerTime < System.currentTimeMillis())
             return false
@@ -54,7 +52,8 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
         show(context)
     }
 
-    private fun constructNotification(context: Context?, pushNotificationData: TimerStyle?) {
+
+    private fun constructNotification(context: Context?, pushNotificationData: TimerStyleData?) {
         this.mBuilder =
             NotificationCompat.Builder(context!!, "Sales")
         NotificationConfigurator().setNotificationConfiguration(
@@ -82,7 +81,7 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
 
     private fun constructExpandedTimerPushBase(
         context: Context,
-        timerNotificationData: TimerStyle?
+        timerNotificationData: TimerStyleData?
     ): RemoteViews {
 
         val remoteView = RemoteViews(context.packageName, expandedTimerLayoutId)
@@ -101,7 +100,6 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
         NotificationConfigurator().setNotificationTitle(context, timerNotificationData, remoteView)
         NotificationConfigurator().setCTAList(context, remoteView, pushData)
         NotificationConfigurator().setClickIntent(context, remoteView, pushData)
-
         val timeDiff =
             timerNotificationData.timerTime - System.currentTimeMillis() + SystemClock.elapsedRealtime()
         remoteView.setChronometer(
@@ -115,7 +113,7 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
 
     private fun constructCollapsedTimerPushBase(
         context: Context,
-        timerNotificationData: TimerStyle?
+        timerNotificationData: TimerStyleData?
     ): RemoteViews {
         val remoteView = RemoteViews(context.packageName, collapsedTimerLayoutId)
 
@@ -149,18 +147,7 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
         val channel = NotificationConfigurator().getDefaultNotificationChannel(
             context
         )
-
-        val pendingIntent = NotificationConfigurator().getNotificationDismissPendingIntent(
-            context,
-            pushData.pushNotification,
-            false
-        )
-
-        Scheduler().scheduleAlarm(
-            context,
-            pushData.timerTime,
-            pendingIntent
-        )
+        mBuilder.setTimeoutAfter(pushData.timerTime - System.currentTimeMillis())
         mBuilder.setChannelId(channel.id)
         Log.d(
             "PushTemplates",
@@ -173,4 +160,5 @@ class CountDownRenderer : CustomPushRender, CustomPushRerender {
             })
         }
     }
+
 }
