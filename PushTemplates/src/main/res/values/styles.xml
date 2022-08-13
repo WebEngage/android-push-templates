@@ -53,5 +53,9 @@
         <item name="android:textColor">@color/we_soft_black</item>
     </style>
     <style name="NotificationLine2Adaptive" parent="NotificationInfo"/>
-
+    <style name="ProgressBar">
+        <item name="android:progressTint">@color/we_progress</item>
+        <item name="android:progressBackgroundTint">@color/we_progress_tint</item>
+        <item name="android:backgroundTintMode">add</item>
+    </style>
 </resources>

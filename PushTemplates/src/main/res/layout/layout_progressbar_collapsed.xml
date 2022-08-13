@@ -29,9 +29,7 @@
                 android:weightSum="5">
 
             <ProgressBar
-                android:progressTint="@color/we_progress"
-                android:progressBackgroundTint="@color/we_progress_tint"
-                android:progressBackgroundTintMode="add"
+                android:theme="@style/ProgressBar"
                 android:progress="50"
                 android:max="100"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
