@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.text.TextUtils
 import android.text.format.DateFormat
+import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
@@ -15,6 +16,7 @@ import com.webengage.pushtemplates.receivers.PushIntentListener
 import com.webengage.sdk.android.PendingIntentFactory
 import com.webengage.sdk.android.WebEngage
 import com.webengage.sdk.android.actions.render.PushNotificationData
+import com.webengage.sdk.android.utils.WebEngageConstant
 import com.webengage.sdk.android.utils.htmlspanner.WEHtmlParserInterface
 
 class NotificationConfigurator {
@@ -47,7 +49,7 @@ class NotificationConfigurator {
             pushData.primeCallToAction,
             true
         )
-        remoteView.setOnClickPendingIntent(R.id.we_notification_content, clickIntent)
+        remoteView.setOnClickPendingIntent(R.id.we_notification_container, clickIntent)
     }
 
     /**
@@ -442,15 +444,28 @@ class NotificationConfigurator {
         pushData: PushNotificationData,
         textColor: Int?,
     ) {
-        var color = textColor
-        if (color == null) {
-            color = context.getColor(R.color.we_black)
-            if (pushData.backgroundColor != context.getColor(R.color.we_transparent)) {
-                //set the static text color
-                color = context.getColor(R.color.we_hard_black)
-            }
+        if (textColor != null) {
+            remoteViews.setInt(R.id.we_notification_timer, "setTextColor", textColor)
+        } else if (pushData.backgroundColor != context.getColor(R.color.we_transparent)) {
+            val color = context.getColor(R.color.we_hard_black)
+            remoteViews.setInt(R.id.we_notification_timer, "setTextColor", color)
         }
-        remoteViews.setInt(R.id.we_notification_timer, "setTextColor", color)
     }
 
+
+    fun setNotificationBanner(
+        remoteViews: RemoteViews,
+        pushData: PushNotificationData
+    ) {
+        Log.e("PushTemplate", "Bitmap returned null")
+        if (pushData.style == WebEngageConstant.STYLE.BIG_PICTURE && !TextUtils.isEmpty(pushData.bigPictureStyleData.bigPictureUrl)) {
+            val bitmap = NetworkUtils().getBitmapFromURL(pushData.bigPictureStyleData.bigPictureUrl)
+            if (bitmap != null) {
+                remoteViews.setViewVisibility(R.id.we_notification_image, View.VISIBLE)
+                remoteViews.setImageViewBitmap(R.id.we_notification_image, bitmap)
+            } else {
+                Log.e("PushTemplate", "Bitmap returned null")
+            }
+        }
+    }
 }

@@ -36,7 +36,7 @@ class NotificationService : Service() {
         if (intent!!.action.equals(Constants.PROGRESS_BAR_ACTION)) {
             val pushNotificationData = intent.extras!!.getString(Constants.PAYLOAD)
                 ?.let { PushNotificationData(JSONObject(it), applicationContext) }
-            val timerData = TimerStyleData(applicationContext, pushNotificationData!!)
+            val timerData = TimerStyleData(pushNotificationData!!)
             this.context = applicationContext
             this.pushData = timerData
             val channelId = NotificationConfigurator().getDefaultNotificationChannelID(
@@ -238,7 +238,7 @@ class NotificationService : Service() {
             timerNotificationData.pushNotification.primeCallToAction.id
         )
 
-        remoteView.setOnClickPendingIntent(R.id.we_notification_content, clickIntent)
+        remoteView.setOnClickPendingIntent(R.id.we_notification_container, clickIntent)
         NotificationConfigurator().setCTAList(
             context,
             remoteView,
@@ -261,7 +261,7 @@ class NotificationService : Service() {
             timerNotificationData!!.pushNotification,
             timerNotificationData.pushNotification.primeCallToAction.id
         )
-        remoteView.setOnClickPendingIntent(R.id.we_notification_content, clickIntent)
+        remoteView.setOnClickPendingIntent(R.id.we_notification_container, clickIntent)
 
         NotificationConfigurator().configureRemoteView(
             context,

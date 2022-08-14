@@ -1,11 +1,10 @@
 package com.webengage.pushtemplates.models
 
-import android.content.Context
 import android.graphics.Color
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import com.webengage.pushtemplates.utils.Constants
 
-class TimerStyleData(context: Context?, pushNotificationData: PushNotificationData) {
+class TimerStyleData(pushNotificationData: PushNotificationData) {
 
     /** Future time provided in custom data */
     var futureTime: Long = System.currentTimeMillis() + 1 * Constants.MINUTE
