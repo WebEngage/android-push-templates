@@ -5,9 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import java.io.*
 
-
 class BitmapCache(context: Context) {
-    var cacheDir: File = context.cacheDir
+    private var cacheDir: File = context.cacheDir
 
     fun writeToCache(
         url: String, bitmap: Bitmap

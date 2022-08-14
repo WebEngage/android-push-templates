@@ -1,13 +1,12 @@
 package com.webengage.pushtemplates.utils
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import java.io.ByteArrayOutputStream
 
 class ImageUtils {
 
-    private fun getSampledBitmap(context: Context, bitmap: Bitmap, maxSize: Int): Bitmap {
+    private fun getSampledBitmap(bitmap: Bitmap, maxSize: Int): Bitmap {
         val bitmapStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, bitmapStream)
         val imageByteArray = bitmapStream.toByteArray()
@@ -27,7 +26,7 @@ class ImageUtils {
         return BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.size, options)
     }
 
-    fun getSampleSize(
+    private fun getSampleSize(
         maxSize: Int,
         currentHeightInPixels: Int,
         currentWidthInPixels: Int
@@ -43,7 +42,6 @@ class ImageUtils {
     }
 
     fun getSampledBitmapList(
-        context: Context,
         bitmapList: ArrayList<Bitmap>,
         availableSize: Int
     ): ArrayList<Bitmap> {
@@ -51,7 +49,6 @@ class ImageUtils {
         for (iterator in bitmapList) {
             sampledBitmapList.add(
                 getSampledBitmap(
-                    context,
                     iterator,
                     availableSize / bitmapList.size
                 )
