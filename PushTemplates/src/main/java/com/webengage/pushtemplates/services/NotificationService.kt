@@ -22,8 +22,8 @@ class NotificationService : Service() {
     private var mBuilder: NotificationCompat.Builder? = null
     private var pushData: TimerStyleData? = null
     private var whenTime: Long = 0
-    private var collapsedTimerLayoutId = R.layout.layout_progressbar_collapsed
-    private var expandedTimerLayoutId = R.layout.layout_progressbar_collapsed
+    private var collapsedTimerLayoutId = R.layout.layout_progressbar_template
+    private var expandedTimerLayoutId = R.layout.layout_progressbar_template
     private var countDownTimer: CountDownTimer? = null
     private val updateFrequency: Long = 1000
 

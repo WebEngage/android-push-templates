@@ -16,8 +16,8 @@ class CountDownRenderer {
     private lateinit var context: Context
     private lateinit var mBuilder: NotificationCompat.Builder
     private lateinit var pushData: TimerStyleData
-    private var collapsedTimerLayoutId = R.layout.layout_timer_collapsed
-    private var expandedTimerLayoutId = R.layout.layout_timer_collapsed
+    private var collapsedTimerLayoutId = R.layout.layout_timer_template
+    private var expandedTimerLayoutId = R.layout.layout_timer_template
     private var whenTime: Long = 0
 
     fun onRender(
