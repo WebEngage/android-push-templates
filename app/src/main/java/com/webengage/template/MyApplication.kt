@@ -50,6 +50,7 @@ class MyApplication : Application() {
                 .setPushLargeIcon(R.mipmap.ic_launcher)
                 .setSessionDestroyTime(40)
                 .setDefaultPushChannelConfiguration(pushChannelConfiguration)
+                .setPushAccentColor(Color.GREEN)
 
         registerActivityLifecycleCallbacks(
             WebEngageActivityLifeCycleCallbacks(

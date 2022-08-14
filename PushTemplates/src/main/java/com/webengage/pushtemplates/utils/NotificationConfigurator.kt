@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.os.Build
 import android.text.TextUtils
 import android.text.format.DateFormat
+import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
@@ -131,6 +132,8 @@ class NotificationConfigurator {
         remoteViews: RemoteViews,
         pushData: PushNotificationData
     ) {
+        Log.d("Push","Setting adaptive CTA")
+
         val dismissIntent =
             getNotificationDismissPendingIntent(context, pushData, true)
         remoteViews.setViewVisibility(R.id.actions_container, View.VISIBLE)
@@ -191,6 +194,7 @@ class NotificationConfigurator {
         remoteViews: RemoteViews,
         pushData: PushNotificationData
     ) {
+        Log.d("Push","Setting native CTA")
         val dismissIntent =
             getNotificationDismissPendingIntent(context, pushData, true)
 
@@ -252,6 +256,7 @@ class NotificationConfigurator {
             setNativeCTAs(context, remoteViews, pushData)
         else
             setAdaptiveCTAs(context, remoteViews, pushData)
+
     }
 
     /**
@@ -270,10 +275,18 @@ class NotificationConfigurator {
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && context.applicationInfo.targetSdkVersion >= Build.VERSION_CODES.S) {
             remoteView.setViewVisibility(R.id.push_base_container, View.GONE)
-            remoteView.setViewPadding(R.id.we_notification, 0, 0, 0, 0)
+            var inset = 0
+            if (pushData.backgroundColor != context.getColor(R.color.we_transparent)) {
+                inset =
+                    context.resources.getDimensionPixelSize(R.dimen.we_push_content_margin_colorbg)
+            }
+            remoteView.setViewPadding(R.id.we_notification, inset, 0, 0, 0)
         } else {
             remoteView.setViewVisibility(R.id.push_base_container, View.VISIBLE)
             remoteView.setImageViewResource(R.id.small_icon, pushData.smallIcon)
+            if (pushData.accentColor != -1)
+                remoteView.setInt(R.id.small_icon, "setColorFilter", pushData.accentColor)
+
             remoteView.setTextViewText(R.id.app_name, pushData.appName)
             if (!TextUtils.isEmpty(pushData.contentSummary))
                 remoteView.setTextViewText(

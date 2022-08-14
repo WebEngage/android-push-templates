@@ -17,9 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_marginTop="@dimen/we_push_intercontent_margin"
             android:paddingLeft="@dimen/we_push_content_margin"
-            android:paddingRight="@dimen/we_push_content_margin"
-            android:paddingTop="@dimen/we_push_content_margin">
+            android:paddingRight="@dimen/we_push_content_margin">
 
             <include layout="@layout/title"/>
             <LinearLayout
@@ -60,7 +60,6 @@
             android:id="@+id/we_notification_bottom_margin"
             android:layout_width="match_parent"
             android:layout_height="@dimen/we_push_content_margin"/>
-        <include layout="@layout/push_action_list"
-            android:visibility="gone"/>
+        <include layout="@layout/push_actions"/>
         </LinearLayout>
 </FrameLayout>
