@@ -122,6 +122,7 @@ class CountDownRenderer {
         )
 
         NotificationConfigurator().setNotificationBanner(
+            context,
             remoteView,
             timerNotificationData.pushNotification
         )

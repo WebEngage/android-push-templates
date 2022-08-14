@@ -220,12 +220,19 @@ class NotificationService : Service() {
             timerNotificationData.timerColor
         )
 
+        NotificationConfigurator().setNotificationBanner(
+            context,
+            remoteView,
+            timerNotificationData.pushNotification
+        )
+
         remoteView.setProgressBar(
             R.id.we_notification_progressBar,
             (timerNotificationData.futureTime - whenTime).toInt(),
             (System.currentTimeMillis() - whenTime).toInt(),
             false
         )
+
         remoteView.setChronometer(
             R.id.we_notification_timer,
             timeDiff,

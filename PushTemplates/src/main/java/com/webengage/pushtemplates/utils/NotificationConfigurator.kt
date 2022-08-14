@@ -454,12 +454,13 @@ class NotificationConfigurator {
 
 
     fun setNotificationBanner(
+        context: Context,
         remoteViews: RemoteViews,
         pushData: PushNotificationData
     ) {
-        Log.e("PushTemplate", "Bitmap returned null")
         if (pushData.style == WebEngageConstant.STYLE.BIG_PICTURE && !TextUtils.isEmpty(pushData.bigPictureStyleData.bigPictureUrl)) {
-            val bitmap = NetworkUtils().getBitmapFromURL(pushData.bigPictureStyleData.bigPictureUrl)
+            val bitmap =
+                NetworkUtils().getBitmapFromURL(context, pushData.bigPictureStyleData.bigPictureUrl)
             if (bitmap != null) {
                 remoteViews.setViewVisibility(R.id.we_notification_image, View.VISIBLE)
                 remoteViews.setImageViewBitmap(R.id.we_notification_image, bitmap)
