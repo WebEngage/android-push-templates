@@ -26,7 +26,7 @@ class ImageUtils {
         return BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.size, options)
     }
 
-    private fun getSampleSize(
+     fun getSampleSize(
         maxSize: Int,
         currentHeightInPixels: Int,
         currentWidthInPixels: Int

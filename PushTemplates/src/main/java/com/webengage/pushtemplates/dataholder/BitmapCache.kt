@@ -17,7 +17,7 @@ class BitmapCache(context: Context) {
                 fileName
             )
             bitmap.compress(
-                Bitmap.CompressFormat.JPEG,
+                Bitmap.CompressFormat.PNG,
                 100, out
             )
             out.flush()

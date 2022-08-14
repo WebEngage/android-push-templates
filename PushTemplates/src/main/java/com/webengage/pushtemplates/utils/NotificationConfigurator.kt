@@ -465,7 +465,7 @@ class NotificationConfigurator {
                 remoteViews.setViewVisibility(R.id.we_notification_image, View.VISIBLE)
                 remoteViews.setImageViewBitmap(R.id.we_notification_image, bitmap)
             } else {
-                Log.e("PushTemplate", "Bitmap returned null")
+                Log.e("PushTemplates", "Bitmap returned null")
             }
         }
     }

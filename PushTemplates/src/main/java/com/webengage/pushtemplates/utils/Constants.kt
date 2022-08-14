@@ -26,4 +26,5 @@ object Constants {
     const val CTA_ID = "ctaID"
     const val SECOND = 1000
     const val MINUTE = 60* SECOND
+    const val REMOTE_VIEW_MAX_SIZE = 4000000  //Size is in bytes
 }
