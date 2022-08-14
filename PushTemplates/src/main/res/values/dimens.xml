@@ -16,4 +16,7 @@
     <dimen name="we_push_action_list_height">60dp</dimen>
     <dimen name="we_cta_max_width">140dp</dimen>
     <dimen name="we_push_action1_padding">12dp</dimen>
+    <dimen name="we_push_image_margin_top">8dp</dimen>
+    <dimen name="we_push_banner_padding">8dp</dimen>
+
 </resources>

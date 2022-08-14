@@ -26,7 +26,7 @@ class CountDownRenderer {
     ): Boolean {
 
         this.context = mContext!!
-        this.pushData = TimerStyleData(context, pushNotificationData!!)
+        this.pushData = TimerStyleData(pushNotificationData!!)
         this.whenTime = System.currentTimeMillis()
         this.mBuilder =
             NotificationCompat.Builder(
@@ -119,6 +119,11 @@ class CountDownRenderer {
             remoteView,
             timerNotificationData.pushNotification,
             timerNotificationData.timerColor
+        )
+
+        NotificationConfigurator().setNotificationBanner(
+            remoteView,
+            timerNotificationData.pushNotification
         )
 
         val timeDiff =
