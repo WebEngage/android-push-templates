@@ -311,7 +311,6 @@ class NotificationConfigurator {
 
             if (pushData.backgroundColor != context.getColor(R.color.we_transparent)) {
                 //No Background Color Set
-
                 remoteView.setViewVisibility(R.id.app_name, View.GONE)
                 remoteView.setViewVisibility(R.id.custom_notification_time, View.GONE)
                 remoteView.setViewVisibility(R.id.custom_summary, View.GONE)

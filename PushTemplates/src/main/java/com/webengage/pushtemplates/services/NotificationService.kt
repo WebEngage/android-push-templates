@@ -33,7 +33,7 @@ class NotificationService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("PushTemplates", "Service onStartCommand")
-        if (intent!!.action.equals(Constants.PROGRESSBAR_ACTION)) {
+        if (intent!!.action.equals(Constants.PROGRESS_BAR_ACTION)) {
             val pushNotificationData = intent.extras!!.getString(Constants.PAYLOAD)
                 ?.let { PushNotificationData(JSONObject(it), applicationContext) }
             val timerData = TimerStyleData(applicationContext, pushNotificationData!!)

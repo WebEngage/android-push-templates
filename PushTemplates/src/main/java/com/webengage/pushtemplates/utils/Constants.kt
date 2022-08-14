@@ -15,7 +15,7 @@ object Constants {
 
     //Intent Actions
     const val DELETE_ACTION = "com.webengage.push.delete"
-    const val PROGRESSBAR_ACTION = "com.webengage.push.PROGRESS_BAR"
+    const val PROGRESS_BAR_ACTION = "com.webengage.push.PROGRESS_BAR"
     const val CLICK_ACTION = "com.webengage.push.click"
 
     //Internal Constants

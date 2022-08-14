@@ -36,7 +36,7 @@ class ProgressBarRenderer {
      */
     private fun attachToService(context: Context, pushData: TimerStyleData?) {
         val intent = Intent(context, NotificationService::class.java)
-        intent.action = Constants.PROGRESSBAR_ACTION
+        intent.action = Constants.PROGRESS_BAR_ACTION
         intent.putExtra(Constants.PAYLOAD, pushData!!.pushNotification.pushPayloadJSON.toString())
         intent.putExtra(Constants.WHEN_TIME, whenTime)
         startService(intent, context)
