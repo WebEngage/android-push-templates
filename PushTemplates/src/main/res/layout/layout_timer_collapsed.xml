@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="@dimen/we_push_intercontent_margin"
+        android:layout_marginTop="@dimen/we_push_intercontent_margin"
         android:paddingLeft="@dimen/we_push_content_margin"
         android:paddingRight="@dimen/we_push_content_margin">
 
