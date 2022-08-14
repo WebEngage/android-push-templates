@@ -3,11 +3,9 @@ package com.webengage.pushtemplates.utils
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.text.TextUtils
 import android.text.format.DateFormat
-import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
@@ -132,8 +130,6 @@ class NotificationConfigurator {
         remoteViews: RemoteViews,
         pushData: PushNotificationData
     ) {
-        Log.d("Push","Setting adaptive CTA")
-
         val dismissIntent =
             getNotificationDismissPendingIntent(context, pushData, true)
         remoteViews.setViewVisibility(R.id.actions_container, View.VISIBLE)
@@ -194,7 +190,6 @@ class NotificationConfigurator {
         remoteViews: RemoteViews,
         pushData: PushNotificationData
     ) {
-        Log.d("Push","Setting native CTA")
         val dismissIntent =
             getNotificationDismissPendingIntent(context, pushData, true)
 

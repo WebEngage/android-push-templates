@@ -46,6 +46,8 @@ class NotificationService : Service() {
             this.mBuilder = NotificationCompat.Builder(context!!, channelId)
             this.whenTime = (intent.extras!!.getLong(Constants.WHEN_TIME))
 
+            countDownTimer?.cancel()
+
             stopForeground(true)
 
             val notification = getNotification(timerData, context!!)
