@@ -1,46 +1,22 @@
 package com.webengage.pushtemplates.utils
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
-import android.text.TextUtils
 import android.util.Log
-import com.webengage.pushtemplates.dataholder.BitmapCache
 import kotlinx.coroutines.*
-import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.net.URL
-import java.net.URLEncoder
 
 class NetworkUtils {
 
-    fun getBitmapFromURL(context: Context, urlString: String): Bitmap? {
-        val bitmapCache = BitmapCache(context)
-        val urlFileName = URLEncoder.encode(urlString, Charsets.UTF_8.toString())
-        val cacheBitmap = bitmapCache.getBitmapFromCache(urlFileName)
-        if (cacheBitmap != null) {
-            return cacheBitmap
-        }
+      suspend fun getBitmapFromURL(urlString: String): Bitmap? {
         var bitmap: Bitmap? = null
-        CoroutineScope(Dispatchers.IO).launch {
-            bitmap = downloadBitmap(urlString)
 
-            if (bitmap != null)
-                bitmapCache.writeToCache(urlFileName, bitmap!!)
+        withContext(Dispatchers.IO){
+            bitmap = downloadBitmap(urlString)
         }
         return bitmap
-    }
-
-    fun getBitmapArrayList(context: Context, urlList: ArrayList<String>): ArrayList<Bitmap?> {
-        val bitmapList = ArrayList<Bitmap?>()
-        for (iterator in 0..urlList.size) {
-            if (!TextUtils.isEmpty(urlList[iterator])) {
-                val bitmapFromUrl = getBitmapFromURL(context, urlList[iterator])
-                bitmapList.add(bitmapFromUrl)
-            }
-        }
-        return bitmapList
     }
 
     private fun downloadBitmap(urlString: String): Bitmap? {

@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.*
 import android.util.Log
 import android.widget.RemoteViews
@@ -13,8 +14,10 @@ import com.webengage.pushtemplates.utils.Constants
 import com.webengage.pushtemplates.utils.NotificationConfigurator
 import com.webengage.pushtemplates.models.TimerStyleData
 import com.webengage.pushtemplates.R
+import com.webengage.pushtemplates.utils.ImageUtils
 import com.webengage.sdk.android.PendingIntentFactory
 import com.webengage.sdk.android.actions.render.PushNotificationData
+import kotlinx.coroutines.*
 import org.json.JSONObject
 
 class NotificationService : Service() {
@@ -26,6 +29,7 @@ class NotificationService : Service() {
     private var expandedTimerLayoutId = R.layout.layout_progressbar_template
     private var countDownTimer: CountDownTimer? = null
     private val updateFrequency: Long = 1000
+    private var bitmapList : ArrayList<Bitmap?> = ArrayList()
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -47,17 +51,18 @@ class NotificationService : Service() {
             this.whenTime = (intent.extras!!.getLong(Constants.WHEN_TIME))
 
             countDownTimer?.cancel()
-
             stopForeground(true)
-
-            val notification = getNotification(timerData, context!!)
-            startForeground(
-                pushData!!.pushNotification.variationId.hashCode(),
-                notification.build().apply {
-                    this.flags = this.flags or Notification.FLAG_ONLY_ALERT_ONCE
-                    this.flags = this.flags or Notification.FLAG_AUTO_CANCEL
-                }
-            )
+            CoroutineScope(Dispatchers.Main).launch{
+                bitmapList = ImageUtils().getBitmapArrayList(pushNotificationData)
+                val notification = getNotification(timerData, context!!)
+                startForeground(
+                    pushData!!.pushNotification.variationId.hashCode(),
+                    notification.build().apply {
+                        this.flags = this.flags or Notification.FLAG_ONLY_ALERT_ONCE
+                        this.flags = this.flags or Notification.FLAG_AUTO_CANCEL
+                    }
+                )
+            }
         } else if (intent.action.equals(Constants.DELETE_ACTION)) {
             stopSelf()
         }
@@ -221,9 +226,9 @@ class NotificationService : Service() {
         )
 
         NotificationConfigurator().setNotificationBanner(
-            context,
             remoteView,
-            timerNotificationData.pushNotification
+            timerNotificationData.pushNotification,
+            bitmapList
         )
 
         remoteView.setProgressBar(

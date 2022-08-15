@@ -3,6 +3,7 @@ package com.webengage.pushtemplates.utils
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build
 import android.text.TextUtils
 import android.text.format.DateFormat
@@ -454,18 +455,19 @@ class NotificationConfigurator {
 
 
     fun setNotificationBanner(
-        context: Context,
         remoteViews: RemoteViews,
-        pushData: PushNotificationData
+        pushData: PushNotificationData,
+        bitmapList: ArrayList<Bitmap?>
     ) {
-        if (pushData.style == WebEngageConstant.STYLE.BIG_PICTURE && !TextUtils.isEmpty(pushData.bigPictureStyleData.bigPictureUrl)) {
-            val bitmap =
-                NetworkUtils().getBitmapFromURL(context, pushData.bigPictureStyleData.bigPictureUrl)
-            if (bitmap != null) {
-                remoteViews.setViewVisibility(R.id.we_notification_image, View.VISIBLE)
-                remoteViews.setImageViewBitmap(R.id.we_notification_image, bitmap)
-            } else {
-                Log.e("PushTemplates", "Bitmap returned null")
+        if (bitmapList.size > 0) {
+            if (pushData.style == WebEngageConstant.STYLE.BIG_PICTURE && !TextUtils.isEmpty(pushData.bigPictureStyleData.bigPictureUrl)) {
+                val bitmap = bitmapList[0]
+                if (bitmap != null) {
+                    remoteViews.setViewVisibility(R.id.we_notification_image, View.VISIBLE)
+                    remoteViews.setImageViewBitmap(R.id.we_notification_image, bitmap)
+                } else {
+                    Log.e("PushTemplates", "Bitmap returned null")
+                }
             }
         }
     }

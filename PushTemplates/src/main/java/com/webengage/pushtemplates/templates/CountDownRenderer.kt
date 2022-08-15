@@ -2,14 +2,17 @@ package com.webengage.pushtemplates.templates
 
 import android.app.Notification
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.*
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.webengage.pushtemplates.models.TimerStyleData
 import com.webengage.pushtemplates.R
+import com.webengage.pushtemplates.utils.ImageUtils
 import com.webengage.pushtemplates.utils.NotificationConfigurator
 import com.webengage.sdk.android.actions.render.PushNotificationData
+import kotlinx.coroutines.*
 
 class CountDownRenderer {
 
@@ -19,6 +22,7 @@ class CountDownRenderer {
     private var collapsedTimerLayoutId = R.layout.layout_timer_template
     private var expandedTimerLayoutId = R.layout.layout_timer_template
     private var whenTime: Long = 0
+    private var bitmapList: ArrayList<Bitmap?> = ArrayList()
 
     fun onRender(
         mContext: Context?,
@@ -40,10 +44,12 @@ class CountDownRenderer {
         //If the provided future time is less that the system time, then do not render
         if (pushData.futureTime < System.currentTimeMillis())
             return false
-        constructNotification(context, pushData)
-        show(context)
+        CoroutineScope(Dispatchers.Default).launch{
+            bitmapList = ImageUtils().getBitmapArrayList(pushNotificationData)
+            constructNotification(context, pushData)
+            show(context)
+        }
         return true
-
     }
 
     private fun constructNotification(context: Context?, pushNotificationData: TimerStyleData?) {
@@ -122,9 +128,9 @@ class CountDownRenderer {
         )
 
         NotificationConfigurator().setNotificationBanner(
-            context,
             remoteView,
-            timerNotificationData.pushNotification
+            timerNotificationData.pushNotification,
+            bitmapList
         )
 
         val timeDiff =
