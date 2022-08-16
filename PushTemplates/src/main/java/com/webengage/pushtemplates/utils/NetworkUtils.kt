@@ -10,15 +10,19 @@ import java.net.URL
 
 class NetworkUtils {
 
-      suspend fun getBitmapFromURL(urlString: String): Bitmap? {
-        var bitmap: Bitmap? = null
+    suspend fun getBitmapFromURL(urlString: String): Bitmap? {
+        var bitmap: Bitmap?
 
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             bitmap = downloadBitmap(urlString)
         }
         return bitmap
     }
 
+
+    /**
+     * Downloads the bitmap from the given URL
+     */
     private fun downloadBitmap(urlString: String): Bitmap? {
         val inputStream: InputStream?
         var bitmap: Bitmap? = null
@@ -33,7 +37,8 @@ class NetworkUtils {
                 bitmap = BitmapFactory.decodeStream(inputStream)
                 Log.d("PushTemplates", "Bitmap size = ${bitmap.byteCount}")
                 if ((bitmap.byteCount < Constants.REMOTE_VIEW_MAX_SIZE)
-                    && Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
+                    && Build.VERSION.SDK_INT > Build.VERSION_CODES.R
+                ) {
                     Log.d("PushTemplates", "Downscaling image")
                     val options = BitmapFactory.Options()
 

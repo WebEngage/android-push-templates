@@ -10,6 +10,9 @@ import java.io.ByteArrayOutputStream
 
 class ImageUtils {
 
+    /**
+     * Returns the sampled Bitmap Image to fit under the byte limit provided by {maxSize} parameter
+     */
     private fun getSampledBitmap(bitmap: Bitmap?, maxSize: Int): Bitmap {
         val bitmapStream = ByteArrayOutputStream()
         bitmap?.compress(Bitmap.CompressFormat.PNG, 100, bitmapStream)
@@ -27,6 +30,10 @@ class ImageUtils {
         return BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.size, options)
     }
 
+    /**
+     *Returns the amount of sampling required for the bitmap to fit under the byte limit
+     *  provided by {maxSize} parameter
+     */
     fun getSampleSize(
         maxSize: Int,
         currentHeightInPixels: Int,
@@ -42,6 +49,9 @@ class ImageUtils {
         return sampleSize
     }
 
+    /**
+     * Returns list of bitmap which can be rendered in the notification.
+     */
     private fun getSampledBitmapList(
         bitmapList: ArrayList<Bitmap?>,
     ): ArrayList<Bitmap?> {

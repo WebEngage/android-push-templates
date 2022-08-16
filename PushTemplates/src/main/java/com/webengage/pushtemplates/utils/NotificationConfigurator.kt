@@ -453,7 +453,9 @@ class NotificationConfigurator {
         }
     }
 
-
+    /**
+     * Sets the Images for the Notification.
+     */
     fun setNotificationBanner(
         remoteViews: RemoteViews,
         pushData: PushNotificationData,
