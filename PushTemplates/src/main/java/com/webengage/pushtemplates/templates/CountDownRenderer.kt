@@ -44,7 +44,7 @@ class CountDownRenderer {
         //If the provided future time is less that the system time, then do not render
         if (pushData.futureTime < System.currentTimeMillis())
             return false
-        CoroutineScope(Dispatchers.Default).launch{
+        CoroutineScope(Dispatchers.Default).launch {
             bitmapList = ImageUtils().getBitmapArrayList(pushNotificationData)
             constructNotification(context, pushData)
             show(context)
@@ -110,11 +110,14 @@ class CountDownRenderer {
             timerNotificationData.pushNotification,
             remoteView
         )
+
         NotificationConfigurator().setCTAList(
             context,
             remoteView,
-            timerNotificationData.pushNotification
+            timerNotificationData.pushNotification,
+            timerNotificationData.showDismissCTA
         )
+
         NotificationConfigurator().setClickIntent(
             context,
             remoteView,
