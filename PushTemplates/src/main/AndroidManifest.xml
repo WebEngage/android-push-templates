@@ -21,6 +21,11 @@
                 <action android:name="com.webengage.push.PROGRESS_BAR" />
             </intent-filter>
         </service>
+        <activity android:name=".receivers.PushTransparentActivity"
+            android:exported="true"
+            android:enabled="true"
+            android:theme="@style/Theme.Transparent"
+            android:excludeFromRecents="true"/>
         <receiver
             android:name=".receivers.PushIntentListener"
             android:exported="false">

@@ -1,22 +1,37 @@
 package com.webengage.pushtemplates.receivers
 
-import android.content.BroadcastReceiver
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import com.webengage.pushtemplates.services.NotificationService
 import com.webengage.pushtemplates.utils.Constants
 import com.webengage.sdk.android.PendingIntentFactory
+import com.webengage.sdk.android.WebEngage
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import org.json.JSONObject
 
-class PushIntentListener : BroadcastReceiver() {
-    override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent!!.action.equals(Constants.DELETE_ACTION)) {
-            dismissNotification(context!!, intent)
+class PushTransparentActivity : Activity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("PushTemplates","Starting PushTransparentActivity")
+        try {
+            WebEngage.get()
+            if (intent!!.action.equals(Constants.DELETE_ACTION)) {
+                Log.d("PushTemplates", "Starting PushTransparentActivity for action DELETE_ACTION")
+                dismissNotification(this, intent)
+            }
+            if (intent.action.equals(Constants.CLICK_ACTION)) {
+                Log.d("PushTemplates", "Starting PushTransparentActivity for action CLICK_ACTION")
+
+                sendClickEvent(this, intent)
+            }
         }
-        if (intent.action.equals(Constants.CLICK_ACTION)) {
-            sendClickEvent(context!!, intent)
+        catch (e : Exception){}
+        finally {
+            finish()
         }
     }
 
@@ -47,8 +62,7 @@ class PushIntentListener : BroadcastReceiver() {
                 val notificationServiceIntent =
                     Intent(context, NotificationService::class.java)
                 context.stopService(notificationServiceIntent)
-            }
-            else{
+            }else{
                 dismissNotificationWithId(context, pushData.variationId.hashCode())
             }
         }

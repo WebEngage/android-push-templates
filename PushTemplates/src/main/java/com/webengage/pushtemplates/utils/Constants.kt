@@ -10,6 +10,7 @@ object Constants {
     const val TIMER_COLOR = "timer_color"
     const val PROGRESS_BAR_COLOR = "pb_color"
     const val PROGRESS_BAR_BACKGROUND_COLOR = "pb_bg_color"
+    const val SHOW_DISMISS_CTA = "show_dismiss_cta"
 
 
     //Types of Custom Push Templates

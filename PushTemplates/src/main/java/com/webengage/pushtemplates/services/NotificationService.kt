@@ -242,7 +242,8 @@ class NotificationService : Service() {
         NotificationConfigurator().setCTAList(
             context,
             remoteView,
-            timerNotificationData.pushNotification
+            timerNotificationData.pushNotification,
+            timerNotificationData.showDismissCTA
         )
 
         NotificationConfigurator().setProgressBarColor(
