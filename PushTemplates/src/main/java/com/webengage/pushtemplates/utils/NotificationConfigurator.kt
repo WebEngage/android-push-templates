@@ -3,6 +3,7 @@ package com.webengage.pushtemplates.utils
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.os.Build
 import android.text.TextUtils
@@ -19,6 +20,9 @@ import com.webengage.sdk.android.WebEngage
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import com.webengage.sdk.android.utils.WebEngageConstant
 import com.webengage.sdk.android.utils.htmlspanner.WEHtmlParserInterface
+import java.lang.reflect.InvocationTargetException
+import java.lang.reflect.Method
+
 
 class NotificationConfigurator {
 
@@ -454,6 +458,39 @@ class NotificationConfigurator {
     }
 
     /**
+     * Sets the color for the progressbar.
+     */
+    fun setProgressBarColor(
+        remoteViews: RemoteViews,
+        progressColor: Int?,
+        backgroundColor: Int?
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (progressColor != null) {
+                remoteViews.setColorStateList(
+                    R.id.we_notification_progressBar,
+                    "setProgressTintList",
+                    ColorStateList.valueOf(progressColor)
+                )
+            }
+            if (backgroundColor != null) {
+                remoteViews.setColorStateList(
+                    R.id.we_notification_progressBar,
+                    "setProgressBackgroundTintList",
+                    ColorStateList.valueOf(backgroundColor)
+                )
+            }
+        } else {
+            if (progressColor != null) {
+                setColorStateListBelowS(remoteViews, progressColor, 0)
+            }
+            if (backgroundColor != null) {
+                setColorStateListBelowS(remoteViews, backgroundColor, 1)
+            }
+        }
+    }
+
+    /**
      * Sets the Images for the Notification.
      */
     fun setNotificationBanner(
@@ -470,6 +507,39 @@ class NotificationConfigurator {
                 } else {
                     Log.e("PushTemplates", "Bitmap returned null")
                 }
+            }
+        }
+    }
+
+    private fun setColorStateListBelowS(remoteViews: RemoteViews, color: Int, type: Int) {
+        //type = 0 -> Progress Color for progress bar
+        //type = 1 -> Background Color for progress bar
+
+        var methodName = "setProgressTintList"
+        if (type == 0)
+            methodName = "setProgressBackgroundTintList"
+
+        var setTintMethod: Method? = null
+        try {
+            setTintMethod = RemoteViews::class.java.getMethod(
+                methodName,
+                Int::class.javaPrimitiveType,
+                ColorStateList::class.java
+            )
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+        } catch (e: NoSuchMethodException) {
+            e.printStackTrace()
+        }
+        if (setTintMethod != null) {
+            try {
+                setTintMethod.invoke(
+                    remoteViews,
+                    R.id.we_notification_progressBar,
+                    ColorStateList.valueOf(color)
+                )
+            } catch (e: IllegalAccessException) {
+            } catch (e: InvocationTargetException) {
             }
         }
     }

@@ -8,6 +8,9 @@ object Constants {
     const val FUTURE_TIME = "future_time"
     const val TEMPLATE_TYPE = "template_type"
     const val TIMER_COLOR = "timer_color"
+    const val PROGRESS_BAR_COLOR = "pb_color"
+    const val PROGRESS_BAR_BACKGROUND_COLOR = "pb_bg_color"
+
 
     //Types of Custom Push Templates
     const val PROGRESS_BAR = "bar"

@@ -18,6 +18,10 @@ class TimerStyleData(pushNotificationData: PushNotificationData) {
     /** color for the CountDown Timer provided in custom data */
     var timerColor : Int? = null
 
+    var progressBarColor : Int? = null
+
+    var progressBarBackgroundColor : Int? = null
+
     init {
         val customData = pushNotification.customData
         if (customData.containsKey(Constants.FUTURE_TIME) && customData[Constants.FUTURE_TIME] != null) {
@@ -30,5 +34,14 @@ class TimerStyleData(pushNotificationData: PushNotificationData) {
         if (customData.containsKey(Constants.TIMER_COLOR) && customData[Constants.TIMER_COLOR] != null) {
             timerColor = Color.parseColor(customData.getString(Constants.TIMER_COLOR)!!)
         }
+
+        if (customData.containsKey(Constants.PROGRESS_BAR_COLOR) && customData[Constants.PROGRESS_BAR_COLOR] != null) {
+            progressBarColor = Color.parseColor(customData.getString(Constants.PROGRESS_BAR_COLOR)!!)
+        }
+
+        if (customData.containsKey(Constants.PROGRESS_BAR_BACKGROUND_COLOR) && customData[Constants.PROGRESS_BAR_BACKGROUND_COLOR] != null) {
+            progressBarBackgroundColor = Color.parseColor(customData.getString(Constants.PROGRESS_BAR_BACKGROUND_COLOR)!!)
+        }
+
     }
 }

@@ -4,7 +4,6 @@ import android.app.Notification
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.*
 import android.util.Log
 import android.widget.RemoteViews
@@ -14,10 +13,8 @@ import com.webengage.pushtemplates.utils.Constants
 import com.webengage.pushtemplates.utils.NotificationConfigurator
 import com.webengage.pushtemplates.models.TimerStyleData
 import com.webengage.pushtemplates.R
-import com.webengage.pushtemplates.utils.ImageUtils
 import com.webengage.sdk.android.PendingIntentFactory
 import com.webengage.sdk.android.actions.render.PushNotificationData
-import kotlinx.coroutines.*
 import org.json.JSONObject
 
 class NotificationService : Service() {
@@ -29,7 +26,6 @@ class NotificationService : Service() {
     private var expandedTimerLayoutId = R.layout.layout_progressbar_template
     private var countDownTimer: CountDownTimer? = null
     private val updateFrequency: Long = 1000
-    private var bitmapList : ArrayList<Bitmap?> = ArrayList()
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -38,6 +34,8 @@ class NotificationService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("PushTemplates", "Service onStartCommand")
         if (intent!!.action.equals(Constants.PROGRESS_BAR_ACTION)) {
+            countDownTimer?.cancel()
+
             val pushNotificationData = intent.extras!!.getString(Constants.PAYLOAD)
                 ?.let { PushNotificationData(JSONObject(it), applicationContext) }
             val timerData = TimerStyleData(pushNotificationData!!)
@@ -50,19 +48,15 @@ class NotificationService : Service() {
             this.mBuilder = NotificationCompat.Builder(context!!, channelId)
             this.whenTime = (intent.extras!!.getLong(Constants.WHEN_TIME))
 
-            countDownTimer?.cancel()
             stopForeground(true)
-            CoroutineScope(Dispatchers.Main).launch{
-                bitmapList = ImageUtils().getBitmapArrayList(pushNotificationData)
-                val notification = getNotification(timerData, context!!)
-                startForeground(
-                    pushData!!.pushNotification.variationId.hashCode(),
-                    notification.build().apply {
-                        this.flags = this.flags or Notification.FLAG_ONLY_ALERT_ONCE
-                        this.flags = this.flags or Notification.FLAG_AUTO_CANCEL
-                    }
-                )
-            }
+            val notification = getNotification(timerData, context!!)
+            startForeground(
+                pushData!!.pushNotification.variationId.hashCode(),
+                notification.build().apply {
+                    this.flags = this.flags or Notification.FLAG_ONLY_ALERT_ONCE
+                    this.flags = this.flags or Notification.FLAG_AUTO_CANCEL
+                }
+            )
         } else if (intent.action.equals(Constants.DELETE_ACTION)) {
             stopSelf()
         }
@@ -225,12 +219,6 @@ class NotificationService : Service() {
             timerNotificationData.timerColor
         )
 
-        NotificationConfigurator().setNotificationBanner(
-            remoteView,
-            timerNotificationData.pushNotification,
-            bitmapList
-        )
-
         remoteView.setProgressBar(
             R.id.we_notification_progressBar,
             (timerNotificationData.futureTime - whenTime).toInt(),
@@ -256,6 +244,13 @@ class NotificationService : Service() {
             remoteView,
             timerNotificationData.pushNotification
         )
+
+        NotificationConfigurator().setProgressBarColor(
+            remoteView,
+            timerNotificationData.progressBarColor,
+            timerNotificationData.progressBarBackgroundColor
+        )
+
         return remoteView
     }
 
@@ -309,6 +304,12 @@ class NotificationService : Service() {
             timeDiff,
             timerNotificationData.timerFormat,
             true
+        )
+
+        NotificationConfigurator().setProgressBarColor(
+            remoteView,
+            timerNotificationData.progressBarColor,
+            timerNotificationData.progressBarBackgroundColor
         )
 
         return remoteView
