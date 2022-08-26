@@ -156,9 +156,11 @@ class NotificationConfigurator {
         val ctaButtonsList =
             listOf(R.id.action1_adaptive, R.id.action2_adaptive, R.id.action3_adaptive)
 
-        remoteViews.setViewVisibility(R.id.actions_container, View.VISIBLE)
 
         if (pushData.callToActions.size > 1) {
+            remoteViews.setViewVisibility(R.id.actions_container, View.VISIBLE)
+            remoteViews.setViewVisibility(R.id.we_notification_bottom_margin, View.GONE)
+
             for (iterator in 1 until pushData.callToActions.size) {
                 val ctaButton = ctaButtonsList[iterator - 1]
                 remoteViews.setViewVisibility(ctaButton, View.VISIBLE)
@@ -174,6 +176,9 @@ class NotificationConfigurator {
             }
         }
         if (pushData.callToActions.size - 1 < ctaButtonsList.size && showDismiss) {
+            remoteViews.setViewVisibility(R.id.actions_container, View.VISIBLE)
+            remoteViews.setViewVisibility(R.id.we_notification_bottom_margin, View.GONE)
+
             val ctaButton = ctaButtonsList[pushData.callToActions.size - 1]
 
             val dismissIntent =
@@ -197,9 +202,11 @@ class NotificationConfigurator {
     ) {
         val ctaButtonsList = listOf(R.id.action1_native, R.id.action2_native, R.id.action3_native)
 
-        remoteViews.setViewVisibility(R.id.actions_container, View.VISIBLE)
 
         if (pushData.callToActions.size > 1) {
+            remoteViews.setViewVisibility(R.id.actions_container, View.VISIBLE)
+            remoteViews.setViewVisibility(R.id.we_notification_bottom_margin, View.GONE)
+
             for (iterator in 1 until pushData.callToActions.size) {
                 val ctaButton = ctaButtonsList[iterator - 1]
                 remoteViews.setViewVisibility(ctaButton, View.VISIBLE)
@@ -217,6 +224,9 @@ class NotificationConfigurator {
 
         //todo comment
         if (pushData.callToActions.size - 1 < ctaButtonsList.size && showDismiss) {
+            remoteViews.setViewVisibility(R.id.actions_container, View.VISIBLE)
+            remoteViews.setViewVisibility(R.id.we_notification_bottom_margin, View.GONE)
+
             val ctaButton = ctaButtonsList[pushData.callToActions.size - 1]
 
             val dismissIntent =
@@ -237,8 +247,6 @@ class NotificationConfigurator {
         pushData: PushNotificationData,
         showDismiss: Boolean
     ) {
-        remoteViews.setViewVisibility(R.id.we_notification_bottom_margin, View.GONE)
-
         if (pushData.backgroundColor != context.getColor(R.color.we_transparent))
             setNativeCTAs(context, remoteViews, pushData, showDismiss)
         else
@@ -530,9 +538,7 @@ class NotificationConfigurator {
                 ColorStateList::class.java
             )
         } catch (e: SecurityException) {
-            e.printStackTrace()
         } catch (e: NoSuchMethodException) {
-            e.printStackTrace()
         }
         if (setTintMethod != null) {
             try {
