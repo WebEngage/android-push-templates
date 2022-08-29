@@ -43,11 +43,11 @@ class MyApplication : Application() {
 
         val builder: WebEngageConfig.Builder =
             WebEngageConfig.Builder()
-                .setWebEngageKey("8261782b")
+                .setWebEngageKey("aa131d2c")
                 .setDebugMode(true)
                 .setAutoGCMRegistrationFlag(false)
-                .setPushSmallIcon(R.drawable.ic_notification)
-                .setPushLargeIcon(R.mipmap.ic_launcher)
+                .setPushSmallIcon(R.drawable.ic_notification_small)
+                .setPushLargeIcon(R.drawable.ic_notification_big)
                 .setSessionDestroyTime(40)
                 .setDefaultPushChannelConfiguration(pushChannelConfiguration)
                 .setPushAccentColor(Color.GREEN)

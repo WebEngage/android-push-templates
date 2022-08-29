@@ -25,7 +25,7 @@ class NotificationService : Service() {
     private var collapsedTimerLayoutId = R.layout.layout_progressbar_template
     private var expandedTimerLayoutId = R.layout.layout_progressbar_template
     private var countDownTimer: CountDownTimer? = null
-    private val updateFrequency: Long = 1000
+    private val updateFrequency: Long = Constants.SECOND
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -202,6 +202,10 @@ class NotificationService : Service() {
             timerNotificationData!!.pushNotification,
             whenTime
         )
+
+        NotificationConfigurator().setTitleMaxLines(remoteView,2)
+        NotificationConfigurator().setDescriptionMaxLines(remoteView,2)
+
         NotificationConfigurator().setNotificationDescription(
             context,
             timerNotificationData.pushNotification,

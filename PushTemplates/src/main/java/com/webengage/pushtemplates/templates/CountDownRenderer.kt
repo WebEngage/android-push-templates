@@ -100,6 +100,10 @@ class CountDownRenderer {
             timerNotificationData!!.pushNotification,
             whenTime
         )
+
+        NotificationConfigurator().setTitleMaxLines(remoteView,2)
+        NotificationConfigurator().setDescriptionMaxLines(remoteView,2)
+
         NotificationConfigurator().setNotificationDescription(
             context,
             timerNotificationData.pushNotification,

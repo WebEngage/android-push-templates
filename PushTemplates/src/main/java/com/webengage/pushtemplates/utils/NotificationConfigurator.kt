@@ -30,6 +30,7 @@ class NotificationConfigurator {
 
     /**
      * Get the id of the channel to be used for the showing the notification.
+     * @return ID for notification channel for showing the notification
      * */
     fun getDefaultNotificationChannelID(
         context: Context, pushData: PushNotificationData
@@ -222,7 +223,7 @@ class NotificationConfigurator {
             }
         }
 
-        //todo comment
+        //Add the Notification Dismiss Button at the end of the notification
         if (pushData.callToActions.size - 1 < ctaButtonsList.size && showDismiss) {
             remoteViews.setViewVisibility(R.id.actions_container, View.VISIBLE)
             remoteViews.setViewVisibility(R.id.we_notification_bottom_margin, View.GONE)
@@ -487,13 +488,6 @@ class NotificationConfigurator {
                     ColorStateList.valueOf(backgroundColor)
                 )
             }
-        } else {
-            if (progressColor != null) {
-                setColorStateListBelowS(remoteViews, progressColor, 0)
-            }
-            if (backgroundColor != null) {
-                setColorStateListBelowS(remoteViews, backgroundColor, 1)
-            }
         }
     }
 
@@ -522,6 +516,7 @@ class NotificationConfigurator {
      * Below Android S, RemoteViews do not have support for setting the color state list directly
      * for the progress bar. Use private methods for this
      */
+    @Deprecated("Due to restrictions for using restricted hidden APIs")
     private fun setColorStateListBelowS(remoteViews: RemoteViews, color: Int, type: Int) {
         //type = 0 -> Progress Color for progress bar
         //type = 1 -> Background Color for progress bar
@@ -552,4 +547,20 @@ class NotificationConfigurator {
             }
         }
     }
+
+
+    fun setTitleMaxLines(remoteViews: RemoteViews, maxLines:Int){
+        setTextViewMaxLines(remoteViews, R.id.we_notification_title, maxLines)
+        setTextViewMaxLines(remoteViews, R.id.we_notification_title_native, maxLines)
+    }
+
+    fun setDescriptionMaxLines(remoteViews: RemoteViews, maxLines:Int){
+        setTextViewMaxLines(remoteViews, R.id.we_notification_description_native, maxLines)
+        setTextViewMaxLines(remoteViews, R.id.we_notification_description, maxLines)
+    }
+
+    private fun setTextViewMaxLines(remoteViews: RemoteViews,viewId: Int, maxLines:Int){
+        remoteViews.setInt(viewId,"setMaxLines",maxLines)
+    }
+
 }

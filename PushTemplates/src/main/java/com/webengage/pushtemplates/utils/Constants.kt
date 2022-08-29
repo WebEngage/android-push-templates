@@ -28,7 +28,7 @@ object Constants {
     const val WHEN_TIME = "whenTime"
     const val LOG_DISMISS = "logDismiss"
     const val CTA_ID = "ctaID"
-    const val SECOND = 1000
-    const val MINUTE = 60* SECOND
+    const val SECOND : Long = 1000
+    const val MINUTE : Long = 60* SECOND
     const val REMOTE_VIEW_MAX_SIZE = 4000000  //Size is in bytes
 }
