@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.webengage.pushtemplates">
-
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <queries>
         <intent>
@@ -21,6 +21,11 @@
                 <action android:name="com.webengage.push.PROGRESS_BAR" />
             </intent-filter>
         </service>
+        <activity android:name=".receivers.PushTransparentActivity"
+            android:exported="true"
+            android:enabled="true"
+            android:theme="@style/Theme.Transparent"
+            android:excludeFromRecents="true"/>
         <receiver
             android:name=".receivers.PushIntentListener"
             android:exported="false">

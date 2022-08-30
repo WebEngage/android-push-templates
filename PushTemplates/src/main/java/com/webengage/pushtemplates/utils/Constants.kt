@@ -5,8 +5,13 @@ object Constants {
     const val TIMER_FORMAT = "format"
 
     //KEYS for Push Template Customizations
-    const val TIMER_DATE = "future_time"
+    const val FUTURE_TIME = "future_time"
     const val TEMPLATE_TYPE = "template_type"
+    const val TIMER_COLOR = "timer_color"
+    const val PROGRESS_BAR_COLOR = "pb_color"
+    const val PROGRESS_BAR_BACKGROUND_COLOR = "pb_bg_color"
+    const val SHOW_DISMISS_CTA = "show_dismiss_cta"
+
 
     //Types of Custom Push Templates
     const val PROGRESS_BAR = "bar"
@@ -23,6 +28,7 @@ object Constants {
     const val WHEN_TIME = "whenTime"
     const val LOG_DISMISS = "logDismiss"
     const val CTA_ID = "ctaID"
-    const val SECOND = 1000
-    const val MINUTE = 60* SECOND
+    const val SECOND : Long = 1000
+    const val MINUTE : Long = 60* SECOND
+    const val REMOTE_VIEW_MAX_SIZE = 4000000  //Size is in bytes
 }

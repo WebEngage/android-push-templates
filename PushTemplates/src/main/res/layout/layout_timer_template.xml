@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/we_notification_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/we_transparent"
+    android:orientation="vertical">
+
+    <include layout="@layout/pushbase" />
+
+    <LinearLayout
+        android:id="@+id/we_notification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/we_push_intercontent_margin"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/we_push_content_margin"
+        android:paddingRight="@dimen/we_push_content_margin">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="vertical">
+
+                <include layout="@layout/title" />
+
+                <include layout="@layout/description" />
+            </LinearLayout>
+
+            <Chronometer
+                android:id="@+id/we_notification_timer"
+                style="@style/NotificationChronometerAdaptive"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:countDown="true"
+                android:format="%s"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textSize="@dimen/we_chronometer_text_size"></Chronometer>
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/we_notification_bottom_margin"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/we_push_content_margin" />
+
+    <ImageView
+        android:id="@+id/we_notification_image"
+        android:layout_width="match_parent"
+        android:layout_height="132dp"
+        android:paddingStart="@dimen/we_push_banner_padding"
+        android:paddingEnd="@dimen/we_push_banner_padding"
+        android:layout_marginTop="@dimen/we_push_image_margin_top"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
+    <include layout="@layout/push_actions" />
+</LinearLayout>
