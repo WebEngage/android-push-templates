@@ -17,6 +17,8 @@ WebEngage.registerCustomPushRerenderCallback(CustomCallback())
 | `template_type` | `bar` | **(required)**  Progress Bar template. 
 | `future_time` | *epoch time in millis* | **(required)**  The time till which the notification is to be shown
 | `timer_color` | *hex value* | The color for the countdown timer
+| `show_dismiss_cta` | `true` / `false` | Show the Dismiss button at end of the CTA list
+
 
 ###   - CountDown Template
 | Key | Value | Use | 
@@ -25,6 +27,8 @@ WebEngage.registerCustomPushRerenderCallback(CustomCallback())
 | `template_type` | `timer` | **(required)**  Progress Bar template
 | `future_time` | *epoch time in millis* | **(required)**  The time till which the notification is to be shown
 | `timer_color` | *hex value* | The color for the countdown timer
+| `show_dismiss_cta` | `true` / `false` | Show the Dismiss button at end of the CTA list
+
 
 
 <h4>
