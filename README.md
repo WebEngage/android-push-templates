@@ -40,10 +40,8 @@ Sample Key Value Pairs: </h4>
 <img width="633" alt="image" src="https://user-images.githubusercontent.com/88337360/184459615-693e2666-112a-4e9d-bab0-dc3c2482227b.png">
 
 <h2>Progress Bar</h2>
-<img src = "![bar](https://user-images.githubusercontent.com/88337360/191495313-df29a1e1-f8f8-49ef-a3f1-2cb59cb00ba9.gif)
-" width="500"/>
+<img src = "https://user-images.githubusercontent.com/88337360/191495313-df29a1e1-f8f8-49ef-a3f1-2cb59cb00ba9.gif" width="500"/>
 
 
 <h2>CountDown Timer</h2>
-<img src = "![timer](https://user-images.githubusercontent.com/88337360/191495355-d64fcf75-12e9-47b4-9ba9-3bee47b6e6d9.gif)
-" width="500"/>
+<img src = "https://user-images.githubusercontent.com/88337360/191495355-d64fcf75-12e9-47b4-9ba9-3bee47b6e6d9.gif" width="500"/>
