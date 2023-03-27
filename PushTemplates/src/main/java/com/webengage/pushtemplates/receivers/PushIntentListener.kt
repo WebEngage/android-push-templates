@@ -39,6 +39,13 @@ class PushIntentListener : BroadcastReceiver() {
                     false
                 )
                 clickIntent.send()
+            } else {
+                val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
+                    context,
+                    pushData,
+                    pushData.primeCallToAction, false
+                )
+                clickIntent.send()
             }
             if (pushData.customData.containsKey(Constants.TEMPLATE_TYPE) && pushData.customData.getString(
                     Constants.TEMPLATE_TYPE
@@ -47,8 +54,7 @@ class PushIntentListener : BroadcastReceiver() {
                 val notificationServiceIntent =
                     Intent(context, NotificationService::class.java)
                 context.stopService(notificationServiceIntent)
-            }
-            else{
+            } else {
                 dismissNotificationWithId(context, pushData.variationId.hashCode())
             }
         }
