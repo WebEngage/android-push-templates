@@ -26,6 +26,8 @@ class NetworkUtils {
     private fun downloadBitmap(urlString: String): Bitmap? {
         val inputStream: InputStream?
         var bitmap: Bitmap? = null
+        var bitmapSampled: Bitmap? = null
+
         try {
             val url = URL(urlString)
             val connection = url.openConnection()
@@ -36,7 +38,7 @@ class NetworkUtils {
                 inputStream = connection.inputStream
                 bitmap = BitmapFactory.decodeStream(inputStream)
                 Log.d("PushTemplates", "Bitmap size = ${bitmap.byteCount}")
-                if ((bitmap.byteCount < Constants.REMOTE_VIEW_MAX_SIZE)
+                if ((bitmap.byteCount > Constants.REMOTE_VIEW_MAX_SIZE)
                     && Build.VERSION.SDK_INT > Build.VERSION_CODES.R
                 ) {
                     Log.d("PushTemplates", "Downscaling image")
@@ -50,14 +52,13 @@ class NetworkUtils {
                         )
 
                     options.inJustDecodeBounds = false
-                    bitmap = BitmapFactory.decodeStream(inputStream, null, options)
+                    bitmapSampled = BitmapFactory.decodeStream(inputStream, null, options)
                 }
-
                 inputStream!!.close()
             }
         } catch (ex: Exception) {
             Log.e("PushTemplates", ex.toString())
         }
-        return bitmap
+        return bitmapSampled ?: bitmap
     }
 }

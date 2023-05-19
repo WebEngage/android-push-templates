@@ -371,7 +371,7 @@ class NotificationConfigurator {
             val dateFormat = DateFormat.getTimeFormat(context)
             val time = dateFormat.format(whenTime)
             remoteView.setTextViewText(
-                com.webengage.sdk.android.R.id.custom_notification_time,
+                R.id.custom_notification_time,
                 time
             )
             remoteView.setTextViewText(R.id.app_name_native, pushData.appName)
@@ -383,7 +383,7 @@ class NotificationConfigurator {
             else
                 remoteView.setViewVisibility(R.id.custom_summary_native, View.GONE)
             remoteView.setTextViewText(
-                com.webengage.sdk.android.R.id.custom_notification_time_native,
+                R.id.custom_notification_time_native,
                 time
             )
 
