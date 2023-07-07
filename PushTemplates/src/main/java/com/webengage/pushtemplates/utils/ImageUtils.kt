@@ -110,4 +110,8 @@ class ImageUtils {
         )
     }
 
+    suspend fun getBitmapFromURL(url : String) : Bitmap{
+        return getSampledBitmap(NetworkUtils().getBitmapFromURL(url),Constants.REMOTE_VIEW_MAX_SIZE)
+    }
+
 }
