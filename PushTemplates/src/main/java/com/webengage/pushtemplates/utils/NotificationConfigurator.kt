@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.drawable.Icon
 import android.os.Build
 import android.text.TextUtils
 import android.text.format.DateFormat
@@ -640,4 +641,42 @@ class NotificationConfigurator {
         remoteViews.setInt(viewId, "setMaxLines", maxLines)
     }
 
+    /**
+     * Sets custom color to app name , time, summary, title and description
+     */
+    fun configureCustomColor(context: Context,
+                             pushData: PushNotificationData,
+                             remoteView: RemoteViews,
+                             color: Int){
+        if (pushData.backgroundColor == context.getColor(R.color.we_transparent)) {
+            remoteView.setTextColor(R.id.app_name, color)
+            remoteView.setTextColor(R.id.custom_notification_time, color)
+            remoteView.setTextColor(R.id.custom_summary, color)
+        } else {
+            remoteView.setTextColor(R.id.app_name_native, color)
+            remoteView.setTextColor(R.id.custom_notification_time_native, color)
+            remoteView.setTextColor(R.id.custom_summary_native, color)
+        }
+    }
+
+    /**
+     * Sets big icon in case of default notification
+     */
+    fun setBigImage(
+        context: Context,
+        pushData: PushNotificationData,
+        remoteView: RemoteViews
+    ) {
+        remoteView.setViewVisibility(R.id.custom_icon, View.VISIBLE)
+        if (pushData.largeIcon != null) {
+            remoteView.setImageViewBitmap(R.id.custom_icon, pushData.largeIcon)
+        } else
+            remoteView.setImageViewIcon(
+                R.id.custom_icon,
+                Icon.createWithResource(
+                    context,
+                    context.applicationInfo.icon
+                )
+            )
+    }
 }

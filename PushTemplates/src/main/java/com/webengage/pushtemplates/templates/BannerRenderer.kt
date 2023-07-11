@@ -22,8 +22,8 @@ class BannerRenderer {
     private lateinit var mBuilder: NotificationCompat.Builder
     private lateinit var pushData: BannerStyleData
     private var whenTime: Long = 0
-    private var collapsedTimerLayoutId = R.layout.layout_banner_template
-    private var expandedTimerLayoutId = R.layout.layout_banner_template
+    private var collapsedBannerLayoutId = R.layout.layout_banner_template
+    private var expandedBannerLayoutId = R.layout.layout_banner_template
     private var bitmapList: ArrayList<Bitmap?> = ArrayList()
 
     fun onRender(context: Context, pushNotificationData: PushNotificationData): Boolean {
@@ -46,7 +46,7 @@ class BannerRenderer {
         return true
     }
 
-    suspend fun downloadImages(context: Context, pushNotificationData: BannerStyleData) {
+    private suspend fun downloadImages(context: Context, pushNotificationData: BannerStyleData) {
         if (pushNotificationData.pushNotification.bigPictureStyleData.bigPictureUrl != null)
             bitmapList.add(
                 0,
@@ -60,7 +60,7 @@ class BannerRenderer {
             )
     }
 
-    fun showNotification(context: Context) {
+    private fun showNotification(context: Context) {
         with(NotificationManagerCompat.from(context)) {
             notify(pushData.pushNotification.variationId.hashCode(), mBuilder.build().apply {
                 this.flags = this.flags or Notification.FLAG_AUTO_CANCEL
@@ -70,15 +70,15 @@ class BannerRenderer {
     }
 
 
-    fun constructNotification(context: Context, pushNotificationData: BannerStyleData) {
+    private fun constructNotification(context: Context, pushNotificationData: BannerStyleData) {
         NotificationConfigurator().setNotificationConfiguration(
             mBuilder,
-            pushNotificationData!!.pushNotification,
+            pushNotificationData.pushNotification,
             whenTime
         )
 
         NotificationConfigurator().setDismissIntent(
-            context!!,
+            context,
             mBuilder,
             pushNotificationData.pushNotification
         )
@@ -104,11 +104,11 @@ class BannerRenderer {
         )
     }
 
-    fun constructCollapsedBannerPushBase(
+    private fun constructCollapsedBannerPushBase(
         context: Context,
         pushNotificationData: BannerStyleData
     ): RemoteViews {
-        val remoteViews = RemoteViews(context.packageName, collapsedTimerLayoutId)
+        val remoteViews = RemoteViews(context.packageName, collapsedBannerLayoutId)
         //todo
         //set title and desc and app details
 
@@ -147,11 +147,11 @@ class BannerRenderer {
         return remoteViews
     }
 
-    fun constructExpandedBannerPushBase(
+    private fun constructExpandedBannerPushBase(
         context: Context,
         pushNotificationData: BannerStyleData
     ): RemoteViews {
-        val remoteViews = RemoteViews(context.packageName, expandedTimerLayoutId)
+        val remoteViews = RemoteViews(context.packageName, expandedBannerLayoutId)
 
         //todo
         //set title and desc and app details
@@ -199,7 +199,7 @@ class BannerRenderer {
         return remoteViews
     }
 
-    fun configureCollapsedModeHalfBg(
+    private fun configureCollapsedModeHalfBg(
         context: Context,
         remoteViews: RemoteViews,
         pushNotificationData: BannerStyleData
@@ -213,6 +213,8 @@ class BannerRenderer {
         remoteViews.setViewVisibility(R.id.we_notification_image3, View.GONE)
         //show R.id.we_notification_image4
         remoteViews.setViewVisibility(R.id.we_notification_image4, View.VISIBLE)
+
+        remoteViews.setViewVisibility(R.id.custom_icon, View.GONE)
         //check if collapsedImageUrl is null
         if (bitmapList.size > 1)
             remoteViews.setImageViewBitmap(R.id.we_notification_image4, bitmapList[1])
@@ -222,7 +224,7 @@ class BannerRenderer {
         //use adaptive title desc appName if bgColor is transparent. Override appName with fontColor if present
     }
 
-    fun configureCollapsedModeFullBg(
+    private fun configureCollapsedModeFullBg(
         context: Context,
         remoteViews: RemoteViews,
         pushNotificationData: BannerStyleData
@@ -236,21 +238,27 @@ class BannerRenderer {
         remoteViews.setViewVisibility(R.id.we_notification_image4, View.GONE)
         //show R.id.we_notification_image3
         remoteViews.setViewVisibility(R.id.we_notification_image3, View.VISIBLE)
+
+        remoteViews.setViewVisibility(R.id.custom_icon, View.GONE)
+
         if (bitmapList.size > 1)
             remoteViews.setImageViewBitmap(R.id.we_notification_image3, bitmapList[1])
         else
             remoteViews.setImageViewBitmap(R.id.we_notification_image3, bitmapList[0])
+        NotificationConfigurator().configureCustomColor(context, pushNotificationData.pushNotification, remoteViews, pushNotificationData.fontColor)
         //check if collapsedImageUrl is null
         //if yes , use image url and render on we_notification_image2
         //if collapsedImageUrl present , use it and render on we_notification_image2
         //use black title desc appName. Override appName with fontColor if present
     }
 
-    fun configureCollapsedModeDefaultBg(
+    private fun configureCollapsedModeDefaultBg(
         context: Context,
         remoteViews: RemoteViews,
         pushNotificationData: BannerStyleData
     ) {
+
+        NotificationConfigurator().setBigImage(context, pushData.pushNotification, remoteViews)
         //todo
         //hide R.id.we_notification_image
         remoteViews.setViewVisibility(R.id.we_notification_image, View.GONE)
@@ -265,7 +273,7 @@ class BannerRenderer {
     }
 
 
-    fun configureExpandedModeFullBg(
+    private fun configureExpandedModeFullBg(
         context: Context,
         remoteViews: RemoteViews,
         pushNotificationData: BannerStyleData
@@ -280,13 +288,17 @@ class BannerRenderer {
         //hide R.id.we_notification_image4
         remoteViews.setViewVisibility(R.id.we_notification_image4, View.GONE)
 
+        remoteViews.setViewVisibility(R.id.custom_icon, View.GONE)
+
         //Use image url and render on we_notification_image2
 
         remoteViews.setImageViewBitmap(R.id.we_notification_image2, bitmapList[0])
         //use black title desc appName. Override appName with fontColor if present
+
+        NotificationConfigurator().configureCustomColor(context, pushNotificationData.pushNotification, remoteViews, pushNotificationData.fontColor)
     }
 
-    fun configureExpandedModeDefaultBg(
+    private fun configureExpandedModeDefaultBg(
         context: Context,
         remoteViews: RemoteViews,
         pushNotificationData: BannerStyleData
@@ -300,7 +312,15 @@ class BannerRenderer {
         remoteViews.setViewVisibility(R.id.we_notification_image3, View.GONE)
         //hide R.id.we_notification_image4
         remoteViews.setViewVisibility(R.id.we_notification_image4, View.GONE)
+
+        NotificationConfigurator().setNotificationBanner(
+            remoteViews,
+            pushNotificationData.pushNotification,
+            bitmapList
+        )
         remoteViews.setImageViewBitmap(R.id.we_notification_image, bitmapList[0])
+
+        NotificationConfigurator().setBigImage(context, pushData.pushNotification, remoteViews)
 
         //Use image url and render on we_notification_image
         //use adaptive title desc appName if bgColor is transparent. Override appName with fontColor if present

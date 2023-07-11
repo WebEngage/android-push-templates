@@ -26,16 +26,44 @@ class BannerStyleData(context: Context, pushNotificationData: PushNotificationDa
 
     var showDismissCTA: Boolean = false
 
-    init {
-        
-        expandedMode =
-            pushNotificationData.customData.getString(Constants.EXPANDED_MODE, Constants.DEFAULT_MODE)
+    //For push layout selection i.e. 1 - em=full_bg cm=default
+    var layout: Int = 1
 
-        collapsedMode =
-            pushNotificationData.customData.getString(Constants.COLLAPSED_MODE, Constants.DEFAULT_MODE)
+    init {
 
         collapsedImageURL =
             pushNotificationData.customData.getString(Constants.COLLAPSED_MODE_IMAGE_URL, null)
+
+
+        try {
+            layout =
+                pushNotificationData.customData.getString(Constants.LAYOUT)?.toInt()?:1
+        } catch (ex: Exception) {
+            Log.d("PushTemplates", "LAYOUT is not a int value")
+        }
+
+        when(layout){
+            1 -> {
+                expandedMode = Constants.FULL_BACKGROUND_MODE
+                collapsedMode = Constants.DEFAULT_MODE
+            }
+            2 -> {
+                expandedMode = Constants.FULL_BACKGROUND_MODE
+                collapsedMode = Constants.FULL_BACKGROUND_MODE
+            }
+            3 -> {
+                expandedMode = Constants.FULL_BACKGROUND_MODE
+                collapsedMode = Constants.HALF_BACKGROUND_MODE
+            }
+            4 -> {
+                expandedMode = Constants.DEFAULT_MODE
+                collapsedMode = Constants.HALF_BACKGROUND_MODE
+            }
+            5 -> {
+                expandedMode = Constants.DEFAULT_MODE
+                collapsedMode = Constants.FULL_BACKGROUND_MODE
+            }
+        }
 
         try {
             fontColor =
