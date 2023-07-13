@@ -11,4 +11,5 @@
     <dimen name="we_push_action_list_height">40dp</dimen>
     <dimen name="we_push_action1_padding">0dp</dimen>
     <dimen name="we_push_banner_padding">0dp</dimen>
+    <dimen name="we_push_content_bottom_margin">0dp</dimen>
 </resources>

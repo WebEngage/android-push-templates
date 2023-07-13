@@ -642,21 +642,33 @@ class NotificationConfigurator {
     }
 
     /**
-     * Sets custom color to app name , time, summary, title and description
+     * sets visibility of adaptive text(app name, time, summary, title , description) as gone
      */
-    fun configureCustomColor(context: Context,
-                             pushData: PushNotificationData,
-                             remoteView: RemoteViews,
-                             color: Int){
-        if (pushData.backgroundColor == context.getColor(R.color.we_transparent)) {
-            remoteView.setTextColor(R.id.app_name, color)
-            remoteView.setTextColor(R.id.custom_notification_time, color)
-            remoteView.setTextColor(R.id.custom_summary, color)
-        } else {
-            remoteView.setTextColor(R.id.app_name_native, color)
-            remoteView.setTextColor(R.id.custom_notification_time_native, color)
-            remoteView.setTextColor(R.id.custom_summary_native, color)
-        }
+    fun setAdaptiveTextVisibility(remoteView: RemoteViews){
+
+        remoteView.setViewVisibility(R.id.app_name, View.GONE)
+        remoteView.setViewVisibility(R.id.custom_notification_time, View.GONE)
+        remoteView.setViewVisibility(R.id.custom_summary, View.GONE)
+        remoteView.setViewVisibility(R.id.we_notification_title, View.GONE)
+        remoteView.setViewVisibility(R.id.we_notification_description, View.GONE)
+
+        remoteView.setViewVisibility(R.id.app_name_native, View.VISIBLE)
+        remoteView.setViewVisibility(R.id.custom_notification_time_native, View.VISIBLE)
+        remoteView.setViewVisibility(R.id.custom_summary_native, View.VISIBLE)
+        remoteView.setViewVisibility(R.id.we_notification_title_native, View.VISIBLE)
+        remoteView.setViewVisibility(R.id.we_notification_description_native, View.VISIBLE)
+    }
+
+    /**
+     * Sets custom color to app name & time
+     */
+    fun configureCustomColor(
+        remoteView: RemoteViews,
+        color: Int
+    ) {
+        remoteView.setTextColor(R.id.app_name_native, color)
+        remoteView.setTextColor(R.id.custom_notification_time_native, color)
+
     }
 
     /**
@@ -667,12 +679,12 @@ class NotificationConfigurator {
         pushData: PushNotificationData,
         remoteView: RemoteViews
     ) {
-        remoteView.setViewVisibility(R.id.custom_icon, View.VISIBLE)
+        remoteView.setViewVisibility(R.id.large_icon, View.VISIBLE)
         if (pushData.largeIcon != null) {
-            remoteView.setImageViewBitmap(R.id.custom_icon, pushData.largeIcon)
+            remoteView.setImageViewBitmap(R.id.large_icon, pushData.largeIcon)
         } else
             remoteView.setImageViewIcon(
-                R.id.custom_icon,
+                R.id.large_icon,
                 Icon.createWithResource(
                     context,
                     context.applicationInfo.icon

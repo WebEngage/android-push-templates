@@ -214,7 +214,7 @@ class BannerRenderer {
         //show R.id.we_notification_image4
         remoteViews.setViewVisibility(R.id.we_notification_image4, View.VISIBLE)
 
-        remoteViews.setViewVisibility(R.id.custom_icon, View.GONE)
+        remoteViews.setViewVisibility(R.id.large_icon, View.GONE)
         //check if collapsedImageUrl is null
         if (bitmapList.size > 1)
             remoteViews.setImageViewBitmap(R.id.we_notification_image4, bitmapList[1])
@@ -239,13 +239,16 @@ class BannerRenderer {
         //show R.id.we_notification_image3
         remoteViews.setViewVisibility(R.id.we_notification_image3, View.VISIBLE)
 
-        remoteViews.setViewVisibility(R.id.custom_icon, View.GONE)
+        remoteViews.setViewVisibility(R.id.large_icon, View.GONE)
 
         if (bitmapList.size > 1)
             remoteViews.setImageViewBitmap(R.id.we_notification_image3, bitmapList[1])
         else
             remoteViews.setImageViewBitmap(R.id.we_notification_image3, bitmapList[0])
-        NotificationConfigurator().configureCustomColor(context, pushNotificationData.pushNotification, remoteViews, pushNotificationData.fontColor)
+
+        NotificationConfigurator().setAdaptiveTextVisibility(remoteViews)
+
+        NotificationConfigurator().configureCustomColor(remoteViews, pushNotificationData.fontColor)
         //check if collapsedImageUrl is null
         //if yes , use image url and render on we_notification_image2
         //if collapsedImageUrl present , use it and render on we_notification_image2
@@ -288,14 +291,16 @@ class BannerRenderer {
         //hide R.id.we_notification_image4
         remoteViews.setViewVisibility(R.id.we_notification_image4, View.GONE)
 
-        remoteViews.setViewVisibility(R.id.custom_icon, View.GONE)
+        remoteViews.setViewVisibility(R.id.large_icon, View.GONE)
 
         //Use image url and render on we_notification_image2
 
         remoteViews.setImageViewBitmap(R.id.we_notification_image2, bitmapList[0])
         //use black title desc appName. Override appName with fontColor if present
 
-        NotificationConfigurator().configureCustomColor(context, pushNotificationData.pushNotification, remoteViews, pushNotificationData.fontColor)
+        NotificationConfigurator().setAdaptiveTextVisibility(remoteViews)
+
+        NotificationConfigurator().configureCustomColor(remoteViews, pushNotificationData.fontColor)
     }
 
     private fun configureExpandedModeDefaultBg(

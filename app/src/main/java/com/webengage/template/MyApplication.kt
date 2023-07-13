@@ -43,7 +43,7 @@ class MyApplication : Application() {
 
         val builder: WebEngageConfig.Builder =
             WebEngageConfig.Builder()
-                .setWebEngageKey("aa131d2c")
+                .setWebEngageKey("~2024bb40")
                 .setDebugMode(true)
                 .setAutoGCMRegistrationFlag(false)
                 .setPushSmallIcon(R.drawable.ic_notification_small)

@@ -8,20 +8,20 @@
     <ImageView
         android:id="@+id/we_notification_image2"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
+        android:layout_height="@dimen/we_push_banner_image_height"
         android:scaleType="centerCrop" />
 
     <ImageView
         android:id="@+id/we_notification_image3"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="@dimen/we_push_half_banner_image_height"
         android:scaleType="centerCrop"
         android:layout_alignBottom="@id/we_notification_image2"/>
 
     <LinearLayout
         android:id="@+id/push_details_container"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:layout_alignBottom="@id/we_notification_image2"
         android:orientation="vertical">
 
@@ -43,73 +43,75 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/we_push_intercontent_margin"
-                    android:paddingStart="@dimen/we_push_content_margin"
-                    android:paddingBottom="@dimen/we_push_content_margin"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
-                    <include layout="@layout/title"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/we_push_content_bottom_margin"
+                        android:paddingStart="@dimen/we_push_content_bottom_margin"
+                        android:paddingEnd="@dimen/we_push_content_bottom_margin"
+                        android:paddingBottom="@dimen/we_push_content_bottom_margin"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                    <include
-                        layout="@layout/description"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        <include layout="@layout/title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <include
+                            layout="@layout/description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+
+                    <ImageView
+                        android:id="@+id/large_icon"
+                        android:layout_width="@dimen/we_large_icon_size"
+                        android:layout_height="@dimen/we_large_icon_size"
+                        android:visibility="visible"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="@dimen/we_push_action_padding"
+                        android:layout_marginBottom="@dimen/we_push_content_margin"
+                        android:scaleType="centerCrop" />
+
                 </LinearLayout>
+
 
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/we_notification_image4"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="@dimen/we_push_half_banner_image_height"
                 android:layout_weight="2"
                 android:scaleType="centerCrop"
                 />
         </LinearLayout>
 
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/we_notification_image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/we_push_default_image_height"
+            android:layout_marginStart="@dimen/we_push_content_bottom_margin"
+            android:layout_marginLeft="@dimen/we_push_content_bottom_margin"
+            android:layout_marginEnd="@dimen/we_push_content_bottom_margin"
+            android:layout_marginRight="@dimen/we_push_content_bottom_margin"
+            android:layout_marginBottom="@dimen/we_push_content_bottom_margin"
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
 
-    <FrameLayout
-        android:id="@+id/we_notification_bottom_margin"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="@dimen/we_push_content_margin" />
-
-    <ImageView
-        android:id="@+id/we_notification_image"
-        android:layout_width="match_parent"
-        android:layout_height="132dp"
-        android:layout_marginStart="@dimen/we_push_content_margin"
-        android:layout_marginLeft="@dimen/we_push_content_margin"
-        android:layout_marginEnd="@dimen/we_push_content_margin"
-        android:layout_marginRight="@dimen/we_push_content_margin"
-        android:layout_marginBottom="@dimen/we_push_content_margin"
-        android:layout_below="@+id/push_details_container"
-        android:scaleType="centerCrop"
-        android:visibility="gone"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/we_notification_image">
+        <FrameLayout
+            android:id="@+id/we_notification_bottom_margin"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="@dimen/we_push_content_margin" />
 
         <include layout="@layout/push_actions" />
+
     </LinearLayout>
 
 
-    <ImageView
-        android:id="@+id/custom_icon"
-        android:layout_width="@dimen/we_large_icon_size"
-        android:layout_height="@dimen/we_large_icon_size"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:visibility="gone"
-        android:layout_alignBottom="@id/push_details_container"
-        android:layout_gravity="top|end"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="@dimen/we_push_content_margin"
-        android:scaleType="centerCrop" />
 </RelativeLayout>

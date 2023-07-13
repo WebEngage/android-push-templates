@@ -11,11 +11,9 @@ object Constants {
     const val PROGRESS_BAR_COLOR = "pb_color"
     const val PROGRESS_BAR_BACKGROUND_COLOR = "pb_bg_color"
     const val SHOW_DISMISS_CTA = "show_dismiss_cta"
-    const val EXPANDED_MODE = "expanded_mode"
-    const val COLLAPSED_MODE = "collapsed_mode"
-    const val COLLAPSED_MODE_IMAGE_URL = "cm_image"
-    const val FONT_COLOR = "font_color"
-    const val LAYOUT = "layout"
+    const val COLLAPSED_MODE_IMAGE_URL = "we_cm_image"
+    const val FONT_COLOR = "we_font_color"
+    const val LAYOUT = "we_layout"
 
     //Modes for Banner Styles
     const val HALF_BACKGROUND_MODE = "half_bg"
