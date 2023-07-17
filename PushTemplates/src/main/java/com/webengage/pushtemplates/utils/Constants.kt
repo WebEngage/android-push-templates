@@ -14,6 +14,7 @@ object Constants {
     const val COLLAPSED_MODE_IMAGE_URL = "we_cm_image"
     const val FONT_COLOR = "we_font_color"
     const val LAYOUT = "we_layout"
+    const val DURATION = "we_duration"
 
     //Modes for Banner Styles
     const val HALF_BACKGROUND_MODE = "half_bg"

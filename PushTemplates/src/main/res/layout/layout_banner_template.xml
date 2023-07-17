@@ -6,23 +6,23 @@
     android:background="@color/we_transparent">
 
     <ImageView
-        android:id="@+id/we_notification_image2"
+        android:id="@+id/we_notification_expanded_bg_image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/we_push_banner_image_height"
         android:scaleType="centerCrop" />
 
     <ImageView
-        android:id="@+id/we_notification_image3"
+        android:id="@+id/we_notification_collapsed_bg_image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/we_push_half_banner_image_height"
         android:scaleType="centerCrop"
-        android:layout_alignBottom="@id/we_notification_image2"/>
+        android:layout_alignBottom="@id/we_notification_expanded_bg_image"/>
 
     <LinearLayout
         android:id="@+id/push_details_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/we_notification_image2"
+        android:layout_alignBottom="@id/we_notification_expanded_bg_image"
         android:orientation="vertical">
 
         <LinearLayout
@@ -82,7 +82,7 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/we_notification_image4"
+                android:id="@+id/we_notification_half_image"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/we_push_half_banner_image_height"
                 android:layout_weight="2"
@@ -109,9 +109,8 @@
             android:visibility="gone"
             android:layout_height="@dimen/we_push_content_margin" />
 
-        <include layout="@layout/push_actions" />
+
+        <include layout="@layout/push_actions"/>
 
     </LinearLayout>
-
-
 </RelativeLayout>

@@ -644,7 +644,7 @@ class NotificationConfigurator {
     /**
      * sets visibility of adaptive text(app name, time, summary, title , description) as gone
      */
-    fun setAdaptiveTextVisibility(remoteView: RemoteViews){
+    fun setAdaptiveTextViewVisibility(remoteView: RemoteViews){
 
         remoteView.setViewVisibility(R.id.app_name, View.GONE)
         remoteView.setViewVisibility(R.id.custom_notification_time, View.GONE)

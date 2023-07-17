@@ -63,6 +63,10 @@ class BannerStyleData(context: Context, pushNotificationData: PushNotificationDa
                 expandedMode = Constants.DEFAULT_MODE
                 collapsedMode = Constants.FULL_BACKGROUND_MODE
             }
+            else -> {
+                expandedMode = Constants.DEFAULT_MODE
+                collapsedMode = Constants.DEFAULT_MODE
+            }
         }
 
         try {
