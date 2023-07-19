@@ -139,7 +139,7 @@ class BannerRenderer {
         if (pushNotificationData.collapsedMode.equals(Constants.DEFAULT_MODE, true))
             configureCollapsedModeDefaultBg(context, remoteViews)
         else if (pushNotificationData.collapsedMode.equals(Constants.FULL_BACKGROUND_MODE, true))
-            configureCollapsedModeFullBg(remoteViews, pushNotificationData)
+            configureCollapsedModeFullBg(context, remoteViews, pushNotificationData)
         else if (pushNotificationData.collapsedMode.equals(Constants.HALF_BACKGROUND_MODE, true))
             configureCollapsedModeHalfBg(remoteViews)
 
@@ -178,7 +178,7 @@ class BannerRenderer {
         if (pushNotificationData.expandedMode.equals(Constants.DEFAULT_MODE, true))
             configureExpandedModeDefaultBg(context, remoteViews, pushNotificationData)
         else if (pushNotificationData.expandedMode.equals(Constants.FULL_BACKGROUND_MODE, true))
-            configureExpandedModeFullBg(remoteViews, pushNotificationData)
+            configureExpandedModeFullBg(context, remoteViews, pushNotificationData)
 
         //set CTA buttons
 
@@ -220,6 +220,7 @@ class BannerRenderer {
     }
 
     private fun configureCollapsedModeFullBg(
+        context: Context,
         remoteViews: RemoteViews,
         pushNotificationData: BannerStyleData
     ) {
@@ -243,6 +244,8 @@ class BannerRenderer {
         NotificationConfigurator().setAdaptiveTextViewVisibility(remoteViews)
 
         NotificationConfigurator().configureCustomColor(remoteViews, pushNotificationData.fontColor)
+
+        NotificationConfigurator().setPaddingForFullBackground(context, remoteViews)
     }
 
     private fun configureCollapsedModeDefaultBg(
@@ -266,6 +269,7 @@ class BannerRenderer {
 
 
     private fun configureExpandedModeFullBg(
+        context: Context,
         remoteViews: RemoteViews,
         pushNotificationData: BannerStyleData
     ) {
@@ -290,6 +294,8 @@ class BannerRenderer {
         NotificationConfigurator().setAdaptiveTextViewVisibility(remoteViews)
 
         NotificationConfigurator().configureCustomColor(remoteViews, pushNotificationData.fontColor)
+
+        NotificationConfigurator().setPaddingForFullBackground(context, remoteViews)
     }
 
     private fun configureExpandedModeDefaultBg(

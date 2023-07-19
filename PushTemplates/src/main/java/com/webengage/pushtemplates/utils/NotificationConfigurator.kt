@@ -691,4 +691,18 @@ class NotificationConfigurator {
                 )
             )
     }
+
+    /**
+     * Sets padding for full background image layout above android 12
+     */
+    fun setPaddingForFullBackground(
+        context: Context, remoteView: RemoteViews
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && context.applicationInfo.targetSdkVersion >= Build.VERSION_CODES.S) {
+            val inset =
+                context.resources.getDimensionPixelSize(R.dimen.we_push_content_margin_colorbg)
+            remoteView.setViewPadding(R.id.we_notification, inset, 0, 0, 0)
+        }
+
+    }
 }
