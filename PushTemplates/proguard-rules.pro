@@ -22,3 +22,4 @@
 -keep class com.webengage.pushtemplates.CustomCallback {
    public <methods>;
 }
+-repackageclasses 'com.webengage.pushtemplates'
