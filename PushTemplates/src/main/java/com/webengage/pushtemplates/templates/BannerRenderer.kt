@@ -241,7 +241,7 @@ class BannerRenderer {
             remoteViews.setImageViewBitmap(R.id.we_notification_collapsed_bg_image, bitmapList[0])
 
         //for hiding adaptive text and showing normal text in case of background image
-        NotificationConfigurator().setAdaptiveTextViewVisibility(remoteViews)
+        NotificationConfigurator().setAdaptiveTextViewVisibility(remoteViews, pushNotificationData.pushNotification)
 
         NotificationConfigurator().configureCustomColor(remoteViews, pushNotificationData.fontColor)
 
@@ -291,7 +291,10 @@ class BannerRenderer {
         //use black title desc appName. Override appName with fontColor if present
 
         //for hiding adaptive text and showing normal text in case of background image
-        NotificationConfigurator().setAdaptiveTextViewVisibility(remoteViews)
+        NotificationConfigurator().setAdaptiveTextViewVisibility(
+            remoteViews,
+            pushNotificationData.pushNotification
+        )
 
         NotificationConfigurator().configureCustomColor(remoteViews, pushNotificationData.fontColor)
 
