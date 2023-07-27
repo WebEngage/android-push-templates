@@ -651,13 +651,14 @@ class NotificationConfigurator {
 
         remoteView.setViewVisibility(R.id.app_name, View.GONE)
         remoteView.setViewVisibility(R.id.custom_notification_time, View.GONE)
-        remoteView.setViewVisibility(R.id.custom_summary, View.GONE)
+
         remoteView.setViewVisibility(R.id.we_notification_title, View.GONE)
         remoteView.setViewVisibility(R.id.we_notification_description, View.GONE)
 
         remoteView.setViewVisibility(R.id.app_name_native, View.VISIBLE)
         remoteView.setViewVisibility(R.id.custom_notification_time_native, View.VISIBLE)
         if (!TextUtils.isEmpty(pushData.contentSummary)){
+            remoteView.setViewVisibility(R.id.custom_summary, View.GONE)
             remoteView.setViewVisibility(R.id.custom_summary_native, View.VISIBLE)
         }
         remoteView.setViewVisibility(R.id.we_notification_title_native, View.VISIBLE)
@@ -667,7 +668,7 @@ class NotificationConfigurator {
     /**
      * Sets custom color to app name & time
      */
-    fun configureCustomColor(
+    fun configureCustomColorForPushBase(
         remoteView: RemoteViews,
         color: Int
     ) {
@@ -698,7 +699,8 @@ class NotificationConfigurator {
     }
 
     /**
-     * Sets padding for full background image layout above android 12
+     * Sets padding for full background image banner layout above android 12
+     * For other scenario it is already handled in [com.webengage.pushtemplates.utils.NotificationConfigurator.configureRemoteView] method
      */
     fun setPaddingForFullBackground(
         context: Context, remoteView: RemoteViews

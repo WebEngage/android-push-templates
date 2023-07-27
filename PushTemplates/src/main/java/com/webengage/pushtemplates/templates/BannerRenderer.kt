@@ -243,7 +243,7 @@ class BannerRenderer {
         //for hiding adaptive text and showing normal text in case of background image
         NotificationConfigurator().setAdaptiveTextViewVisibility(remoteViews, pushNotificationData.pushNotification)
 
-        NotificationConfigurator().configureCustomColor(remoteViews, pushNotificationData.fontColor)
+        NotificationConfigurator().configureCustomColorForPushBase(remoteViews, pushNotificationData.fontColor)
 
         NotificationConfigurator().setPaddingForFullBackground(context, remoteViews)
     }
@@ -296,7 +296,7 @@ class BannerRenderer {
             pushNotificationData.pushNotification
         )
 
-        NotificationConfigurator().configureCustomColor(remoteViews, pushNotificationData.fontColor)
+        NotificationConfigurator().configureCustomColorForPushBase(remoteViews, pushNotificationData.fontColor)
 
         NotificationConfigurator().setPaddingForFullBackground(context, remoteViews)
     }

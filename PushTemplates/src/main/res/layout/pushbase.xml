@@ -27,7 +27,6 @@
                 android:layout_width="@dimen/we_small_icon_size"
                 android:layout_height="@dimen/we_small_icon_size"
                 android:layout_marginEnd="@dimen/we_push_intercontent_margin"
-                android:layout_marginRight="@dimen/we_push_intercontent_margin"
                 android:tint="#808080" />
 
             <TextView
@@ -43,8 +42,8 @@
                 style="@style/NotificationInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:drawableLeft="@drawable/ic_notification_title_divider"
+                android:layout_marginStart="6dp"
+                android:drawableStart="@drawable/ic_notification_title_divider"
                 android:drawablePadding="6dp"
                 android:maxWidth="140dp"
                 android:text="Summary" />
@@ -54,8 +53,8 @@
                 style="@style/NotificationInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:drawableLeft="@drawable/ic_notification_title_divider"
+                android:layout_marginStart="6dp"
+                android:drawableStart="@drawable/ic_notification_title_divider"
                 android:drawablePadding="6dp"
                 android:maxLength="12"
                 android:text="hh:mm" />
@@ -73,8 +72,8 @@
                 style="@style/NotificationInfoAdaptive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:drawableLeft="@drawable/ic_notification_title_divider"
+                android:layout_marginStart="6dp"
+                android:drawableStart="@drawable/ic_notification_title_divider"
                 android:drawablePadding="6dp"
                 android:maxWidth="140dp"
                 android:text="summary" />
@@ -84,8 +83,8 @@
                 style="@style/NotificationInfoAdaptive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:drawableLeft="@drawable/ic_notification_title_divider"
+                android:layout_marginStart="6dp"
+                android:drawableStart="@drawable/ic_notification_title_divider"
                 android:drawablePadding="6dp"
                 android:maxLength="12"
                 android:text="hh:mm" />
