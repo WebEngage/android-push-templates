@@ -2,20 +2,21 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="@dimen/we_push_title_bottom_margin">
     <TextView
         android:id="@+id/we_notification_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/NotificationTitleAdaptive"
-        android:text="Title"
+        tools:text="Title"
         android:maxLines="1"></TextView>
     <TextView
         android:id="@+id/we_notification_title_native"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/NotificationTitle"
-        android:text="Title"
+        tools:text="Title"
         android:maxLines="1"></TextView>
 
 </FrameLayout>

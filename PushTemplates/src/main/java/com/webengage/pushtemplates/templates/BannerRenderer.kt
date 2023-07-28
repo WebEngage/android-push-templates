@@ -210,13 +210,19 @@ class BannerRenderer {
         remoteViews.setViewVisibility(R.id.we_notification_half_image, View.VISIBLE)
 
         remoteViews.setViewVisibility(R.id.large_icon, View.GONE)
+
         //check if collapsedImageUrl is null
-        if (bitmapList.size > 1)
-            remoteViews.setImageViewBitmap(R.id.we_notification_half_image, bitmapList[1])
-        else
+        if (bitmapList.size > 1){
+            if(bitmapList[1] != null)
+                remoteViews.setImageViewBitmap(R.id.we_notification_half_image, bitmapList[1])
+            else
+                remoteViews.setViewVisibility(R.id.we_notification_half_image, View.GONE)
+        } else if(bitmapList[0] != null) {
             remoteViews.setImageViewBitmap(R.id.we_notification_half_image, bitmapList[0])
-        //if yes , use image url and render we_notification_image3
-        //use adaptive title desc appName if bgColor is transparent. Override appName with fontColor if present
+        } else {
+            remoteViews.setViewVisibility(R.id.we_notification_half_image, View.GONE)
+        }
+
     }
 
     private fun configureCollapsedModeFullBg(
@@ -235,17 +241,31 @@ class BannerRenderer {
 
         remoteViews.setViewVisibility(R.id.large_icon, View.GONE)
 
-        if (bitmapList.size > 1)
-            remoteViews.setImageViewBitmap(R.id.we_notification_collapsed_bg_image, bitmapList[1])
-        else
+        var bitmapAvailable = false
+        //check if collapsedImageUrl is null
+        if (bitmapList.size > 1){
+            if(bitmapList[1] != null){
+                bitmapAvailable = true
+                remoteViews.setImageViewBitmap(R.id.we_notification_collapsed_bg_image, bitmapList[1])
+            }
+            else
+                remoteViews.setViewVisibility(R.id.we_notification_collapsed_bg_image, View.GONE)
+        } else if(bitmapList[0] != null) {
+            bitmapAvailable = true
             remoteViews.setImageViewBitmap(R.id.we_notification_collapsed_bg_image, bitmapList[0])
+        } else {
+            remoteViews.setViewVisibility(R.id.we_notification_collapsed_bg_image, View.GONE)
+        }
 
-        //for hiding adaptive text and showing normal text in case of background image
-        NotificationConfigurator().setAdaptiveTextViewVisibility(remoteViews, pushNotificationData.pushNotification)
+        if(bitmapAvailable){
+            //for hiding adaptive text and showing normal text in case of background image
+            NotificationConfigurator().setAdaptiveTextViewVisibility(remoteViews, pushNotificationData.pushNotification)
 
-        NotificationConfigurator().configureCustomColorForPushBase(remoteViews, pushNotificationData.fontColor)
+            NotificationConfigurator().configureCustomColorForPushBase(remoteViews, pushNotificationData.fontColor)
 
-        NotificationConfigurator().setPaddingForFullBackground(context, remoteViews)
+            NotificationConfigurator().setPaddingForFullBackground(context, remoteViews)
+        }
+
     }
 
     private fun configureCollapsedModeDefaultBg(
@@ -285,20 +305,25 @@ class BannerRenderer {
 
         remoteViews.setViewVisibility(R.id.large_icon, View.GONE)
 
-        //Use image url and render on we_notification_image2
+        //Use image url and render on we_notification_expanded_bg_image
+        if (bitmapList[0] != null){
+            remoteViews.setImageViewBitmap(R.id.we_notification_expanded_bg_image, bitmapList[0])
 
-        remoteViews.setImageViewBitmap(R.id.we_notification_expanded_bg_image, bitmapList[0])
-        //use black title desc appName. Override appName with fontColor if present
+            //for hiding adaptive text and showing normal text in case of background image
+            NotificationConfigurator().setAdaptiveTextViewVisibility(
+                remoteViews,
+                pushNotificationData.pushNotification
+            )
 
-        //for hiding adaptive text and showing normal text in case of background image
-        NotificationConfigurator().setAdaptiveTextViewVisibility(
-            remoteViews,
-            pushNotificationData.pushNotification
-        )
+            NotificationConfigurator().configureCustomColorForPushBase(remoteViews, pushNotificationData.fontColor)
 
-        NotificationConfigurator().configureCustomColorForPushBase(remoteViews, pushNotificationData.fontColor)
+            NotificationConfigurator().setPaddingForFullBackground(context, remoteViews)
 
-        NotificationConfigurator().setPaddingForFullBackground(context, remoteViews)
+        } else {
+            remoteViews.setViewVisibility(R.id.we_notification_expanded_bg_image, View.GONE)
+        }
+
+
     }
 
     private fun configureExpandedModeDefaultBg(
@@ -321,7 +346,12 @@ class BannerRenderer {
             pushNotificationData.pushNotification,
             bitmapList
         )
-        remoteViews.setImageViewBitmap(R.id.we_notification_image, bitmapList[0])
+
+        if (bitmapList[0] != null){
+            remoteViews.setImageViewBitmap(R.id.we_notification_image, bitmapList[0])
+        } else {
+            remoteViews.setViewVisibility(R.id.we_notification_image, View.GONE)
+        }
 
         NotificationConfigurator().setBigImage(context, pushData.pushNotification, remoteViews)
     }

@@ -651,12 +651,11 @@ class NotificationConfigurator {
 
         remoteView.setViewVisibility(R.id.app_name, View.GONE)
         remoteView.setViewVisibility(R.id.custom_notification_time, View.GONE)
-
         remoteView.setViewVisibility(R.id.we_notification_title, View.GONE)
         remoteView.setViewVisibility(R.id.we_notification_description, View.GONE)
-
         remoteView.setViewVisibility(R.id.app_name_native, View.VISIBLE)
         remoteView.setViewVisibility(R.id.custom_notification_time_native, View.VISIBLE)
+
         if (!TextUtils.isEmpty(pushData.contentSummary)){
             remoteView.setViewVisibility(R.id.custom_summary, View.GONE)
             remoteView.setViewVisibility(R.id.custom_summary_native, View.VISIBLE)
