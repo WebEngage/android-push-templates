@@ -24,7 +24,11 @@ object Constants {
     //Types of Custom Push Templates
     const val PROGRESS_BAR = "bar"
     const val COUNTDOWN = "timer"
-    const val BANNER = "banner"
+    const val BANNER_1 = "banner1"
+    const val BANNER_2 = "banner2"
+    const val BANNER_3 = "banner3"
+    const val BANNER_4 = "banner4"
+    const val BANNER_5 = "banner5"
 
     //Intent Actions
     const val DELETE_ACTION = "com.webengage.push.delete"

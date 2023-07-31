@@ -42,8 +42,12 @@ class CustomCallback : CustomPushRerender, CustomPushRender {
             )
                 return ProgressBarRenderer().onRender(context, pushNotificationData)
             else if (pushNotificationData.customData.containsKey(Constants.TEMPLATE_TYPE) &&
-                pushNotificationData.customData.getString(Constants.TEMPLATE_TYPE)
-                    .equals(Constants.BANNER)
+                (pushNotificationData.customData.getString(Constants.TEMPLATE_TYPE)
+                    .equals(Constants.BANNER_1) || pushNotificationData.customData.getString(Constants.TEMPLATE_TYPE)
+                    .equals(Constants.BANNER_2) || pushNotificationData.customData.getString(Constants.TEMPLATE_TYPE)
+                    .equals(Constants.BANNER_3) || pushNotificationData.customData.getString(Constants.TEMPLATE_TYPE)
+                    .equals(Constants.BANNER_4) || pushNotificationData.customData.getString(Constants.TEMPLATE_TYPE)
+                    .equals(Constants.BANNER_5))
             )
                 return BannerRenderer().onRender(context!!, pushNotificationData)
 

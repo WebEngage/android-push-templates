@@ -42,24 +42,24 @@ class BannerStyleData(context: Context, pushNotificationData: PushNotificationDa
             Log.d("PushTemplates", "LAYOUT is not a int value")
         }
 
-        when(layout){
-            1 -> {
+        when(pushNotificationData.customData.getString(Constants.TEMPLATE_TYPE)){
+            Constants.BANNER_1 -> {
                 expandedMode = Constants.FULL_BACKGROUND_MODE
                 collapsedMode = Constants.DEFAULT_MODE
             }
-            2 -> {
+            Constants.BANNER_2 -> {
                 expandedMode = Constants.FULL_BACKGROUND_MODE
                 collapsedMode = Constants.FULL_BACKGROUND_MODE
             }
-            3 -> {
+            Constants.BANNER_3 -> {
                 expandedMode = Constants.FULL_BACKGROUND_MODE
                 collapsedMode = Constants.HALF_BACKGROUND_MODE
             }
-            4 -> {
+            Constants.BANNER_4 -> {
                 expandedMode = Constants.DEFAULT_MODE
                 collapsedMode = Constants.HALF_BACKGROUND_MODE
             }
-            5 -> {
+            Constants.BANNER_4 -> {
                 expandedMode = Constants.DEFAULT_MODE
                 collapsedMode = Constants.FULL_BACKGROUND_MODE
             }
