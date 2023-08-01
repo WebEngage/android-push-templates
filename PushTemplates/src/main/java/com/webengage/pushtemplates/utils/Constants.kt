@@ -12,8 +12,7 @@ object Constants {
     const val PROGRESS_BAR_BACKGROUND_COLOR = "pb_bg_color"
     const val SHOW_DISMISS_CTA = "show_dismiss_cta"
     const val COLLAPSED_MODE_IMAGE_URL = "we_cm_image"
-    const val FONT_COLOR = "we_font_color"
-    const val LAYOUT = "we_layout"
+    const val FONT_COLOR = "we_AppName_color"
     const val DURATION = "we_duration"
 
     //Modes for Banner Styles
