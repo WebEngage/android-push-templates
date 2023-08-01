@@ -26,21 +26,10 @@ class BannerStyleData(context: Context, pushNotificationData: PushNotificationDa
 
     var showDismissCTA: Boolean = false
 
-    //For push layout selection i.e. 1 - em=full_bg cm=default
-    var layout: Int = 1
-
     init {
 
         collapsedImageURL =
             pushNotificationData.customData.getString(Constants.COLLAPSED_MODE_IMAGE_URL, null)
-
-
-        try {
-            layout =
-                pushNotificationData.customData.getString(Constants.LAYOUT)?.toInt()?:1
-        } catch (ex: Exception) {
-            Log.d("PushTemplates", "LAYOUT is not a int value")
-        }
 
         when(pushNotificationData.customData.getString(Constants.TEMPLATE_TYPE)){
             Constants.BANNER_1 -> {
@@ -59,7 +48,7 @@ class BannerStyleData(context: Context, pushNotificationData: PushNotificationDa
                 expandedMode = Constants.DEFAULT_MODE
                 collapsedMode = Constants.HALF_BACKGROUND_MODE
             }
-            Constants.BANNER_4 -> {
+            Constants.BANNER_5 -> {
                 expandedMode = Constants.DEFAULT_MODE
                 collapsedMode = Constants.FULL_BACKGROUND_MODE
             }
