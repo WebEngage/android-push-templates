@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.*
 import android.util.Log
+import android.view.View
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -196,6 +197,7 @@ class NotificationService : Service() {
         timeDiff: Long
     ): RemoteViews {
         val remoteView = RemoteViews(context.packageName, expandedTimerLayoutId)
+        remoteView.setViewVisibility(R.id.description, View.VISIBLE)
         NotificationConfigurator().configureRemoteView(
             context,
             remoteView,
