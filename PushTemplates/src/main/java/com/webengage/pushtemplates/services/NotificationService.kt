@@ -197,7 +197,11 @@ class NotificationService : Service() {
             )
         )
 
-        NotificationConfigurator().setDismissAndKillServiceIntent(context, this.mBuilder!!, pushNotificationData.pushNotification)
+        NotificationConfigurator().setDismissAndKillServiceIntent(
+            context,
+            this.mBuilder!!,
+            pushNotificationData.pushNotification
+        )
 
     }
 
@@ -258,8 +262,7 @@ class NotificationService : Service() {
                 timerNotificationData.pushNotification.primeCallToAction.id
             )
             remoteView.setOnClickPendingIntent(R.id.we_notification_container, clickIntent)
-        }
-        else{
+        } else {
             val clickIntent = NotificationConfigurator().getClickAndDismissPendingIntent(
                 context,
                 timerNotificationData.pushNotification,

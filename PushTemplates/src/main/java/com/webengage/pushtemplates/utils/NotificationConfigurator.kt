@@ -730,8 +730,12 @@ class NotificationConfigurator {
      * application is in background, we cannot start the activity on swipe dismiss. We need t rely on
      * BroadCast receiver for swipe dismiss.
      */
-    fun getSwipeDismissPendingIntent(context: Context, pushData: PushNotificationData, logDismiss: Boolean) : PendingIntent{
-        var intent = Intent(context, PushIntentListener::class.java)
+    fun getSwipeDismissPendingIntent(
+        context: Context,
+        pushData: PushNotificationData,
+        logDismiss: Boolean
+    ): PendingIntent {
+        val intent = Intent(context, PushIntentListener::class.java)
         intent.setPackage(context.packageName)
 
         intent.action = Constants.DELETE_ACTION

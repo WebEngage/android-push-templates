@@ -102,7 +102,8 @@ class PushIntentListener : BroadcastReceiver() {
                 context.stopService(notificationServiceIntent)
             } else if (pushData.customData.containsKey(Constants.TEMPLATE_TYPE) && (pushData.customData.getString(
                     Constants.TEMPLATE_TYPE
-                ).equals(Constants.COUNTDOWN) || pushData.customData.getString(Constants.TEMPLATE_TYPE)
+                )
+                    .equals(Constants.COUNTDOWN) || pushData.customData.getString(Constants.TEMPLATE_TYPE)
                     .equals(Constants.BANNER_1) || pushData.customData.getString(Constants.TEMPLATE_TYPE)
                     .equals(Constants.BANNER_2) || pushData.customData.getString(Constants.TEMPLATE_TYPE)
                     .equals(Constants.BANNER_3) || pushData.customData.getString(Constants.TEMPLATE_TYPE)
