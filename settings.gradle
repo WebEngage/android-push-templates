@@ -11,8 +11,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://jitpack.io" }
     }
 }
 rootProject.name = "PushTemplates"
 include ':app'
-include ':PushTemplates'
+//include ':PushTemplates'
