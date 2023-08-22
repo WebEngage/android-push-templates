@@ -647,7 +647,7 @@ class NotificationConfigurator {
     fun setAdaptiveTextViewVisibility(
         remoteView: RemoteViews,
         pushData: PushNotificationData
-    ){
+    ) {
 
         remoteView.setViewVisibility(R.id.app_name, View.GONE)
         remoteView.setViewVisibility(R.id.custom_notification_time, View.GONE)
@@ -656,7 +656,7 @@ class NotificationConfigurator {
         remoteView.setViewVisibility(R.id.app_name_native, View.VISIBLE)
         remoteView.setViewVisibility(R.id.custom_notification_time_native, View.VISIBLE)
 
-        if (!TextUtils.isEmpty(pushData.contentSummary)){
+        if (!TextUtils.isEmpty(pushData.contentSummary)) {
             remoteView.setViewVisibility(R.id.custom_summary, View.GONE)
             remoteView.setViewVisibility(R.id.custom_summary_native, View.VISIBLE)
         }
@@ -710,5 +710,55 @@ class NotificationConfigurator {
             remoteView.setViewPadding(R.id.we_notification, inset, 0, 0, 0)
         }
 
+    }
+
+    /**
+     * For Android 14, sticky notifications can be dismissed by swiping. Use this to kill the
+     * the foreground service.
+     */
+    fun setDismissAndKillServiceIntent(
+        context: Context, mBuilder: NotificationCompat.Builder,
+        pushData: PushNotificationData
+    ) {
+        val dismissIntent =
+            getSwipeDismissPendingIntent(context, pushData, true)
+        mBuilder.setDeleteIntent(dismissIntent)
+    }
+
+    /**
+     * This gives the dismiss intent when the notification is swiped from panel. Since the
+     * application is in background, we cannot start the activity on swipe dismiss. We need t rely on
+     * BroadCast receiver for swipe dismiss.
+     */
+    fun getSwipeDismissPendingIntent(context: Context, pushData: PushNotificationData, logDismiss: Boolean) : PendingIntent{
+        var intent = Intent(context, PushIntentListener::class.java)
+        intent.setPackage(context.packageName)
+
+        intent.action = Constants.DELETE_ACTION
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            intent.identifier = (pushData.variationId + "_" + logDismiss)
+        }
+        intent.setPackage(context.packageName)
+        intent.putExtra(Constants.PAYLOAD, pushData.pushPayloadJSON.toString())
+        intent.putExtra(Constants.LOG_DISMISS, logDismiss)
+
+        val pendingIntent: PendingIntent
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pendingIntent = PendingIntent.getBroadcast(
+                context,
+                (pushData.variationId + "_" + logDismiss).hashCode(),
+                intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        } else {
+            pendingIntent = PendingIntent.getBroadcast(
+                context,
+                (pushData.variationId + "_" + logDismiss).hashCode(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
+
+        return pendingIntent
     }
 }
