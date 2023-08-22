@@ -16,4 +16,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "PushTemplates"
 include ':app'
-//include ':PushTemplates'
+include ':PushTemplates'
