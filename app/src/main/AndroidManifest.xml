@@ -39,7 +39,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="com.webengage.pushtemplates.services.NotificationService" tools:node="merge-only-attributes"
+        <service android:name="com.webengage.pushtemplates.services.NotificationService" tools:node="merge"
             android:foregroundServiceType="specialUse"/>
     </application>
 

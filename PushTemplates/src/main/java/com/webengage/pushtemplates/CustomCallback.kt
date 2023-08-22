@@ -10,7 +10,7 @@ import com.webengage.sdk.android.actions.render.PushNotificationData
 import com.webengage.sdk.android.callbacks.CustomPushRender
 import com.webengage.sdk.android.callbacks.CustomPushRerender
 
-class CustomCallback : CustomPushRerender, CustomPushRender {
+open class CustomCallback : CustomPushRerender, CustomPushRender {
 
     /**
      * Callback received for Pending Intent created using
