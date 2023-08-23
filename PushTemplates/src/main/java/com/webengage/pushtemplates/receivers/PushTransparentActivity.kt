@@ -21,7 +21,7 @@ import org.json.JSONObject
 class PushTransparentActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("PushTemplates","Starting PushTransparentActivity")
+        Log.d("PushTemplates", "Starting PushTransparentActivity")
         try {
             WebEngage.get()
             if (intent!!.action.equals(Constants.DELETE_ACTION)) {
@@ -30,9 +30,8 @@ class PushTransparentActivity : Activity() {
             if (intent.action.equals(Constants.CLICK_ACTION)) {
                 sendClickEvent(this, intent)
             }
-        }
-        catch (e : Exception){}
-        finally {
+        } catch (e: Exception) {
+        } finally {
             finish()
         }
     }
@@ -56,6 +55,13 @@ class PushTransparentActivity : Activity() {
                     false
                 )
                 clickIntent.send()
+            } else {
+                val clickIntent = PendingIntentFactory.constructPushClickPendingIntent(
+                    context,
+                    pushData,
+                    pushData.primeCallToAction, false
+                )
+                clickIntent.send()
             }
             if (pushData.customData.containsKey(Constants.TEMPLATE_TYPE) && pushData.customData.getString(
                     Constants.TEMPLATE_TYPE
@@ -64,7 +70,7 @@ class PushTransparentActivity : Activity() {
                 val notificationServiceIntent =
                     Intent(context, NotificationService::class.java)
                 context.stopService(notificationServiceIntent)
-            }else{
+            } else {
                 dismissNotificationWithId(context, pushData.variationId.hashCode())
             }
         }

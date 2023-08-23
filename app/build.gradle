@@ -14,12 +14,12 @@ android {
             keyPassword 'webengage'
         }
     }
-    compileSdk 34
+    compileSdk 32
 
     defaultConfig {
         applicationId "com.webengage.template"
         minSdk 24
-        targetSdk 34
+        targetSdk 32
         versionCode 1
         versionName "1.0"
 
@@ -45,8 +45,8 @@ android {
 dependencies {
 
     implementation project(':PushTemplates')
-//    implementation 'com.github.webengage:android-push-templates:release~1.0.0-SNAPSHOT'
-    implementation 'com.webengage:android-sdk:[3,)'
+
+    implementation 'com.webengage:android-sdk:[4,)'
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'
