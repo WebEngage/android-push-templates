@@ -157,13 +157,25 @@ class NotificationService : Service() {
             (System.currentTimeMillis() - whenTime).toInt(),
             false
         )
-        this.mBuilder!!.setContentIntent(
-            NotificationConfigurator().getClickAndDismissPendingIntent(
-                context!!,
-                pushNotificationData!!.pushNotification,
-                pushNotificationData.pushNotification.primeCallToAction.id
+        if (pushNotificationData!!.pushNotification.primeCallToAction.id != null) {
+            Log.d("Templates", "" + pushNotificationData.pushNotification.primeCallToAction.id)
+            this.mBuilder!!.setContentIntent(
+                NotificationConfigurator().getClickAndDismissPendingIntent(
+                    context!!,
+                    pushNotificationData.pushNotification,
+                    pushNotificationData.pushNotification.primeCallToAction.id
+                )
             )
-        )
+        } else {
+            this.mBuilder!!.setContentIntent(
+                NotificationConfigurator().getClickAndDismissPendingIntent(
+                    context!!,
+                    pushNotificationData.pushNotification,
+                    pushNotificationData.pushNotification.primeCallToAction
+                )
+            )
+        }
+
         NotificationConfigurator().setNotificationConfiguration(
             mBuilder!!,
             pushData!!.pushNotification,
@@ -203,8 +215,8 @@ class NotificationService : Service() {
             whenTime
         )
 
-        NotificationConfigurator().setTitleMaxLines(remoteView,2)
-        NotificationConfigurator().setDescriptionMaxLines(remoteView,2)
+        NotificationConfigurator().setTitleMaxLines(remoteView, 2)
+        NotificationConfigurator().setDescriptionMaxLines(remoteView, 2)
 
         NotificationConfigurator().setNotificationDescription(
             context,
@@ -236,13 +248,23 @@ class NotificationService : Service() {
             timerNotificationData.timerFormat,
             true
         )
-        val clickIntent = NotificationConfigurator().getClickAndDismissPendingIntent(
-            context,
-            timerNotificationData.pushNotification,
-            timerNotificationData.pushNotification.primeCallToAction.id
-        )
+        if (timerNotificationData.pushNotification.primeCallToAction.id != null) {
+            val clickIntent = NotificationConfigurator().getClickAndDismissPendingIntent(
+                context,
+                timerNotificationData.pushNotification,
+                timerNotificationData.pushNotification.primeCallToAction.id
+            )
+            remoteView.setOnClickPendingIntent(R.id.we_notification_container, clickIntent)
+        }
+        else{
+            val clickIntent = NotificationConfigurator().getClickAndDismissPendingIntent(
+                context,
+                timerNotificationData.pushNotification,
+                timerNotificationData.pushNotification.primeCallToAction
+            )
+            remoteView.setOnClickPendingIntent(R.id.we_notification_container, clickIntent)
+        }
 
-        remoteView.setOnClickPendingIntent(R.id.we_notification_container, clickIntent)
         NotificationConfigurator().setCTAList(
             context,
             remoteView,
@@ -268,13 +290,22 @@ class NotificationService : Service() {
         timeDiff: Long
     ): RemoteViews {
         val remoteView = RemoteViews(context.packageName, collapsedTimerLayoutId)
-        val clickIntent = NotificationConfigurator().getClickAndDismissPendingIntent(
-            context,
-            timerNotificationData!!.pushNotification,
-            timerNotificationData.pushNotification.primeCallToAction.id
-        )
-        remoteView.setOnClickPendingIntent(R.id.we_notification_container, clickIntent)
 
+        if (timerNotificationData!!.pushNotification.primeCallToAction.id != null) {
+            val clickIntent = NotificationConfigurator().getClickAndDismissPendingIntent(
+                context,
+                timerNotificationData.pushNotification,
+                timerNotificationData.pushNotification.primeCallToAction.id
+            )
+            remoteView.setOnClickPendingIntent(R.id.we_notification_container, clickIntent)
+        } else {
+            val clickIntent = NotificationConfigurator().getClickAndDismissPendingIntent(
+                context,
+                timerNotificationData.pushNotification,
+                timerNotificationData.pushNotification.primeCallToAction
+            )
+            remoteView.setOnClickPendingIntent(R.id.we_notification_container, clickIntent)
+        }
         NotificationConfigurator().configureRemoteView(
             context,
             remoteView,

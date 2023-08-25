@@ -18,6 +18,7 @@ import com.webengage.pushtemplates.receivers.PushIntentListener
 import com.webengage.pushtemplates.receivers.PushTransparentActivity
 import com.webengage.sdk.android.PendingIntentFactory
 import com.webengage.sdk.android.WebEngage
+import com.webengage.sdk.android.actions.render.CallToAction
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import com.webengage.sdk.android.utils.WebEngageConstant
 import com.webengage.sdk.android.utils.htmlspanner.WEHtmlParserInterface
@@ -108,6 +109,82 @@ class NotificationConfigurator {
             }
         }
         return pendingIntent
+    }
+
+    fun getClickAndDismissPendingIntent(
+        context: Context,
+        pushData: PushNotificationData,
+        cta: CallToAction?
+    ): PendingIntent {
+        var intent = Intent(context, PushIntentListener::class.java)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            intent = Intent(context, PushTransparentActivity::class.java)
+        }
+        intent.action = Constants.CLICK_ACTION
+
+        intent.addCategory(context.packageName)
+        intent.putExtra(Constants.PAYLOAD, pushData.pushPayloadJSON.toString())
+        if (cta != null && cta.id != null) {
+            val ctaID = cta.id
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                intent.identifier = (pushData.variationId + "_" + ctaID)
+            }
+            intent.putExtra(Constants.CTA_ID, ctaID)
+            val pendingIntent: PendingIntent
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                pendingIntent = PendingIntent.getActivity(
+                    context,
+                    (pushData.variationId + "_" + ctaID).hashCode(),
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            } else {
+                pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    PendingIntent.getBroadcast(
+                        context,
+                        (pushData.variationId + "_" + ctaID).hashCode(),
+                        intent,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                } else {
+                    PendingIntent.getBroadcast(
+                        context,
+                        (pushData.variationId + "_" + ctaID).hashCode(),
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                }
+            }
+            return pendingIntent
+        } else {
+            val pendingIntent: PendingIntent
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                pendingIntent = PendingIntent.getActivity(
+                    context,
+                    (pushData.variationId).hashCode(),
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            } else {
+                pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    PendingIntent.getBroadcast(
+                        context,
+                        (pushData.variationId).hashCode(),
+                        intent,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                } else {
+                    PendingIntent.getBroadcast(
+                        context,
+                        (pushData.variationId).hashCode(),
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                }
+            }
+            return pendingIntent
+        }
     }
 
     /**
@@ -294,7 +371,7 @@ class NotificationConfigurator {
             val dateFormat = DateFormat.getTimeFormat(context)
             val time = dateFormat.format(whenTime)
             remoteView.setTextViewText(
-                com.webengage.sdk.android.R.id.custom_notification_time,
+                R.id.custom_notification_time,
                 time
             )
             remoteView.setTextViewText(R.id.app_name_native, pushData.appName)
@@ -306,7 +383,7 @@ class NotificationConfigurator {
             else
                 remoteView.setViewVisibility(R.id.custom_summary_native, View.GONE)
             remoteView.setTextViewText(
-                com.webengage.sdk.android.R.id.custom_notification_time_native,
+                R.id.custom_notification_time_native,
                 time
             )
 
@@ -549,18 +626,18 @@ class NotificationConfigurator {
     }
 
 
-    fun setTitleMaxLines(remoteViews: RemoteViews, maxLines:Int){
+    fun setTitleMaxLines(remoteViews: RemoteViews, maxLines: Int) {
         setTextViewMaxLines(remoteViews, R.id.we_notification_title, maxLines)
         setTextViewMaxLines(remoteViews, R.id.we_notification_title_native, maxLines)
     }
 
-    fun setDescriptionMaxLines(remoteViews: RemoteViews, maxLines:Int){
+    fun setDescriptionMaxLines(remoteViews: RemoteViews, maxLines: Int) {
         setTextViewMaxLines(remoteViews, R.id.we_notification_description_native, maxLines)
         setTextViewMaxLines(remoteViews, R.id.we_notification_description, maxLines)
     }
 
-    private fun setTextViewMaxLines(remoteViews: RemoteViews,viewId: Int, maxLines:Int){
-        remoteViews.setInt(viewId,"setMaxLines",maxLines)
+    private fun setTextViewMaxLines(remoteViews: RemoteViews, viewId: Int, maxLines: Int) {
+        remoteViews.setInt(viewId, "setMaxLines", maxLines)
     }
 
 }

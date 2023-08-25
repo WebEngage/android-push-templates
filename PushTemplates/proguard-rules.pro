@@ -19,3 +19,15 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class com.webengage.pushtemplates.CustomCallback {
+   public <methods>;
+}
+
+-keep class com.webengage.pushtemplates.services.NotificationService {
+   public <methods>;
+}
+
+-keep class com.webengage.pushtemplates.utils.NotificationConfigurator {
+   public <methods>;
+}
+-repackageclasses 'com.webengage.pushtemplates'
