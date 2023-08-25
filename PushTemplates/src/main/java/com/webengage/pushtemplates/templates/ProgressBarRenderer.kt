@@ -6,8 +6,9 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.os.Build
-import com.webengage.pushtemplates.utils.Constants
+import android.util.Log
 import com.webengage.pushtemplates.services.NotificationService
+import com.webengage.pushtemplates.utils.Constants
 import com.webengage.sdk.android.WebEngage.startService
 import com.webengage.sdk.android.actions.render.PushNotificationData
 
@@ -27,86 +28,18 @@ class ProgressBarRenderer {
             pushData.customData.getString(Constants.FUTURE_TIME)!!.toLong() < System.currentTimeMillis()
         )
             return false
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            val flag: Boolean
-            var foreGroundServiceType: Int? = null
-            val packageInfo: PackageInfo = mContext.packageManager.getPackageInfo(
-                mContext.packageName,
-                PackageManager.GET_SERVICES or PackageManager.GET_PERMISSIONS
-            )
-            val services = packageInfo.services
-            for (serviceInfo in services) {
-                if (serviceInfo.name.equals("com.webengage.pushtemplates.services.NotificationService")) {
-                    foreGroundServiceType = serviceInfo.foregroundServiceType
-                }
-            }
-            val requestedPermissions: Array<String?>? = packageInfo.requestedPermissions
-            flag = when (foreGroundServiceType) {
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA -> {
-                    requestedPermissions?.contains("android.permission.FOREGROUND_SERVICE_CAMERA") == true
-                }
-
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE -> {
-                    requestedPermissions?.contains("android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE") == true
-                }
-
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC -> {
-                    requestedPermissions?.contains("android.permission.FOREGROUND_SERVICE_DATA_SYNC") == true
-                }
-
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH -> {
-                    requestedPermissions?.contains("android.permission.FOREGROUND_SERVICE_HEALTH") == true
-                }
-
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION -> {
-                    requestedPermissions?.contains("android.permission.FOREGROUND_SERVICE_LOCATION") == true
-                }
-
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK -> {
-                    requestedPermissions?.contains("android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK") == true
-                }
-
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE -> {
-                    requestedPermissions?.contains("android.permission.FOREGROUND_SERVICE_SPECIAL_USE") == true
-                }
-
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_REMOTE_MESSAGING -> {
-                    requestedPermissions?.contains("android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING") == true
-                }
-
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION -> {
-                    requestedPermissions?.contains("android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION") == true
-                }
-
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL -> {
-                    requestedPermissions?.contains("android.permission.FOREGROUND_SERVICE_PHONE_CALL") == true
-                }
-
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_SHORT_SERVICE -> {
-                    requestedPermissions?.contains("android.permission.FOREGROUND_SERVICE_SHORT_SERVICE") == true
-                }
-
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED -> {
-                    requestedPermissions?.contains("android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED") == true
-                }
-
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST -> {
-                    requestedPermissions?.contains("android.permission.FOREGROUND_SERVICE_MANIFEST") == true
-                }
-
-                else -> {
-                    false
-                }
-            }
-            return if(flag) {
+        //If targetSdk = 34 and device SDK = 34 check added for foreground service type added or not
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && mContext.applicationInfo.targetSdkVersion >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            if(isForegroundServiceTypeAdded(mContext)) {
                 attachToService(mContext, pushData)
                 true
             } else {
+                Log.e("PushTemplates","Respective Foreground service permission not added")
                 false
             }
         } else {
             attachToService(mContext, pushData)
-            return true
+            true
         }
     }
 
@@ -121,4 +54,85 @@ class ProgressBarRenderer {
         startService(intent, context)
     }
 
+    /**
+     * Checks if foreground service type is added or not and respective foreground service permission is present
+     * return true is both present and false is any of them not present
+     */
+    private fun isForegroundServiceTypeAdded(mContext: Context) : Boolean{
+        var foreGroundServiceType: Int? = null
+        val packageInfo: PackageInfo = mContext.packageManager.getPackageInfo(
+            mContext.packageName,
+            PackageManager.GET_SERVICES or PackageManager.GET_PERMISSIONS
+        )
+        val services = packageInfo.services
+        for (serviceInfo in services) {
+            if (serviceInfo.name.equals(Constants.NOTIFICATION_SERVICE)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    foreGroundServiceType = serviceInfo.foregroundServiceType
+                }
+            }
+        }
+        val requestedPermissions: Array<String?>? = packageInfo.requestedPermissions
+        if(foreGroundServiceType == null) {
+            Log.e("PushTemplates","Foreground service type not added")
+            return false
+        }
+        return when (foreGroundServiceType) {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA -> {
+                requestedPermissions?.contains(Constants.FOREGROUND_SERVICE_CAMERA_PERMISSION) == true
+            }
+
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE -> {
+                requestedPermissions?.contains(Constants.FOREGROUND_SERVICE_CONNECTED_DEVICE_PERMISSION) == true
+            }
+
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC -> {
+                requestedPermissions?.contains(Constants.FOREGROUND_SERVICE_DATA_SYNC_PERMISSION) == true
+            }
+
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH -> {
+                requestedPermissions?.contains(Constants.FOREGROUND_SERVICE_HEALTH_PERMISSION) == true
+            }
+
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION -> {
+                requestedPermissions?.contains(Constants.FOREGROUND_SERVICE_LOCATION_PERMISSION) == true
+            }
+
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK -> {
+                requestedPermissions?.contains(Constants.FOREGROUND_SERVICE_MEDIA_PLAYBACK_PERMISSION) == true
+            }
+
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE -> {
+                requestedPermissions?.contains(Constants.FOREGROUND_SERVICE_SPECIAL_USE_PERMISSION) == true
+            }
+
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_REMOTE_MESSAGING -> {
+                requestedPermissions?.contains(Constants.FOREGROUND_SERVICE_REMOTE_MESSAGING_PERMISSION) == true
+            }
+
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION -> {
+                requestedPermissions?.contains(Constants.FOREGROUND_SERVICE_MEDIA_PROJECTION_PERMISSION) == true
+            }
+
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL -> {
+                requestedPermissions?.contains(Constants.FOREGROUND_SERVICE_PHONE_CALL_PERMISSION) == true
+            }
+
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_SHORT_SERVICE -> {
+                true
+            }
+
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED -> {
+                requestedPermissions?.contains(Constants.FOREGROUND_SERVICE_SYSTEM_EXEMPTED_PERMISSION) == true
+            }
+
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE -> {
+                requestedPermissions?.contains(Constants.FOREGROUND_SERVICE_MICROPHONE_PERMISSION) == true
+            }
+
+            else -> {
+                false
+            }
+        }
+    }
 }
