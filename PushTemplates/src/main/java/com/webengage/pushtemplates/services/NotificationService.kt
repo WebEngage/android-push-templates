@@ -50,6 +50,9 @@ class NotificationService : Service() {
 
             stopForeground(true)
             val notification = getNotification(timerData, context!!)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                notification.foregroundServiceBehavior = Notification.FOREGROUND_SERVICE_IMMEDIATE
+            }
             startForeground(
                 pushData!!.pushNotification.variationId.hashCode(),
                 notification.build().apply {
@@ -367,5 +370,12 @@ class NotificationService : Service() {
         }
     }
 
+    /**
+     * To handle ANR in case of short service
+     */
+    override fun onTimeout(startId: Int) {
+        super.onTimeout(startId)
+        stopSelf(startId)
+    }
 
 }
