@@ -4,6 +4,7 @@ import android.app.Notification
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.*
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -42,8 +43,10 @@ class CountDownRenderer {
             )
 
         //If the provided future time is less that the system time, then do not render
-        if (pushData.futureTime < System.currentTimeMillis())
+        if (pushData.futureTime < System.currentTimeMillis()){
+            Log.d("PushTemplates","The future time provided is less than current device time")
             return false
+        }
         CoroutineScope(Dispatchers.Default).launch {
             bitmapList = ImageUtils().getBitmapArrayList(pushNotificationData)
             constructNotification(context, pushData)

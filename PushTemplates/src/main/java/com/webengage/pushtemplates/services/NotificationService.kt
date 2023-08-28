@@ -48,7 +48,7 @@ class NotificationService : Service() {
             this.mBuilder = NotificationCompat.Builder(context!!, channelId)
             this.whenTime = (intent.extras!!.getLong(Constants.WHEN_TIME))
 
-            stopForeground(true)
+            stopForeground(STOP_FOREGROUND_REMOVE)
             val notification = getNotification(timerData, context!!)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 notification.foregroundServiceBehavior = Notification.FOREGROUND_SERVICE_IMMEDIATE
@@ -140,7 +140,7 @@ class NotificationService : Service() {
      * Stop the foreground service and remove notification before destroying the service
      */
     override fun onDestroy() {
-        stopForeground(true)
+        stopForeground(STOP_FOREGROUND_REMOVE)
         with(NotificationManagerCompat.from(context!!)) {
             this.cancel(pushData!!.pushNotification.variationId.hashCode())
         }
@@ -199,6 +199,13 @@ class NotificationService : Service() {
                 timeDiff
             )
         )
+
+        NotificationConfigurator().setDismissAndKillServiceIntent(
+            context,
+            this.mBuilder!!,
+            pushNotificationData.pushNotification
+        )
+
     }
 
 
@@ -258,8 +265,7 @@ class NotificationService : Service() {
                 timerNotificationData.pushNotification.primeCallToAction.id
             )
             remoteView.setOnClickPendingIntent(R.id.we_notification_container, clickIntent)
-        }
-        else{
+        } else {
             val clickIntent = NotificationConfigurator().getClickAndDismissPendingIntent(
                 context,
                 timerNotificationData.pushNotification,

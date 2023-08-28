@@ -28,6 +28,9 @@ class TimerStyleData(pushNotificationData: PushNotificationData) {
 
     var showDismissCTA: Boolean = false
 
+    //duration in min
+    var duration: Int? = null
+
     init {
         val customData = pushNotification.customData
         if (customData.containsKey(Constants.FUTURE_TIME) && customData[Constants.FUTURE_TIME] != null) {
@@ -38,6 +41,20 @@ class TimerStyleData(pushNotificationData: PushNotificationData) {
                 Log.d("PushTemplates","FUTURE_TIME is not a numerical value")
             }
         }
+
+        if(customData.containsKey(Constants.DURATION)) {
+            try {
+                duration = customData.getString(Constants.DURATION)!!.toInt()
+            }
+            catch (exception :NumberFormatException){
+                Log.d("PushTemplates","DURATION is not a int value")
+            }
+            //calculating future time if duration is present
+            if(duration != null){
+                futureTime = System.currentTimeMillis() + (duration!! * Constants.MINUTE)
+            }
+        }
+
         if (customData.containsKey(Constants.TIMER_FORMAT) && customData[Constants.TIMER_FORMAT] != null) {
             timerFormat = customData.getString(Constants.TIMER_FORMAT)!!
         }

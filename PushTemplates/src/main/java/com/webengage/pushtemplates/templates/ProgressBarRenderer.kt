@@ -2,11 +2,12 @@ package com.webengage.pushtemplates.templates
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
+import com.webengage.pushtemplates.utils.Constants
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.os.Build
-import android.util.Log
 import com.webengage.pushtemplates.services.NotificationService
 import com.webengage.pushtemplates.utils.Constants
 import com.webengage.sdk.android.WebEngage.startService
@@ -26,8 +27,10 @@ class ProgressBarRenderer {
         //If the provided future time is less that the system time, then do not render notification
         if (pushData.customData.containsKey(Constants.FUTURE_TIME) &&
             pushData.customData.getString(Constants.FUTURE_TIME)!!.toLong() < System.currentTimeMillis()
-        )
+        ) {
+            Log.d("PushTemplates", "The future time provided is less than current device time")
             return false
+        }
         //If targetSdk = 34 and device SDK = 34 check added for foreground service type added or not
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && mContext.applicationInfo.targetSdkVersion >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             if(isForegroundServiceTypeAdded(mContext)) {

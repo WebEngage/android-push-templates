@@ -18,5 +18,9 @@
     <dimen name="we_push_action1_padding">12dp</dimen>
     <dimen name="we_push_image_margin_top">8dp</dimen>
     <dimen name="we_push_banner_padding">8dp</dimen>
+    <dimen name="we_push_default_image_height">120dp</dimen>
+    <dimen name="we_push_banner_image_height">220dp</dimen>
+    <dimen name="we_push_half_banner_image_height">106dp</dimen>
+    <dimen name="we_push_content_bottom_margin">15dp</dimen>
 
 </resources>

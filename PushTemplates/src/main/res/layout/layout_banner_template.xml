@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/we_notification_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/we_transparent">
+
+    <ImageView
+        android:id="@+id/we_notification_expanded_bg_image"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/we_push_banner_image_height"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/we_notification_collapsed_bg_image"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/we_push_half_banner_image_height"
+        android:scaleType="centerCrop"
+        android:layout_alignBottom="@id/we_notification_expanded_bg_image"/>
+
+    <LinearLayout
+        android:id="@+id/push_details_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/we_notification_expanded_bg_image"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/push_content_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <include layout="@layout/pushbase" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/we_notification"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/we_push_content_bottom_margin"
+                        android:paddingLeft="@dimen/we_push_content_margin"
+                        android:paddingRight="@dimen/we_push_content_margin"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <include layout="@layout/title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <include
+                            layout="@layout/description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+
+                    <ImageView
+                        android:id="@+id/large_icon"
+                        android:layout_width="@dimen/we_large_icon_size"
+                        android:layout_height="@dimen/we_large_icon_size"
+                        android:visibility="visible"
+                        android:layout_marginTop="@dimen/we_push_content_bottom_margin"
+                        android:layout_marginEnd="@dimen/we_push_action_padding"
+                        android:scaleType="centerCrop" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/we_notification_half_image"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/we_push_half_banner_image_height"
+                android:layout_weight="1"
+                android:scaleType="centerCrop"
+                />
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/we_notification_image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/we_push_default_image_height"
+            android:layout_marginStart="@dimen/we_push_content_bottom_margin"
+            android:layout_marginLeft="@dimen/we_push_content_bottom_margin"
+            android:layout_marginEnd="@dimen/we_push_content_bottom_margin"
+            android:layout_marginRight="@dimen/we_push_content_bottom_margin"
+            android:layout_marginTop="@dimen/we_push_content_margin"
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
+
+        <FrameLayout
+            android:id="@+id/we_notification_bottom_margin"
+            android:layout_width="match_parent"
+            android:background="@color/we_transparent"
+            android:layout_height="@dimen/we_push_content_margin" />
+
+
+        <include layout="@layout/push_actions"/>
+
+    </LinearLayout>
+</RelativeLayout>

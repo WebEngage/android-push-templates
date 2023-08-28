@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.drawable.Icon
 import android.os.Build
 import android.text.TextUtils
 import android.text.format.DateFormat
@@ -248,7 +249,7 @@ class NotificationConfigurator {
 
                 remoteViews.setTextViewText(
                     ctaButton,
-                    cta.text
+                    WEHtmlParserInterface().fromHtml(cta.text)
                 )
                 remoteViews.setOnClickPendingIntent(ctaButton, clickIntent)
             }
@@ -294,7 +295,7 @@ class NotificationConfigurator {
 
                 remoteViews.setTextViewText(
                     ctaButton,
-                    cta.text
+                    WEHtmlParserInterface().fromHtml(cta.text)
                 )
                 remoteViews.setOnClickPendingIntent(ctaButton, clickIntent)
             }
@@ -640,4 +641,128 @@ class NotificationConfigurator {
         remoteViews.setInt(viewId, "setMaxLines", maxLines)
     }
 
+    /**
+     * sets visibility of adaptive text(app name, time, summary, title , description) as gone
+     */
+    fun setAdaptiveTextViewVisibility(
+        remoteView: RemoteViews,
+        pushData: PushNotificationData
+    ) {
+
+        remoteView.setViewVisibility(R.id.app_name, View.GONE)
+        remoteView.setViewVisibility(R.id.custom_notification_time, View.GONE)
+        remoteView.setViewVisibility(R.id.we_notification_title, View.GONE)
+        remoteView.setViewVisibility(R.id.we_notification_description, View.GONE)
+        remoteView.setViewVisibility(R.id.app_name_native, View.VISIBLE)
+        remoteView.setViewVisibility(R.id.custom_notification_time_native, View.VISIBLE)
+
+        if (!TextUtils.isEmpty(pushData.contentSummary)) {
+            remoteView.setViewVisibility(R.id.custom_summary, View.GONE)
+            remoteView.setViewVisibility(R.id.custom_summary_native, View.VISIBLE)
+        }
+        remoteView.setViewVisibility(R.id.we_notification_title_native, View.VISIBLE)
+        remoteView.setViewVisibility(R.id.we_notification_description_native, View.VISIBLE)
+    }
+
+    /**
+     * Sets custom color to app name & time
+     */
+    fun configureCustomColorForPushBase(
+        remoteView: RemoteViews,
+        color: Int
+    ) {
+        remoteView.setTextColor(R.id.app_name_native, color)
+        remoteView.setTextColor(R.id.custom_notification_time_native, color)
+
+    }
+
+    /**
+     * Sets big icon in case of default notification
+     */
+    fun setBigImage(
+        context: Context,
+        pushData: PushNotificationData,
+        remoteView: RemoteViews
+    ) {
+        remoteView.setViewVisibility(R.id.large_icon, View.VISIBLE)
+        if (pushData.largeIcon != null) {
+            remoteView.setImageViewBitmap(R.id.large_icon, pushData.largeIcon)
+        } else
+            remoteView.setImageViewIcon(
+                R.id.large_icon,
+                Icon.createWithResource(
+                    context,
+                    context.applicationInfo.icon
+                )
+            )
+    }
+
+    /**
+     * Sets padding for full background image banner layout above android 12
+     * For other scenario it is already handled in [com.webengage.pushtemplates.utils.NotificationConfigurator.configureRemoteView] method
+     */
+    fun setPaddingForFullBackground(
+        context: Context, remoteView: RemoteViews
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && context.applicationInfo.targetSdkVersion >= Build.VERSION_CODES.S) {
+            val inset =
+                context.resources.getDimensionPixelSize(R.dimen.we_push_content_margin_colorbg)
+            remoteView.setViewPadding(R.id.we_notification, inset, 0, 0, 0)
+        }
+
+    }
+
+    /**
+     * For Android 14, sticky notifications can be dismissed by swiping. Use this to kill the
+     * the foreground service.
+     */
+    fun setDismissAndKillServiceIntent(
+        context: Context, mBuilder: NotificationCompat.Builder,
+        pushData: PushNotificationData
+    ) {
+        val dismissIntent =
+            getSwipeDismissPendingIntent(context, pushData, true)
+        mBuilder.setDeleteIntent(dismissIntent)
+    }
+
+    /**
+     * This gives the dismiss intent when the notification is swiped from panel. Since the
+     * application is in background, we cannot start the activity on swipe dismiss. We need t rely on
+     * BroadCast receiver for swipe dismiss.
+     */
+    fun getSwipeDismissPendingIntent(
+        context: Context,
+        pushData: PushNotificationData,
+        logDismiss: Boolean
+    ): PendingIntent {
+        val intent = Intent(context, PushIntentListener::class.java)
+        intent.setPackage(context.packageName)
+
+        intent.action = Constants.DELETE_ACTION
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            intent.identifier = (pushData.variationId + "_" + logDismiss)
+        }
+        intent.setPackage(context.packageName)
+        intent.putExtra(Constants.PAYLOAD, pushData.pushPayloadJSON.toString())
+        intent.putExtra(Constants.LOG_DISMISS, logDismiss)
+
+        val pendingIntent: PendingIntent
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pendingIntent = PendingIntent.getBroadcast(
+                context,
+                (pushData.variationId + "_" + logDismiss).hashCode(),
+                intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        } else {
+            pendingIntent = PendingIntent.getBroadcast(
+                context,
+                (pushData.variationId + "_" + logDismiss).hashCode(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
+
+        return pendingIntent
+    }
 }

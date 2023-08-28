@@ -48,20 +48,22 @@
         </LinearLayout>
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/we_notification_bottom_margin"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/we_push_content_margin" />
-
     <ImageView
         android:id="@+id/we_notification_image"
         android:layout_width="match_parent"
         android:layout_height="132dp"
-        android:paddingStart="@dimen/we_push_banner_padding"
-        android:paddingEnd="@dimen/we_push_banner_padding"
+        android:layout_marginStart="@dimen/we_push_content_bottom_margin"
+        android:layout_marginLeft="@dimen/we_push_content_bottom_margin"
+        android:layout_marginEnd="@dimen/we_push_content_bottom_margin"
+        android:layout_marginRight="@dimen/we_push_content_bottom_margin"
         android:layout_marginTop="@dimen/we_push_image_margin_top"
         android:scaleType="centerCrop"
         android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/we_notification_bottom_margin"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/we_push_content_margin" />
 
     <include layout="@layout/push_actions" />
 </LinearLayout>
