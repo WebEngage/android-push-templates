@@ -36,7 +36,7 @@ class NetworkUtils {
                 inputStream = connection.inputStream
                 bitmap = BitmapFactory.decodeStream(inputStream)
                 Log.d("PushTemplates", "Bitmap size = ${bitmap.byteCount}")
-                if ((bitmap.byteCount < Constants.REMOTE_VIEW_MAX_SIZE)
+                if ((bitmap.byteCount > Constants.REMOTE_VIEW_MAX_SIZE)
                     && Build.VERSION.SDK_INT > Build.VERSION_CODES.R
                 ) {
                     Log.d("PushTemplates", "Downscaling image")
