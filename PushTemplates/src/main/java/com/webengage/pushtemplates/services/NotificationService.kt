@@ -184,6 +184,14 @@ class NotificationService : Service() {
             pushData!!.pushNotification,
             whenTime
         )
+
+        if (!pushNotificationData.lockscreenVisibility.isNullOrEmpty()) {
+            NotificationConfigurator().setLockScreenVisibility(
+                pushNotificationData.lockscreenVisibility,
+                mBuilder!!
+            )
+        }
+
         this.mBuilder!!
             .setCustomContentView(
                 constructCollapsedTimerPushBase(

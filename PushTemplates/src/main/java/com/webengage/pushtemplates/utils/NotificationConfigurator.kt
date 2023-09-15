@@ -1,5 +1,6 @@
 package com.webengage.pushtemplates.utils
 
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -765,4 +766,21 @@ class NotificationConfigurator {
 
         return pendingIntent
     }
+
+    /**
+    This sets the lockscreen visibility for notification
+     */
+    fun setLockScreenVisibility(
+        lockScreenVisibility: String?,
+        mBuilder: NotificationCompat.Builder
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            when (lockScreenVisibility) {
+                Constants.PUBLIC -> mBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                Constants.SECRET -> mBuilder.setVisibility(NotificationCompat.VISIBILITY_SECRET)
+                else -> mBuilder.setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            }
+        }
+    }
+
 }

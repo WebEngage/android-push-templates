@@ -31,6 +31,8 @@ class TimerStyleData(pushNotificationData: PushNotificationData) {
     //duration in min
     var duration: Int? = null
 
+    var lockscreenVisibility: String? = null
+
     init {
         val customData = pushNotification.customData
         if (customData.containsKey(Constants.FUTURE_TIME) && customData[Constants.FUTURE_TIME] != null) {
@@ -91,6 +93,10 @@ class TimerStyleData(pushNotificationData: PushNotificationData) {
         if (customData.containsKey(Constants.SHOW_DISMISS_CTA) && customData[Constants.SHOW_DISMISS_CTA] != null) {
             showDismissCTA =
                 customData.getString(Constants.SHOW_DISMISS_CTA)!!.toBoolean()
+        }
+
+        if(pushNotificationData.customData.containsKey(Constants.LOCK_SCREEN_VISIBILITY)){
+            lockscreenVisibility = pushNotificationData.customData.getString(Constants.LOCK_SCREEN_VISIBILITY, null)
         }
     }
 }

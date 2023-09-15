@@ -14,6 +14,7 @@ object Constants {
     const val COLLAPSED_MODE_IMAGE_URL = "we_cm_img"
     const val FONT_COLOR = "we_an_c"
     const val DURATION = "we_duration"
+    const val LOCK_SCREEN_VISIBILITY = "we_lockscreen" // key for lockscreen visibility
 
     //Modes for Banner Styles
     const val HALF_BACKGROUND_MODE = "half_bg"
@@ -61,4 +62,8 @@ object Constants {
 
     //Service
     const val NOTIFICATION_SERVICE = "com.webengage.pushtemplates.services.NotificationService"
+
+    //Lock Screen Visibility
+    const val PUBLIC = "public"
+    const val SECRET = "secret"
 }

@@ -89,6 +89,12 @@ class BannerRenderer {
             pushNotificationData.pushNotification
         )
 
+        if (!pushNotificationData.lockscreenVisibility.isNullOrEmpty()) {
+            NotificationConfigurator().setLockScreenVisibility(
+                pushNotificationData.lockscreenVisibility,
+                mBuilder
+            )
+        }
 
         this.mBuilder.setCustomContentView(
             constructCollapsedBannerPushBase(

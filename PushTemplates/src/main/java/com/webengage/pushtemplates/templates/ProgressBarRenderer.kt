@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.os.Build
 import com.webengage.pushtemplates.services.NotificationService
-import com.webengage.pushtemplates.utils.Constants
 import com.webengage.sdk.android.WebEngage.startService
 import com.webengage.sdk.android.actions.render.PushNotificationData
 

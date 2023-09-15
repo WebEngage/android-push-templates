@@ -2,11 +2,12 @@ package com.webengage.pushtemplates.models
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Bundle
 import android.util.Log
 import com.webengage.pushtemplates.R
 import com.webengage.pushtemplates.utils.Constants
 import com.webengage.sdk.android.actions.render.PushNotificationData
-import java.lang.Exception
+import com.webengage.sdk.android.utils.WebEngageConstant
 
 class BannerStyleData(context: Context, pushNotificationData: PushNotificationData) {
     //use this to set how the image should be shown in expanded mode
@@ -25,6 +26,8 @@ class BannerStyleData(context: Context, pushNotificationData: PushNotificationDa
     var pushNotification: PushNotificationData = pushNotificationData
 
     var showDismissCTA: Boolean = false
+
+    var lockscreenVisibility: String? = null
 
     init {
 
@@ -68,6 +71,10 @@ class BannerStyleData(context: Context, pushNotificationData: PushNotificationDa
         if (pushNotificationData.customData.containsKey(Constants.SHOW_DISMISS_CTA)) {
             showDismissCTA =
                 pushNotificationData.customData.getString(Constants.SHOW_DISMISS_CTA)!!.toBoolean()
+        }
+
+        if(pushNotificationData.customData.containsKey(Constants.LOCK_SCREEN_VISIBILITY)){
+            lockscreenVisibility = pushNotificationData.customData.getString(Constants.LOCK_SCREEN_VISIBILITY, null)
         }
     }
 }
