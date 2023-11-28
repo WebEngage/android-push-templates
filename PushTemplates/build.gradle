@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 24
-        targetSdk 33
+        targetSdk 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-    compileOnly 'com.webengage:android-sdk:[3,)'
+    compileOnly 'com.webengage:android-sdk:[4,)'
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'

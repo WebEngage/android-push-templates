@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.drawable.Icon
 import android.os.Build
 import android.text.TextUtils
 import android.text.format.DateFormat
@@ -18,6 +19,7 @@ import com.webengage.pushtemplates.receivers.PushIntentListener
 import com.webengage.pushtemplates.receivers.PushTransparentActivity
 import com.webengage.sdk.android.PendingIntentFactory
 import com.webengage.sdk.android.WebEngage
+import com.webengage.sdk.android.actions.render.CallToAction
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import com.webengage.sdk.android.utils.WebEngageConstant
 import com.webengage.sdk.android.utils.htmlspanner.WEHtmlParserInterface
@@ -110,6 +112,82 @@ class NotificationConfigurator {
         return pendingIntent
     }
 
+    fun getClickAndDismissPendingIntent(
+        context: Context,
+        pushData: PushNotificationData,
+        cta: CallToAction?
+    ): PendingIntent {
+        var intent = Intent(context, PushIntentListener::class.java)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            intent = Intent(context, PushTransparentActivity::class.java)
+        }
+        intent.action = Constants.CLICK_ACTION
+
+        intent.addCategory(context.packageName)
+        intent.putExtra(Constants.PAYLOAD, pushData.pushPayloadJSON.toString())
+        if (cta != null && cta.id != null) {
+            val ctaID = cta.id
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                intent.identifier = (pushData.variationId + "_" + ctaID)
+            }
+            intent.putExtra(Constants.CTA_ID, ctaID)
+            val pendingIntent: PendingIntent
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                pendingIntent = PendingIntent.getActivity(
+                    context,
+                    (pushData.variationId + "_" + ctaID).hashCode(),
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            } else {
+                pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    PendingIntent.getBroadcast(
+                        context,
+                        (pushData.variationId + "_" + ctaID).hashCode(),
+                        intent,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                } else {
+                    PendingIntent.getBroadcast(
+                        context,
+                        (pushData.variationId + "_" + ctaID).hashCode(),
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                }
+            }
+            return pendingIntent
+        } else {
+            val pendingIntent: PendingIntent
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                pendingIntent = PendingIntent.getActivity(
+                    context,
+                    (pushData.variationId).hashCode(),
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            } else {
+                pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    PendingIntent.getBroadcast(
+                        context,
+                        (pushData.variationId).hashCode(),
+                        intent,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                } else {
+                    PendingIntent.getBroadcast(
+                        context,
+                        (pushData.variationId).hashCode(),
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                }
+            }
+            return pendingIntent
+        }
+    }
+
     /**
      * Sets the dismiss pending intent for notification. This will log the push dismiss event.
      */
@@ -171,7 +249,7 @@ class NotificationConfigurator {
 
                 remoteViews.setTextViewText(
                     ctaButton,
-                    cta.text
+                    WEHtmlParserInterface().fromHtml(cta.text)
                 )
                 remoteViews.setOnClickPendingIntent(ctaButton, clickIntent)
             }
@@ -217,7 +295,7 @@ class NotificationConfigurator {
 
                 remoteViews.setTextViewText(
                     ctaButton,
-                    cta.text
+                    WEHtmlParserInterface().fromHtml(cta.text)
                 )
                 remoteViews.setOnClickPendingIntent(ctaButton, clickIntent)
             }
@@ -294,7 +372,7 @@ class NotificationConfigurator {
             val dateFormat = DateFormat.getTimeFormat(context)
             val time = dateFormat.format(whenTime)
             remoteView.setTextViewText(
-                com.webengage.sdk.android.R.id.custom_notification_time,
+                R.id.custom_notification_time,
                 time
             )
             remoteView.setTextViewText(R.id.app_name_native, pushData.appName)
@@ -306,7 +384,7 @@ class NotificationConfigurator {
             else
                 remoteView.setViewVisibility(R.id.custom_summary_native, View.GONE)
             remoteView.setTextViewText(
-                com.webengage.sdk.android.R.id.custom_notification_time_native,
+                R.id.custom_notification_time_native,
                 time
             )
 
@@ -549,18 +627,142 @@ class NotificationConfigurator {
     }
 
 
-    fun setTitleMaxLines(remoteViews: RemoteViews, maxLines:Int){
+    fun setTitleMaxLines(remoteViews: RemoteViews, maxLines: Int) {
         setTextViewMaxLines(remoteViews, R.id.we_notification_title, maxLines)
         setTextViewMaxLines(remoteViews, R.id.we_notification_title_native, maxLines)
     }
 
-    fun setDescriptionMaxLines(remoteViews: RemoteViews, maxLines:Int){
+    fun setDescriptionMaxLines(remoteViews: RemoteViews, maxLines: Int) {
         setTextViewMaxLines(remoteViews, R.id.we_notification_description_native, maxLines)
         setTextViewMaxLines(remoteViews, R.id.we_notification_description, maxLines)
     }
 
-    private fun setTextViewMaxLines(remoteViews: RemoteViews,viewId: Int, maxLines:Int){
-        remoteViews.setInt(viewId,"setMaxLines",maxLines)
+    private fun setTextViewMaxLines(remoteViews: RemoteViews, viewId: Int, maxLines: Int) {
+        remoteViews.setInt(viewId, "setMaxLines", maxLines)
     }
 
+    /**
+     * sets visibility of adaptive text(app name, time, summary, title , description) as gone
+     */
+    fun setAdaptiveTextViewVisibility(
+        remoteView: RemoteViews,
+        pushData: PushNotificationData
+    ) {
+
+        remoteView.setViewVisibility(R.id.app_name, View.GONE)
+        remoteView.setViewVisibility(R.id.custom_notification_time, View.GONE)
+        remoteView.setViewVisibility(R.id.we_notification_title, View.GONE)
+        remoteView.setViewVisibility(R.id.we_notification_description, View.GONE)
+        remoteView.setViewVisibility(R.id.app_name_native, View.VISIBLE)
+        remoteView.setViewVisibility(R.id.custom_notification_time_native, View.VISIBLE)
+
+        if (!TextUtils.isEmpty(pushData.contentSummary)) {
+            remoteView.setViewVisibility(R.id.custom_summary, View.GONE)
+            remoteView.setViewVisibility(R.id.custom_summary_native, View.VISIBLE)
+        }
+        remoteView.setViewVisibility(R.id.we_notification_title_native, View.VISIBLE)
+        remoteView.setViewVisibility(R.id.we_notification_description_native, View.VISIBLE)
+    }
+
+    /**
+     * Sets custom color to app name & time
+     */
+    fun configureCustomColorForPushBase(
+        remoteView: RemoteViews,
+        color: Int
+    ) {
+        remoteView.setTextColor(R.id.app_name_native, color)
+        remoteView.setTextColor(R.id.custom_notification_time_native, color)
+
+    }
+
+    /**
+     * Sets big icon in case of default notification
+     */
+    fun setBigImage(
+        context: Context,
+        pushData: PushNotificationData,
+        remoteView: RemoteViews
+    ) {
+        remoteView.setViewVisibility(R.id.large_icon, View.VISIBLE)
+        if (pushData.largeIcon != null) {
+            remoteView.setImageViewBitmap(R.id.large_icon, pushData.largeIcon)
+        } else
+            remoteView.setImageViewIcon(
+                R.id.large_icon,
+                Icon.createWithResource(
+                    context,
+                    context.applicationInfo.icon
+                )
+            )
+    }
+
+    /**
+     * Sets padding for full background image banner layout above android 12
+     * For other scenario it is already handled in [com.webengage.pushtemplates.utils.NotificationConfigurator.configureRemoteView] method
+     */
+    fun setPaddingForFullBackground(
+        context: Context, remoteView: RemoteViews
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && context.applicationInfo.targetSdkVersion >= Build.VERSION_CODES.S) {
+            val inset =
+                context.resources.getDimensionPixelSize(R.dimen.we_push_content_margin_colorbg)
+            remoteView.setViewPadding(R.id.we_notification, inset, 0, 0, 0)
+        }
+
+    }
+
+    /**
+     * For Android 14, sticky notifications can be dismissed by swiping. Use this to kill the
+     * the foreground service.
+     */
+    fun setDismissAndKillServiceIntent(
+        context: Context, mBuilder: NotificationCompat.Builder,
+        pushData: PushNotificationData
+    ) {
+        val dismissIntent =
+            getSwipeDismissPendingIntent(context, pushData, true)
+        mBuilder.setDeleteIntent(dismissIntent)
+    }
+
+    /**
+     * This gives the dismiss intent when the notification is swiped from panel. Since the
+     * application is in background, we cannot start the activity on swipe dismiss. We need t rely on
+     * BroadCast receiver for swipe dismiss.
+     */
+    fun getSwipeDismissPendingIntent(
+        context: Context,
+        pushData: PushNotificationData,
+        logDismiss: Boolean
+    ): PendingIntent {
+        val intent = Intent(context, PushIntentListener::class.java)
+        intent.setPackage(context.packageName)
+
+        intent.action = Constants.DELETE_ACTION
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            intent.identifier = (pushData.variationId + "_" + logDismiss)
+        }
+        intent.setPackage(context.packageName)
+        intent.putExtra(Constants.PAYLOAD, pushData.pushPayloadJSON.toString())
+        intent.putExtra(Constants.LOG_DISMISS, logDismiss)
+
+        val pendingIntent: PendingIntent
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pendingIntent = PendingIntent.getBroadcast(
+                context,
+                (pushData.variationId + "_" + logDismiss).hashCode(),
+                intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        } else {
+            pendingIntent = PendingIntent.getBroadcast(
+                context,
+                (pushData.variationId + "_" + logDismiss).hashCode(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
+
+        return pendingIntent
+    }
 }

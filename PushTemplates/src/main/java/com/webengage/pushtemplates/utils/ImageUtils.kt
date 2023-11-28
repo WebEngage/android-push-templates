@@ -110,4 +110,14 @@ class ImageUtils {
         )
     }
 
+    suspend fun getBitmapFromURL(url : String) : Bitmap?{
+        val bitmap = NetworkUtils().getBitmapFromURL(url)
+        return if(bitmap != null){
+            getSampledBitmap(NetworkUtils().getBitmapFromURL(url),Constants.REMOTE_VIEW_MAX_SIZE)
+        } else {
+            null
+        }
+
+    }
+
 }

@@ -27,7 +27,6 @@
                 android:layout_width="@dimen/we_small_icon_size"
                 android:layout_height="@dimen/we_small_icon_size"
                 android:layout_marginEnd="@dimen/we_push_intercontent_margin"
-                android:layout_marginRight="@dimen/we_push_intercontent_margin"
                 android:tint="#808080" />
 
             <TextView
@@ -36,29 +35,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxWidth="80dp"
-                android:text="Production" />
+                tools:text="Production" />
 
             <TextView
                 android:id="@+id/custom_summary_native"
                 style="@style/NotificationInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:drawableLeft="@drawable/ic_notification_title_divider"
+                android:layout_marginStart="6dp"
+                android:drawableStart="@drawable/ic_notification_title_divider"
                 android:drawablePadding="6dp"
                 android:maxWidth="140dp"
-                android:text="Summary" />
+                tools:text="Summary" />
 
             <TextView
                 android:id="@+id/custom_notification_time_native"
                 style="@style/NotificationInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:drawableLeft="@drawable/ic_notification_title_divider"
+                android:layout_marginStart="6dp"
+                android:drawableStart="@drawable/ic_notification_title_divider"
                 android:drawablePadding="6dp"
                 android:maxLength="12"
-                android:text="hh:mm" />
+                tools:text="hh:mm" />
 
             <TextView
                 android:id="@+id/app_name"
@@ -66,29 +65,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxWidth="80dp"
-                android:text="Production" />
+                tools:text="Production" />
 
             <TextView
                 android:id="@+id/custom_summary"
                 style="@style/NotificationInfoAdaptive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:drawableLeft="@drawable/ic_notification_title_divider"
+                android:layout_marginStart="6dp"
+                android:drawableStart="@drawable/ic_notification_title_divider"
                 android:drawablePadding="6dp"
                 android:maxWidth="140dp"
-                android:text="summary" />
+                tools:text="summary" />
 
             <TextView
                 android:id="@+id/custom_notification_time"
                 style="@style/NotificationInfoAdaptive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:drawableLeft="@drawable/ic_notification_title_divider"
+                android:layout_marginStart="6dp"
+                android:drawableStart="@drawable/ic_notification_title_divider"
                 android:drawablePadding="6dp"
                 android:maxLength="12"
-                android:text="hh:mm" />
+                tools:text="hh:mm" />
 
         </LinearLayout>
 
