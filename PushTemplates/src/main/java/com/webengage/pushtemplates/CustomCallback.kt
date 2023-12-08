@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import com.webengage.pushtemplates.templates.BannerRenderer
 import com.webengage.pushtemplates.templates.CountDownRenderer
+import com.webengage.pushtemplates.templates.GifRenderer
 import com.webengage.pushtemplates.templates.ProgressBarRenderer
 import com.webengage.pushtemplates.utils.Constants
 import com.webengage.sdk.android.actions.render.PushNotificationData
@@ -43,13 +44,26 @@ open class CustomCallback : CustomPushRerender, CustomPushRender {
                 return ProgressBarRenderer().onRender(context, pushNotificationData)
             else if (pushNotificationData.customData.containsKey(Constants.TEMPLATE_TYPE) &&
                 (pushNotificationData.customData.getString(Constants.TEMPLATE_TYPE)
-                    .equals(Constants.BANNER_1) || pushNotificationData.customData.getString(Constants.TEMPLATE_TYPE)
-                    .equals(Constants.BANNER_2) || pushNotificationData.customData.getString(Constants.TEMPLATE_TYPE)
-                    .equals(Constants.BANNER_3) || pushNotificationData.customData.getString(Constants.TEMPLATE_TYPE)
-                    .equals(Constants.BANNER_4) || pushNotificationData.customData.getString(Constants.TEMPLATE_TYPE)
+                    .equals(Constants.BANNER_1) || pushNotificationData.customData.getString(
+                    Constants.TEMPLATE_TYPE
+                )
+                    .equals(Constants.BANNER_2) || pushNotificationData.customData.getString(
+                    Constants.TEMPLATE_TYPE
+                )
+                    .equals(Constants.BANNER_3) || pushNotificationData.customData.getString(
+                    Constants.TEMPLATE_TYPE
+                )
+                    .equals(Constants.BANNER_4) || pushNotificationData.customData.getString(
+                    Constants.TEMPLATE_TYPE
+                )
                     .equals(Constants.BANNER_5))
             )
                 return BannerRenderer().onRender(context!!, pushNotificationData)
+            else if (pushNotificationData.customData.containsKey(Constants.TEMPLATE_TYPE) &&
+                pushNotificationData.customData.getString(Constants.TEMPLATE_TYPE)
+                    .equals("GIF", true)
+            )
+                return GifRenderer().onRender(context!!, pushNotificationData)
 
         return false
     }

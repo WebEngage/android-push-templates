@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/we_notification_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/we_transparent"
+    android:orientation="vertical">
+
+    <include layout="@layout/pushbase" />
+
+    <LinearLayout
+        android:id="@+id/we_notification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/we_push_intercontent_margin"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/we_push_content_margin"
+        android:paddingRight="@dimen/we_push_content_margin">
+
+        <include layout="@layout/title" />
+        <include layout="@layout/description"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/we_notification_bottom_margin"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/we_push_content_margin" />
+
+    <ViewFlipper
+        android:id="@+id/we_notification_vf"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:paddingStart="@dimen/we_push_banner_padding"
+        android:paddingEnd="@dimen/we_push_banner_padding"
+        android:layout_marginTop="@dimen/we_push_image_margin_top"
+        android:scaleType="centerCrop"
+        android:autoStart="true"
+        android:flipInterval="100"
+        android:visibility="gone" />
+
+    <include layout="@layout/push_actions" />
+</LinearLayout>

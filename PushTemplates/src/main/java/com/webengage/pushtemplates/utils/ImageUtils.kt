@@ -52,7 +52,7 @@ class ImageUtils {
     /**
      * Returns list of bitmap which can be rendered in the notification.
      */
-    private fun getSampledBitmapList(
+     fun getSampledBitmapList(
         bitmapList: ArrayList<Bitmap?>,
     ): ArrayList<Bitmap?> {
         //return bitmaps without sampling if Android version is less than Android 10

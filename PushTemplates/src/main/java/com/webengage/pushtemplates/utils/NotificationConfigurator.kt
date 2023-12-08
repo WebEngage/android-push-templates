@@ -569,6 +569,32 @@ class NotificationConfigurator {
         }
     }
 
+    fun setNotificationViewFlipper(
+        context: Context,
+        remoteViewItemLayout: Int,
+        remoteViewFlipper: RemoteViews,
+        pushData: PushNotificationData,
+        bitmapList: ArrayList<Bitmap?>
+    ) {
+        if (bitmapList.size > 0) {
+            if (pushData.style == WebEngageConstant.STYLE.BIG_PICTURE && !TextUtils.isEmpty(
+                    pushData.customData.getString(
+                        "gif_url"
+                    )
+                )
+            ) {
+                val modifiedList = ImageUtils().getSampledBitmapList(bitmapList)
+                remoteViewFlipper.removeAllViews(R.id.we_notification_vf)
+                for (each in 0 until modifiedList.size) {
+                    val remoteViewItem = RemoteViews(context.packageName, remoteViewItemLayout)
+                    remoteViewItem.setImageViewBitmap(R.id.viewFlipperItemImage, modifiedList[each])
+                    remoteViewFlipper.addView(R.id.we_notification_vf, remoteViewItem)
+                }
+                remoteViewFlipper.setViewVisibility(R.id.we_notification_vf, View.VISIBLE)
+            }
+        }
+    }
+
     /**
      * Sets the Images for the Notification.
      */
@@ -577,16 +603,19 @@ class NotificationConfigurator {
         pushData: PushNotificationData,
         bitmapList: ArrayList<Bitmap?>
     ) {
-        if (bitmapList.size > 0) {
-            if (pushData.style == WebEngageConstant.STYLE.BIG_PICTURE && !TextUtils.isEmpty(pushData.bigPictureStyleData.bigPictureUrl)) {
-                val bitmap = bitmapList[0]
-                if (bitmap != null) {
-                    remoteViews.setViewVisibility(R.id.we_notification_image, View.VISIBLE)
-                    remoteViews.setImageViewBitmap(R.id.we_notification_image, bitmap)
-                } else {
-                    Log.e("PushTemplates", "Bitmap returned null")
-                }
+
+        if (pushData.style == WebEngageConstant.STYLE.BIG_PICTURE && !TextUtils.isEmpty(
+                pushData.bigPictureStyleData.bigPictureUrl
+            )
+        ) {
+            val bitmap = bitmapList[0]
+            if (bitmap != null) {
+                remoteViews.setViewVisibility(R.id.we_notification_image, View.VISIBLE)
+                remoteViews.setImageViewBitmap(R.id.we_notification_image, bitmap)
+            } else {
+                Log.e("PushTemplates", "Bitmap returned null")
             }
+
         }
     }
 
