@@ -22,8 +22,8 @@ class BannerRenderer {
     private lateinit var mBuilder: NotificationCompat.Builder
     private lateinit var pushData: BannerStyleData
     private var whenTime: Long = 0
-    private var collapsedBannerLayoutId = R.layout.layout_banner_template
-    private var expandedBannerLayoutId = R.layout.layout_banner_template
+    private var collapsedBannerLayoutId = R.layout.layout_banner_template_pt
+    private var expandedBannerLayoutId = R.layout.layout_banner_template_pt
     private var bitmapList: ArrayList<Bitmap?> = ArrayList()
 
     fun onRender(context: Context, pushNotificationData: PushNotificationData): Boolean {

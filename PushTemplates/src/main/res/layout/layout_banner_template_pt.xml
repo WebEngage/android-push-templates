@@ -38,7 +38,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <include layout="@layout/pushbase" />
+                <include layout="@layout/pushbase_pt" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -55,12 +55,12 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
 
-                        <include layout="@layout/title"
+                        <include layout="@layout/title_pt"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
                         <include
-                            layout="@layout/description"
+                            layout="@layout/description_pt"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
@@ -109,7 +109,7 @@
             android:layout_height="@dimen/we_push_content_margin" />
 
 
-        <include layout="@layout/push_actions"/>
+        <include layout="@layout/push_actions_pt"/>
 
     </LinearLayout>
 </RelativeLayout>
