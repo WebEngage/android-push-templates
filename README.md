@@ -2,7 +2,7 @@
 >
 > **This repository is deprecated and no longer maintained.**
 >
-> All push notification templates provided here (Progress Bar, CountDown Timer, Banner, etc.) are now **natively supported** in the [WebEngage Android SDK](https://github.com/WebEngage/android_sdk) **v4.8.0 and above** (latest v4.21.1).
+> All push notification templates provided here (Progress Bar, CountDown Timer, Banner, etc.) are now **natively supported** in the [WebEngage Android SDK](https://github.com/WebEngage/android_sdk) **v4.8.0 and above** .
 >
 > **Migration:** Remove this module from your project and upgrade to WebEngage Android SDK v4.8.0+. These templates work out of the box without any additional code.
 >
